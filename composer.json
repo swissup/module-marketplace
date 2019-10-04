@@ -1,0 +1,20 @@
+{
+    "name": "swissup/module-marketplace",
+    "description": "One-Click modules and themes downloader",
+    "keywords": [
+        "packagist",
+        "marketplace",
+        "magento-marketplace"
+    ],
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "MIT",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Swissup\\Marketplace\\": ""
+        }
+    }
+}
