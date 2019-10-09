@@ -5,6 +5,7 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Swissup_Marketplace::index" title="Marketplace" sortOrder="10">
+                    <!-- <resource id="Swissup_Marketplace::index_configuration" title="Manage Marketplace Configuration" sortOrder="20"/> -->
                     <resource id="Swissup_Marketplace::package_index" title="View Modules and Themes" sortOrder="10"/>
                     <resource id="Swissup_Marketplace::package_manage" title="Manage Modules and Themes" sortOrder="30"/>
                 </resource>

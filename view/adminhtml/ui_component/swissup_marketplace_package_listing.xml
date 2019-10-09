@@ -7,6 +7,15 @@
             <item name="deps" xsi:type="string">swissup_marketplace_package_listing.swissup_marketplace_package_listing_data_source</item>
         </item>
         <item name="spinner" xsi:type="string">swissup_marketplace_package_columns</item>
+        <item name="buttons" xsi:type="array">
+            <item name="add" xsi:type="array">
+                <item name="name" xsi:type="string">add</item>
+                <item name="label" xsi:type="string" translate="true">Configuration</item>
+                <item name="class" xsi:type="string">primary</item>
+                <item name="component" xsi:type="string">Magento_Ui/js/form/components/button</item>
+                <item name="url" xsi:type="string">*/*/config</item>
+            </item>
+        </item>
     </argument>
     <dataSource name="swissup_marketplace_package_listing_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
