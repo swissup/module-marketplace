@@ -9,6 +9,9 @@
     "type": "magento2-module",
     "version": "1.0.0",
     "license": "MIT",
+    "require": {
+        "swissup/module-core": "^1.8.7"
+    },
     "autoload": {
         "files": [
             "registration.php"

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">swissup_marketplace_package_listing.swissup_marketplace_package_listing_data_source</item>
+            <item name="deps" xsi:type="string">swissup_marketplace_package_listing.swissup_marketplace_package_listing_data_source</item>
+        </item>
+        <item name="spinner" xsi:type="string">swissup_marketplace_package_columns</item>
+    </argument>
+    <dataSource name="swissup_marketplace_package_listing_data_source">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">Swissup\Marketplace\Ui\DataProvider\PackageDataProvider</argument>
+            <argument name="name" xsi:type="string">swissup_marketplace_package_listing_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">name</argument>
+            <argument name="requestFieldName" xsi:type="string">name</argument>
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+                    <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                    <item name="storageConfig" xsi:type="array">
+                        <item name="indexField" xsi:type="string">name</item>
+                    </item>
+                </item>
+            </argument>
+        </argument>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <!-- <bookmark name="bookmarks"/> -->
+        <!-- <columnsControls name="columns_controls"/> -->
+        <!-- <filters name="listing_filters"/> -->
+        <!-- <paging name="listing_paging"/> -->
+    </listingToolbar>
+    <columns name="swissup_marketplace_package_columns">
+        <column name="name">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="label" xsi:type="string" translate="true">Name</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/text</item>
+                </item>
+            </argument>
+        </column>
+        <!-- <column name="type">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="label" xsi:type="string" translate="true">Type</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/text</item>
+                </item>
+            </argument>
+        </column> -->
+        <column name="description">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="label" xsi:type="string" translate="true">Description</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/text</item>
+                </item>
+            </argument>
+        </column>
+        <column name="updated_at" class="Magento\Ui\Component\Listing\Columns\Date">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">dateRange</item>
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
+                    <item name="dataType" xsi:type="string">date</item>
+                    <item name="label" xsi:type="string" translate="true">Updated At</item>
+                    <item name="dateFormat" xsi:type="string">MMM d, YYYY</item>
+                </item>
+            </argument>
+        </column>
+    </columns>
+</listing>

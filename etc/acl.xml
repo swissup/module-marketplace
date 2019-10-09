@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Swissup_Marketplace::index" title="Marketplace" sortOrder="10">
+                    <resource id="Swissup_Marketplace::package_index" title="View Modules and Themes" sortOrder="10"/>
+                    <resource id="Swissup_Marketplace::package_manage" title="Manage Modules and Themes" sortOrder="30"/>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>
