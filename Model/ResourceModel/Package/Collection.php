@@ -75,6 +75,8 @@ class Collection extends \Magento\Framework\Data\Collection
                 $item = $this->getNewEmptyItem();
                 $item->setData($packageVersions[$latestVersion]);
                 $item->setId($packageName);
+                $item->setImageSrc($packageVersions['dev-master']['extra']['marketplace']['gallery'][0] ?? null);
+                $item->setImageSrc('https://swissuplabs.com/media/catalog/product/cache/1/image/512x512/9df78eab33525d08d6e5fb8d27136e95/b/o/box.v3.navigation_2_1.png');
                 $item->setVersions($versions);
                 $item->setUpdatedAt($packageVersions[$latestVersion]['time']);
 

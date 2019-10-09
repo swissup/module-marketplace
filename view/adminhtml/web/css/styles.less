@@ -1,0 +1,81 @@
+@item__gap: 3%;
+@item__width: 100% / 4;
+@item__padding: 15px;
+@item__border-radius: 4px;
+
+.marketplace-grid-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    max-width: 1280px;
+    margin: 20px auto 0;
+
+    .grid-item {
+        width: @item__width - @item__gap;
+        margin-bottom: @item__gap;
+
+        background: #fff;
+        padding: @item__padding;
+        border-radius: @item__border-radius;
+        position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            border-radius: @item__border-radius;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.05),
+                        0 20px 50px -12px rgba(0, 0, 0, 0.2);
+        }
+
+        img {
+            width: ~"calc(100% + @{item__padding} + @{item__padding})";
+            max-width: ~"calc(100% + @{item__padding} + @{item__padding})";
+            border-radius: @item__border-radius @item__border-radius 0 0;
+            margin: -@item__padding -@item__padding 0;
+        }
+
+        .item-badges {
+            display: flex;
+            // flex-wrap: wrap;
+            overflow: hidden;
+            list-style: none;
+            margin: 0;
+            li {
+                font-size: .85em;
+                font-weight: 600;
+                white-space: nowrap;
+                border-radius: 20px;
+                padding: 4px 9px;
+                margin: 0 5px 5px 0;
+                background: #f4f4f4;
+            }
+        }
+
+        [data-index="name"] {
+            font-size: 1.3em;
+            margin: 4px 0;
+            word-break: break-word;
+        }
+
+        [data-index="description"] {
+            opacity: .9;
+        }
+
+        [data-index="updated_at"] {
+            font-size: .85em;
+            margin: 8px 0;
+            opacity: .7;
+        }
+    }
+}

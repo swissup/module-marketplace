@@ -1,0 +1,7 @@
+<ol class="marketplace-grid-items">
+    <li class="grid-item" repeat="foreach: rows, item: '$row'">
+        <!--ko foreach: {data: getVisible(), as: '$col'}-->
+            <!-- ko template: getBody() --><!-- /ko -->
+        <!-- /ko -->
+    </li>
+</ol>
