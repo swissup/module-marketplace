@@ -51,8 +51,13 @@ class Collection extends \Magento\Framework\Data\Collection
 
             if (isset($response['includes'])) {
                 $remoteUrl = substr($remoteUrl, 0, strrpos($remoteUrl, '/') + 1);
-                $response = $this->fetch($remoteUrl . key($response['includes']));
-                $response = $this->jsonHelper->jsonDecode($response);
+
+                try {
+                    $response = $this->fetch($remoteUrl . key($response['includes']));
+                    $response = $this->jsonHelper->jsonDecode($response);
+                } catch (\Exception $e) {
+                    continue;
+                }
 
                 if (!is_array($response)) {
                     continue;
