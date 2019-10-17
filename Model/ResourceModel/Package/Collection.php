@@ -13,6 +13,22 @@ class Collection extends \Magento\Framework\Data\Collection
      */
     protected $_itemObjectClass = \Swissup\Marketplace\Model\Package::class;
 
+    /**
+     * Order configuration
+     *
+     * @var array
+     */
+    protected $_orders = [
+        'time' => self::SORT_ORDER_DESC
+    ];
+
+    /**
+     * Array of packages received from remote server.
+     *
+     * @var array
+     */
+    private $data = [];
+
     public function __construct(
         EntityFactoryInterface $entityFactory,
         \Magento\Framework\App\RequestInterface $request,
@@ -27,6 +43,17 @@ class Collection extends \Magento\Framework\Data\Collection
     }
 
     /**
+     * @return array
+     */
+    private function getRemoteUrls()
+    {
+        return [
+            'https://swissup.github.io/packages/packages.json',
+            // 'https://ci.swissuplabs.com/api/packages.json',
+        ];
+    }
+
+    /**
      * Load data
      *
      * @return $this
@@ -38,38 +65,14 @@ class Collection extends \Magento\Framework\Data\Collection
         }
 
         foreach ($this->getRemoteUrls() as $remoteUrl) {
-            try {
-                $response = $this->fetch($remoteUrl);
-                $response = $this->jsonHelper->jsonDecode($response);
-            } catch (\Exception $e) {
+            $packages = $this->fetchPackages($remoteUrl);
+
+            if (!$packages) {
                 continue;
             }
 
-            if (!is_array($response)) {
-                continue;
-            }
-
-            if (isset($response['includes'])) {
-                $remoteUrl = substr($remoteUrl, 0, strrpos($remoteUrl, '/') + 1);
-
-                try {
-                    $response = $this->fetch($remoteUrl . key($response['includes']));
-                    $response = $this->jsonHelper->jsonDecode($response);
-                } catch (\Exception $e) {
-                    continue;
-                }
-
-                if (!is_array($response)) {
-                    continue;
-                }
-            }
-
-            if (!isset($response['packages'])) {
-                continue;
-            }
-
-            foreach ($response['packages'] as $packageName => $packageVersions) {
-                $versions = array_keys($packageVersions);
+            foreach ($packages as $id => $packageData) {
+                $versions = array_keys($packageData);
                 $latestVersion = array_reduce($versions, function ($carry, $item) {
                     if (version_compare($carry, $item) === -1) {
                         $carry = $item;
@@ -77,21 +80,85 @@ class Collection extends \Magento\Framework\Data\Collection
                     return $carry;
                 });
 
-                $item = $this->getNewEmptyItem();
-                $item->setData($packageVersions[$latestVersion]);
-                $item->setId($packageName);
-                $item->setImageSrc($packageVersions['dev-master']['extra']['marketplace']['gallery'][0] ?? null);
-                $item->setImageSrc('https://swissuplabs.com/media/catalog/product/cache/1/image/512x512/9df78eab33525d08d6e5fb8d27136e95/b/o/box.v3.navigation_2_1.png');
-                $item->setVersions($versions);
-                $item->setUpdatedAt($packageVersions[$latestVersion]['time']);
+                $this->data[$id] = $packageData[$latestVersion];
+                $this->data[$id]['versions'] = $versions;
+                $this->data[$id]['image_src'] = 'https://swissuplabs.com/media/catalog/product/cache/1/image/512x512/9df78eab33525d08d6e5fb8d27136e95/b/o/box.v3.navigation_2_1.png';
 
-                $this->addItem($item);
+                if (!empty($packageData['dev-master']['extra']['marketplace']['gallery'][0])) {
+                    $this->data[$id]['image_src'] = $packageData['dev-master']['extra']['marketplace']['gallery'][0];
+                }
             }
+        }
+
+        if (!empty($this->_orders)) {
+            usort($this->data, [$this, '_usort']);
+        }
+
+        foreach ($this->data as $values) {
+            $item = $this->getNewEmptyItem();
+            $item->setData($values);
+            $item->setId($values['name']);
+
+            $this->addItem($item);
         }
 
         $this->_setIsLoaded(true);
 
         return $this;
+    }
+
+    /**
+     * Callback for sorting items. Supports sorting by one column only.
+     *
+     * @param array $a
+     * @param array $b
+     * @return int
+     */
+    protected function _usort($a, $b)
+    {
+        foreach ($this->_orders as $key => $direction) {
+            $result = $a[$key] > $b[$key] ? 1 : ($a[$key] < $b[$key] ? -1 : 0);
+            return self::SORT_ORDER_ASC === strtoupper($direction) ? $result : -$result;
+        }
+    }
+
+    /**
+     * Fetch packages from remote server.
+     *
+     * @param string $url
+     * @return array|false
+     */
+    protected function fetchPackages($url)
+    {
+        $response = [];
+
+        try {
+            $response = $this->fetch($url);
+            $response = $this->jsonHelper->jsonDecode($response);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        if (!is_array($response)) {
+            return false;
+        }
+
+        if (isset($response['includes'])) {
+            $url = substr($url, 0, strrpos($url, '/') + 1);
+
+            try {
+                $response = $this->fetch($url . key($response['includes']));
+                $response = $this->jsonHelper->jsonDecode($response);
+            } catch (\Exception $e) {
+                return false;
+            }
+
+            if (!is_array($response)) {
+                return false;
+            }
+        }
+
+        return $response['packages'] ?? false;
     }
 
     /**
@@ -119,13 +186,5 @@ class Collection extends \Magento\Framework\Data\Collection
     public function addOrder($field, $direction)
     {
         return $this->setOrder($field, $direction);
-    }
-
-    private function getRemoteUrls()
-    {
-        return [
-            'https://swissup.github.io/packages/packages.json',
-            // 'https://ci.swissuplabs.com/api/packages.json',
-        ];
     }
 }
