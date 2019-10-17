@@ -1,0 +1,43 @@
+.marketplace-grid-items {
+    .grid-item {
+        [data-index="keywords"] {
+            position: relative;
+            &::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: @scrollbar__size;
+                width: 6px;
+            }
+            &::after {
+                right: 0;
+                background: linear-gradient(270deg, @grid-item__background, fadeout(@grid-item__background, 99%));
+            }
+        }
+
+        .item-badges {
+            .tiny-scrollbar();
+
+            display: flex;
+            // flex-wrap: wrap;
+            overflow: hidden;
+            list-style: none;
+            margin: 0;
+
+            // &:hover {
+            //     overflow: auto;
+            //     margin-bottom: -@scrollbar__size;
+            // }
+
+            li {
+                font-size: .85em;
+                font-weight: 600;
+                white-space: nowrap;
+                border-radius: 20px;
+                padding: 4px 9px;
+                margin: 0 5px 3px 0;
+                background: #f4f4f4;
+            }
+        }
+    }
+}

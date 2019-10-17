@@ -1,7 +1,5 @@
-<ul class="item-badges"
-    attr="'data-index': index"
-    css="$data.additionalClasses"
-    each="data: $col.getLabel($row())"
->
-    <li text="$data"></li>
-</ul>
+<div attr="'data-index': index" css="$data.additionalClasses">
+    <ul class="item-badges" each="data: $col.getLabel($row())">
+        <li text="$data"></li>
+    </ul>
+</div>
