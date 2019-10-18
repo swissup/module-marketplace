@@ -2,6 +2,7 @@
 
 namespace Swissup\Marketplace\Model\ResourceModel\Package;
 
+use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Data\Collection\EntityFactoryInterface;
 
 class Collection extends \Magento\Framework\Data\Collection
@@ -19,7 +20,7 @@ class Collection extends \Magento\Framework\Data\Collection
      * @var array
      */
     protected $_orders = [
-        'time' => self::SORT_ORDER_DESC
+        'latest_version_time' => self::SORT_ORDER_DESC
     ];
 
     /**
@@ -31,10 +32,18 @@ class Collection extends \Magento\Framework\Data\Collection
 
     public function __construct(
         EntityFactoryInterface $entityFactory,
+        \Magento\Framework\Module\Dir\Reader $moduleDirReader,
+        \Magento\Framework\Component\ComponentRegistrarInterface $registrar,
+        \Magento\Framework\Json\DecoderInterface $jsonDecoder,
+        \Magento\Framework\Filesystem\Driver\File $filesystemDriver,
         \Magento\Framework\App\RequestInterface $request,
         \Magento\Framework\Json\Helper\Data $jsonHelper,
         \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory
     ) {
+        $this->moduleDirReader = $moduleDirReader;
+        $this->registrar = $registrar;
+        $this->jsonDecoder = $jsonDecoder;
+        $this->filesystemDriver = $filesystemDriver;
         $this->request = $request;
         $this->jsonHelper = $jsonHelper;
         $this->httpClientFactory = $httpClientFactory;
@@ -64,6 +73,33 @@ class Collection extends \Magento\Framework\Data\Collection
             return $this;
         }
 
+
+        $components = [
+            ComponentRegistrar::THEME,
+            ComponentRegistrar::MODULE,
+        ];
+
+        $localModules = [];
+        $enabledModules = $this->moduleDirReader->getComposerJsonFiles()->toArray();
+        foreach ($components as $component) {
+            $paths = $this->registrar->getPaths($component);
+            foreach ($paths as $name => $path) {
+                $path = $path . '/composer.json';
+
+                try {
+                    $config = $this->filesystemDriver->fileGetContents($path);
+                    $config = $this->jsonDecoder->decode($config);
+                    $localModules[$config['name']] = $this->extractPackageData($config);
+                    $localModules[$config['name']]['enabled'] =
+                        $component === ComponentRegistrar::THEME || // themes are always enabled
+                        !empty($enabledModules[$path]);
+                } catch (\Exception $e) {
+                    // skip module with broken composer.json file
+                }
+            }
+        }
+
+        $remoteModules = [];
         foreach ($this->getRemoteUrls() as $remoteUrl) {
             $packages = $this->fetchPackages($remoteUrl);
 
@@ -80,14 +116,51 @@ class Collection extends \Magento\Framework\Data\Collection
                     return $carry;
                 });
 
-                $this->data[$id] = $packageData[$latestVersion];
-                $this->data[$id]['versions'] = $versions;
-                $this->data[$id]['image_src'] = 'https://swissuplabs.com/media/catalog/product/cache/1/image/512x512/9df78eab33525d08d6e5fb8d27136e95/b/o/box.v3.navigation_2_1.png';
-
-                if (!empty($packageData['dev-master']['extra']['marketplace']['gallery'][0])) {
-                    $this->data[$id]['image_src'] = $packageData['dev-master']['extra']['marketplace']['gallery'][0];
+                if (isset($localModules[$id]['version']) &&
+                    isset($packageData[$localModules[$id]['version']])
+                ) {
+                    $localModules[$id]['time'] = $packageData[$localModules[$id]['version']]['time'];
                 }
+
+                $remoteModules[$id] = $this->extractPackageData($packageData[$latestVersion]);
+                $remoteModules[$id]['versions'] = $versions;
             }
+        }
+
+        foreach ($remoteModules as $id => $data) {
+            if (!empty($data['marketplace']['hidden']) ||
+                !empty($localModules[$id]['marketplace']['hidden'])
+            ) {
+                continue;
+            }
+
+            if ($data['type'] !== 'magento2-module') {
+                continue;
+            }
+
+            $this->data[$id] = [
+                'name' => $id,
+                'description' => $data['description'] ?? '',
+                'image_src' => $data['marketplace']['gallery'][0] ??
+                    ($localModules[$id]['marketplace']['gallery'][0] ?? false),
+                'keywords' => $data['keywords'] ?? [],
+                'version' => $localModules[$id]['version'] ?? false,
+                'time' => $localModules[$id]['time'] ?? false,
+                'enabled' => $localModules[$id]['enabled'] ?? false,
+                'latest_version' => $data['version'],
+                'latest_version_time' => $data['time'],
+                'remote' => $data,
+                'local' => $localModules[$id] ?? false,
+            ];
+
+            if (!$this->data[$id]['version']) {
+                $code = 'na';
+            } else {
+                $updated = version_compare($this->data[$id]['version'], $data['version'], '>=');
+                $code = $updated ? 'updated' : 'outdated';
+            }
+
+            $this->data[$id]['state'] = $code;
         }
 
         if (!empty($this->_orders)) {
@@ -105,6 +178,30 @@ class Collection extends \Magento\Framework\Data\Collection
         $this->_setIsLoaded(true);
 
         return $this;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function extractPackageData(array $data)
+    {
+        $result = array_intersect_key($data, array_flip([
+            'name',
+            'description',
+            'keywords',
+            'version',
+            'require',
+            'time',
+            'type',
+        ]));
+
+        $result['marketplace'] = $data['extra']['swissup'] ?? [];
+        if (isset($data['extra']['marketplace'])) {
+            $result['marketplace'] = $data['extra']['marketplace'];
+        }
+
+        return $result;
     }
 
     /**

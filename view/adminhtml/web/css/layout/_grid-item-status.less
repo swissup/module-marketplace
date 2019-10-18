@@ -1,0 +1,36 @@
+.marketplace-grid-items {
+    .grid-item {
+        [data-index="status"] {
+            width: auto;
+            font-size: .9em;
+            margin: 8px 0;
+            text-shadow: 1px 1px rgba(0,0,0,0.1);
+            color: rgba(255,255,255,0.9);
+            background: #93d26c;
+            background: #81d051;
+            background: #8ccc66;
+            border-radius: 4px;
+
+            &.state-na {
+                background: #a7a7a7;
+            }
+            &.state-outdated {
+                background: #d33c3c;
+            }
+
+            span {
+                display: inline-block;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            .version {
+                padding-right: 2px;
+            }
+            .time {
+                background: rgba(255,255,255,0.15);
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+        }
+    }
+}
