@@ -53,7 +53,7 @@ define([
          * @return {String}
          */
         getVersion: function (row) {
-            return row.version;
+            return row.version ? row.version : row.remote.version;
         },
 
         /**
@@ -61,7 +61,7 @@ define([
          * @return {String}
          */
         getDate: function (row) {
-            return this._renderDate(row.time);
+            return row.time ? this._renderDate(row.time) : this._renderDate(row.remote.time);
         },
 
         /**
