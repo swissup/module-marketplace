@@ -15,15 +15,6 @@ class Collection extends \Magento\Framework\Data\Collection
     protected $_itemObjectClass = \Swissup\Marketplace\Model\Package::class;
 
     /**
-     * Order configuration
-     *
-     * @var array
-     */
-    protected $_orders = [
-        'latest_version_time' => self::SORT_ORDER_DESC
-    ];
-
-    /**
      * Array of packages received from remote server.
      *
      * @var array
@@ -146,6 +137,7 @@ class Collection extends \Magento\Framework\Data\Collection
                 'keywords' => $data['keywords'] ?? [],
                 'version' => $localModules[$id]['version'] ?? false,
                 'time' => $localModules[$id]['time'] ?? false,
+                'installed' => isset($localModules[$id]),
                 'enabled' => $localModules[$id]['enabled'] ?? false,
                 'latest_version' => $data['version'],
                 'latest_version_time' => $data['time'],
@@ -163,9 +155,7 @@ class Collection extends \Magento\Framework\Data\Collection
             $this->data[$id]['state'] = $code;
         }
 
-        if (!empty($this->_orders)) {
-            usort($this->data, [$this, '_usort']);
-        }
+        usort($this->data, [$this, '_sortPackages']);
 
         foreach ($this->data as $values) {
             $item = $this->getNewEmptyItem();
@@ -205,18 +195,22 @@ class Collection extends \Magento\Framework\Data\Collection
     }
 
     /**
-     * Callback for sorting items. Supports sorting by one column only.
+     * Sort items to show outdated on the top, not installed at the bottom.
      *
      * @param array $a
      * @param array $b
      * @return int
      */
-    protected function _usort($a, $b)
+    protected function _sortPackages($a, $b)
     {
-        foreach ($this->_orders as $key => $direction) {
-            $result = $a[$key] > $b[$key] ? 1 : ($a[$key] < $b[$key] ? -1 : 0);
-            return self::SORT_ORDER_ASC === strtoupper($direction) ? $result : -$result;
+        if ($a['installed'] === $b['installed']) {
+            if ($a['state'] !== $b['state']) {
+                return $a['state'] === 'outdated' ? -1 : 1;
+            }
+            return $a['latest_version_time'] > $b['latest_version_time'] ? -1 : 1;
         }
+
+        return $a['installed'] > $b['installed'] ? -1 : 1;
     }
 
     /**
