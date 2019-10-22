@@ -1,5 +1,7 @@
+<!-- ko if: $col.getLabel($row()) && $col.getLabel($row()).length -->
 <div attr="'data-index': index" class="data-grid-cell-content" css="$data.additionalClasses">
     <ul class="keywords" each="data: $col.getLabel($row())">
         <li text="$data"></li>
     </ul>
 </div>
+<!-- /ko -->
