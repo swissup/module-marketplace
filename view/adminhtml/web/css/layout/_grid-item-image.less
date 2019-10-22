@@ -1,10 +1,33 @@
 .marketplace-grid-items {
     .grid-item {
-        img {
+        [data-index="image"] {
+            position: relative;
+            height: 0;
             width: ~"calc(100% + @{grid-item__padding} + @{grid-item__padding})";
+            padding-bottom: ~"calc(100% + @{grid-item__padding} + @{grid-item__padding})";
             max-width: ~"calc(100% + @{grid-item__padding} + @{grid-item__padding})";
+            margin: -@grid-item__padding -@grid-item__padding 2px;
             border-radius: @grid-item__border-radius @grid-item__border-radius 0 0;
-            margin: -@grid-item__padding -@grid-item__padding 0;
+            background: #fbfbfb;
+
+            &::after {
+                z-index: 1;
+                content: 'Loading...';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 24px;
+                color: #eaeaea;
+                text-shadow: 1px 1px 0 #fff;
+            }
+
+            img {
+                position: relative;
+                z-index: 10;
+                vertical-align: top;
+                border-radius: @grid-item__border-radius @grid-item__border-radius 0 0;
+            }
         }
     }
 }

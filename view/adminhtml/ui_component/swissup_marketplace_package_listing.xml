@@ -52,8 +52,9 @@
         <column name="image">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/thumbnail</item>
                     <item name="label" xsi:type="string" translate="true">Image</item>
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/thumbnail</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/image</item>
                 </item>
             </argument>
         </column>
