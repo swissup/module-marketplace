@@ -139,8 +139,6 @@ class Collection extends \Magento\Framework\Data\Collection
                 'time' => $localModules[$id]['time'] ?? false,
                 'installed' => isset($localModules[$id]),
                 'enabled' => $localModules[$id]['enabled'] ?? false,
-                'latest_version' => $data['version'],
-                'latest_version_time' => $data['time'],
                 'remote' => $data,
                 'local' => $localModules[$id] ?? false,
             ];
@@ -207,7 +205,7 @@ class Collection extends \Magento\Framework\Data\Collection
             if ($a['state'] !== $b['state']) {
                 return $a['state'] === 'outdated' ? -1 : 1;
             }
-            return $a['latest_version_time'] > $b['latest_version_time'] ? -1 : 1;
+            return $a['remote']['time'] > $b['remote']['time'] ? -1 : 1;
         }
 
         return $a['installed'] > $b['installed'] ? -1 : 1;
