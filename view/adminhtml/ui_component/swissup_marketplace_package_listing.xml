@@ -103,12 +103,19 @@
                 </item>
             </argument>
         </column>
-        <column name="actions">
+        <actionsColumn name="links" class="Swissup\Marketplace\Ui\Component\Listing\Columns\Links">
             <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="label" xsi:type="string" translate="true">Actions</item>
+                <item name="links" xsi:type="array">
+                    <item name="docs" xsi:type="array">
+                        <item name="label" xsi:type="string">Read Documentation</item>
+                        <item name="key" xsi:type="string">docs</item>
+                    </item>
+                    <item name="changelog" xsi:type="array">
+                        <item name="label" xsi:type="string">Read Changelog</item>
+                        <item name="key" xsi:type="string">changelog</item>
+                    </item>
                 </item>
             </argument>
-        </column>
+        </actionsColumn>
     </columns>
 </listing>
