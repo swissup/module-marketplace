@@ -1,0 +1,31 @@
+.marketplace-grid-items {
+    .grid-item [data-index="actions"] {
+        position: absolute;
+        bottom: @grid-item__padding;
+        left: @grid-item__padding;
+        right: @grid-item__padding;
+
+        .action-select-wrap {
+            display: block;
+
+            .action-select {
+                width: 100%;
+                background: transparent;
+                border-color: #eee;
+                border-radius: 4px;
+
+                &::before {
+                    display: none;
+                }
+            }
+
+            .action-menu {
+                border: 0;
+                margin: 0 1px;
+                border-radius: 3px;
+                box-shadow: 0 0 3px rgba(0, 0, 0, 0.1),
+                            0 5px 15px -3px rgba(0, 0, 0, 0.2);
+            }
+        }
+    }
+}

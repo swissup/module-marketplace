@@ -6,18 +6,18 @@
     z-index: 10;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: flex-start;
 
     max-width: 1280px;
     margin: 20px auto 0;
 
     .grid-item {
         width: @grid-item__width - @grid-item__gap;
-        margin-bottom: @grid-item__gap;
-        min-height: 400px;
+        margin: 0 @grid-item__gap / 2 @grid-item__gap;
+        min-height: 450px;
 
         background: @grid-item__background;
-        padding: @grid-item__padding;
+        padding: @grid-item__padding @grid-item__padding 60px @grid-item__padding;
         border-radius: @grid-item__border-radius;
         position: relative;
 
@@ -32,6 +32,14 @@
             border-radius: @grid-item__border-radius;
             box-shadow: 0 0 3px rgba(0, 0, 0, 0.05),
                         0 20px 50px -12px rgba(0, 0, 0, 0.2);
+        }
+
+        > div {
+            display: block;
+            margin-bottom: 5px;
+            &:last-child {
+                margin-bottom: 0;
+            }
         }
     }
 }

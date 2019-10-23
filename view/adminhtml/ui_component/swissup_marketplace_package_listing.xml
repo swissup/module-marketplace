@@ -106,6 +106,9 @@
         </column>
         <actionsColumn name="links" class="Swissup\Marketplace\Ui\Component\Listing\Columns\Links">
             <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/actions</item>
+                </item>
                 <item name="links" xsi:type="array">
                     <item name="docs" xsi:type="array">
                         <item name="label" xsi:type="string">Read Documentation</item>
@@ -115,6 +118,14 @@
                         <item name="label" xsi:type="string">Read Changelog</item>
                         <item name="key" xsi:type="string">changelog</item>
                     </item>
+                </item>
+            </argument>
+        </actionsColumn>
+        <actionsColumn name="actions" class="Swissup\Marketplace\Ui\Component\Listing\Columns\Actions">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="label" xsi:type="string" translate="true">Actions</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/actions</item>
                 </item>
             </argument>
         </actionsColumn>

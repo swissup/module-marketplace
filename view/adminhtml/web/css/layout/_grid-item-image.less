@@ -6,13 +6,15 @@
             width: ~"calc(100% + @{grid-item__padding} + @{grid-item__padding})";
             padding-bottom: ~"calc(100% + @{grid-item__padding} + @{grid-item__padding})";
             max-width: ~"calc(100% + @{grid-item__padding} + @{grid-item__padding})";
-            margin: -@grid-item__padding -@grid-item__padding 2px;
+            margin-top: -@grid-item__padding;
+            margin-left: -@grid-item__padding;
+            margin-right: -@grid-item__padding;
             border-radius: @grid-item__border-radius @grid-item__border-radius 0 0;
             background: #fbfbfb;
 
             &::after {
                 z-index: 1;
-                content: 'Loading...';
+                content: 'Image';
                 position: absolute;
                 top: 50%;
                 left: 50%;
