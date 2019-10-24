@@ -96,7 +96,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
             ),
             'label' => __('Disable Module'),
             'confirm' => [
-                'title' => __('Disable'),
+                'title' => __('Disable Module'),
                 'message' => __('Are you sure you want to disable this module?')
             ]
         ];
@@ -126,7 +126,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
             ),
             'label' => __('Uninstall Module'),
             'confirm' => [
-                'title' => __('Uninstall'),
+                'title' => __('Uninstall Module'),
                 'message' => __('Are you sure you want to uninstall this module?')
             ]
         ];
