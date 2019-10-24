@@ -13,7 +13,7 @@ define([
         /**
          * Overrides base method to normalize date format.
          *
-         * @returns {DateColumn} Chainable.
+         * @returns {StatusColumn} Chainable.
          */
         initConfig: function () {
             this._super();
