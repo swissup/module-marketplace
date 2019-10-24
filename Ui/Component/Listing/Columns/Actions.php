@@ -2,19 +2,14 @@
 
 namespace Swissup\Marketplace\Ui\Component\Listing\Columns;
 
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponentFactory;
-use Magento\Ui\Component\Listing\Columns\Column;
-
-class Actions extends Column
+class Actions extends \Magento\Ui\Component\Listing\Columns\Column
 {
-    const URL_PATH_INSTALL = 'marketplace/package/install';
-    const URL_PATH_UPGRADE = 'marketplace/package/upgrade';
-    const URL_PATH_DELETE = 'marketplace/package/delete';
-    const URL_PATH_ENABLE = 'marketplace/package/enable';
-    const URL_PATH_DISABLE = 'marketplace/package/disable';
-    const URL_PATH_DETAILS = 'marketplace/package/details';
+    const URL_PATH_INSTALL = 'swissup_marketplace/package/install';
+    const URL_PATH_UPDATE = 'swissup_marketplace/package/upgrade';
+    const URL_PATH_DELETE = 'swissup_marketplace/package/delete';
+    const URL_PATH_ENABLE = 'swissup_marketplace/package/enable';
+    const URL_PATH_DISABLE = 'swissup_marketplace/package/disable';
+    const URL_PATH_DETAILS = 'swissup_marketplace/package/details';
 
     /**
      * @param array $dataSource
@@ -27,72 +22,114 @@ class Actions extends Column
         }
 
         foreach ($dataSource['data']['items'] as &$item) {
-            $item[$this->getData('name')] = [
-                'details' => [
-                    'href' => $this->getContext()->getUrl(
-                        static::URL_PATH_DETAILS,
-                        [
-                            'name' => $item['name']
-                        ]
-                    ),
-                    'label' => __('View Details')
-                ],
+            $key = $this->getData('name');
+            $item[$key] = [
+                'details' => $this->getDetailsLinkParams(),
             ];
 
             if ($item['installed']) {
-                if ($item['enabled']) {
-                    $item[$this->getData('name')]['disable'] = [
-                        'href' => $this->getContext()->getUrl(
-                            static::URL_PATH_DISABLE,
-                            [
-                                'name' => $item['name']
-                            ]
-                        ),
-                        'label' => __('Disable Module'),
-                        'confirm' => [
-                            'title' => __('Disable'),
-                            'message' => __('Are you sure you want to disable this module?')
-                        ]
-                    ];
-                } else {
-                    $item[$this->getData('name')]['enable'] = [
-                        'href' => $this->getContext()->getUrl(
-                            static::URL_PATH_ENABLE,
-                            [
-                                'name' => $item['name']
-                            ]
-                        ),
-                        'label' => __('Enable Module'),
-                    ];
+                if ($item['state'] === 'outdated') {
+                    $item[$key]['update'] = $this->getUpdateLinkParams($item);
                 }
 
-                $item[$this->getData('name')]['delete'] = [
-                    'href' => $this->getContext()->getUrl(
-                        static::URL_PATH_DELETE,
-                        [
-                            'name' => $item['name']
-                        ]
-                    ),
-                    'label' => __('Uninstall Module'),
-                    'confirm' => [
-                        'title' => __('Uninstall'),
-                        'message' => __('Are you sure you want to uninstall this module?')
-                    ]
-                ];
-            } else {
-                $item[$this->getData('name')]['install'] = [
-                    'href' => $this->getContext()->getUrl(
-                        static::URL_PATH_INSTALL,
-                        [
-                            'name' => $item['name']
-                        ]
-                    ),
-                    'label' => __('Install Module'),
-                ];
-            }
+                if ($item['enabled']) {
+                    $item[$key]['disable'] = $this->getDisableLinkParams($item);
+                } else {
+                    $item[$key]['enable'] = $this->getEnableLinkParams($item);
+                }
 
+                $item[$key]['delete'] = $this->getUninstallLinkParams($item);
+            } else {
+                $item[$key]['install'] = $this->getInstallLinkParams($item);
+            }
         }
 
         return $dataSource;
+    }
+
+    protected function getDetailsLinkParams($item)
+    {
+        return [
+            'href' => $this->getContext()->getUrl(
+                static::URL_PATH_DETAILS,
+                [
+                    'name' => $item['name']
+                ]
+            ),
+            'label' => __('View Details')
+        ];
+    }
+
+    protected function getUpdateLinkParams($item)
+    {
+        return [
+            'href' => $this->getContext()->getUrl(
+                static::URL_PATH_UPDATE,
+                [
+                    'name' => $item['name']
+                ]
+            ),
+            'label' => __('Update Module'),
+        ];
+    }
+
+    protected function getDisableLinkParams($item)
+    {
+        return [
+            'href' => $this->getContext()->getUrl(
+                static::URL_PATH_DISABLE,
+                [
+                    'name' => $item['name']
+                ]
+            ),
+            'label' => __('Disable Module'),
+            'confirm' => [
+                'title' => __('Disable'),
+                'message' => __('Are you sure you want to disable this module?')
+            ]
+        ];
+    }
+
+    protected function getEnableLinkParams($item)
+    {
+        return [
+            'href' => $this->getContext()->getUrl(
+                static::URL_PATH_ENABLE,
+                [
+                    'name' => $item['name']
+                ]
+            ),
+            'label' => __('Enable Module'),
+        ];
+    }
+
+    protected function getUninstallLinkParams($item)
+    {
+        return [
+            'href' => $this->getContext()->getUrl(
+                static::URL_PATH_DELETE,
+                [
+                    'name' => $item['name']
+                ]
+            ),
+            'label' => __('Uninstall Module'),
+            'confirm' => [
+                'title' => __('Uninstall'),
+                'message' => __('Are you sure you want to uninstall this module?')
+            ]
+        ];
+    }
+
+    protected function getInstallLinkParams($item)
+    {
+        return [
+            'href' => $this->getContext()->getUrl(
+                static::URL_PATH_INSTALL,
+                [
+                    'name' => $item['name']
+                ]
+            ),
+            'label' => __('Install Module'),
+        ];
     }
 }
