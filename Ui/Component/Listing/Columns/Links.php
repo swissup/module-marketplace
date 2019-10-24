@@ -39,6 +39,8 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
                 ];
             }
 
+            $item[$key]['separator'] = $this->getSeparatorParams();
+
             if ($item['installed']) {
                 if ($item['state'] === 'outdated') {
                     $item[$key]['update'] = $this->getUpdateLinkParams($item);
@@ -57,6 +59,11 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         }
 
         return $dataSource;
+    }
+
+    protected function getSeparatorParams()
+    {
+        return ['href' => '#', 'label' => ''];
     }
 
     protected function getDetailsLinkParams($item)
