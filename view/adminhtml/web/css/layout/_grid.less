@@ -14,10 +14,13 @@
     .grid-item {
         width: @grid-item__width - @grid-item__gap;
         margin: 0 @grid-item__gap / 2 @grid-item__gap;
-        min-height: 450px;
+        min-height: 430px;
+
+        display: flex;
+        flex-direction: column;
 
         background: @grid-item__background;
-        padding: @grid-item__padding @grid-item__padding 60px @grid-item__padding;
+        padding: @grid-item__padding;
         border-radius: @grid-item__border-radius;
         position: relative;
 

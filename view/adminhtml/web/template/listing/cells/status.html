@@ -1,7 +1,13 @@
 <div class="data-grid-cell-content"
-    attr="'data-index': index, title: $col.getTitle($row())"
+    attr="'data-index': index"
     css="'state-' + $row().state"
 >
-    <span class="version" text="$col.getVersion($row())"/>
-    <span class="time" text="$col.getDate($row())"/>
+    <span class="version" attr="title: $col.getTitle($row())">
+        <span class="number" text="$col.getVersion($row())"/>
+        <span class="time" text="$col.getDate($row())"/>
+    </span>
+
+    <span if="$row().state === 'outdated'" class="action">Update</span>
+    <span if="$row().state === 'na'" class="action">Install</span>
+    <span if="$row().installed && !$row().enabled" class="action primary">Enable</span>
 </div>

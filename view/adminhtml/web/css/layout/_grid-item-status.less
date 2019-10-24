@@ -1,34 +1,59 @@
 .marketplace-grid-items {
     .grid-item {
         [data-index="status"] {
-            width: auto;
-            display: inline-block;
             font-size: .9em;
-            margin: 4px 0 8px;
+            padding-top: 10px;
+            margin: auto 0 12px;
             text-shadow: 1px 1px rgba(0,0,0,0.1);
-            color: rgba(255,255,255,0.9);
-            background: #8ccc66;
-            border-radius: 4px;
-
-            &.state-na {
-                background: #a7a7a7;
-            }
-            &.state-outdated {
-                background: #d33c3c;
-            }
 
             span {
                 display: inline-block;
-                padding: 1px 5px;
                 border-radius: 4px;
             }
+
+            .action,
             .version {
-                padding-right: 2px;
+                color: rgba(255,255,255,0.9);
+                margin: 0 2px 3px 0;
             }
-            .time {
-                background: rgba(255,255,255,0.15);
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
+
+            .action,
+            .version span {
+                padding: 2px 7px;
+            }
+
+            .version {
+                cursor: default;
+                background: #8ccc66;
+
+                .number {
+                    padding-right: 2px;
+                }
+                .time {
+                    background: rgba(255,255,255,0.15);
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                }
+            }
+
+            &.state-na {
+                .version {
+                    background: #a7a7a7;
+                }
+            }
+            &.state-outdated {
+                .version {
+                    background: #d33c3c;
+                }
+            }
+
+            .action {
+                cursor: pointer;
+                background: #373330;
+
+                &.primary {
+                    background: #0c99ec;
+                }
             }
         }
     }

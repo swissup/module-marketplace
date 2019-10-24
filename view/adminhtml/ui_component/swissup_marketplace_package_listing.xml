@@ -113,6 +113,27 @@
                 </item>
             </argument>
         </actionsColumn>
+        <column name="status">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="label" xsi:type="string" translate="true">Status</item>
+                    <item name="component" xsi:type="string">Swissup_Marketplace/js/listing/columns/status</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/status</item>
+                </item>
+            </argument>
+        </column>
+        <!--
+        <column name="keywords">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="label" xsi:type="string" translate="true">Keywords</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/keywords</item>
+                </item>
+            </argument>
+        </column>
+        -->
+        <!--
         <actionsColumn name="actions" class="Swissup\Marketplace\Ui\Component\Listing\Columns\Actions">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -121,5 +142,6 @@
                 </item>
             </argument>
         </actionsColumn>
+        -->
     </columns>
 </listing>
