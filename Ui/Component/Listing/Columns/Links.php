@@ -15,6 +15,18 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         }
 
         foreach ($dataSource['data']['items'] as &$item) {
+            $item[$this->getData('name')] = [
+                'details' => [
+                    'href' => $this->getContext()->getUrl(
+                        Actions::URL_PATH_DETAILS,
+                        [
+                            'name' => $item['name']
+                        ]
+                    ),
+                    'label' => __('View Details')
+                ],
+            ];
+
             foreach ($this->getData('links') as $link) {
                 if (empty($item['remote']['marketplace']['links'][$link['key']])) {
                     continue;
