@@ -119,7 +119,8 @@ class Collection extends \Magento\Framework\Data\Collection
         }
 
         foreach ($remoteModules as $id => $data) {
-            if (!empty($data['marketplace']['hidden']) ||
+            if (empty($data['marketplace']) ||
+                !empty($data['marketplace']['hidden']) ||
                 !empty($localModules[$id]['marketplace']['hidden'])
             ) {
                 continue;
