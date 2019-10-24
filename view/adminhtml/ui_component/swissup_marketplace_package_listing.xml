@@ -133,15 +133,5 @@
             </argument>
         </column>
         -->
-        <!--
-        <actionsColumn name="actions" class="Swissup\Marketplace\Ui\Component\Listing\Columns\Actions">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="label" xsi:type="string" translate="true">Actions</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/actions</item>
-                </item>
-            </argument>
-        </actionsColumn>
-        -->
     </columns>
 </listing>
