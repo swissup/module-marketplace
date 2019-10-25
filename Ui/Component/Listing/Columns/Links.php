@@ -82,12 +82,8 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
     protected function getUpdateLinkParams($item)
     {
         return [
-            'href' => $this->getContext()->getUrl(
-                static::URL_PATH_UPDATE,
-                [
-                    'name' => $item['name']
-                ]
-            ),
+            'isAjax' => true,
+            'href' => $this->getContext()->getUrl(static::URL_PATH_UPDATE),
             'label' => __('Update Module'),
         ];
     }
@@ -95,12 +91,8 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
     protected function getDisableLinkParams($item)
     {
         return [
-            'href' => $this->getContext()->getUrl(
-                static::URL_PATH_DISABLE,
-                [
-                    'name' => $item['name']
-                ]
-            ),
+            'isAjax' => true,
+            'href' => $this->getContext()->getUrl(static::URL_PATH_DISABLE),
             'label' => __('Disable Module'),
             'confirm' => [
                 'title' => __('Disable Module'),
@@ -112,12 +104,8 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
     protected function getEnableLinkParams($item)
     {
         return [
-            'href' => $this->getContext()->getUrl(
-                static::URL_PATH_ENABLE,
-                [
-                    'name' => $item['name']
-                ]
-            ),
+            'isAjax' => true,
+            'href' => $this->getContext()->getUrl(static::URL_PATH_ENABLE),
             'label' => __('Enable Module'),
         ];
     }
@@ -125,12 +113,8 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
     protected function getUninstallLinkParams($item)
     {
         return [
-            'href' => $this->getContext()->getUrl(
-                static::URL_PATH_DELETE,
-                [
-                    'name' => $item['name']
-                ]
-            ),
+            'isAjax' => true,
+            'href' => $this->getContext()->getUrl(static::URL_PATH_DELETE),
             'label' => __('Uninstall Module'),
             'confirm' => [
                 'title' => __('Uninstall Module'),
@@ -142,12 +126,8 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
     protected function getInstallLinkParams($item)
     {
         return [
-            'href' => $this->getContext()->getUrl(
-                static::URL_PATH_INSTALL,
-                [
-                    'name' => $item['name']
-                ]
-            ),
+            'isAjax' => true,
+            'href' => $this->getContext()->getUrl(static::URL_PATH_INSTALL),
             'label' => __('Install Module'),
         ];
     }
