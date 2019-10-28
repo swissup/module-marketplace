@@ -40,22 +40,11 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
             }
 
             $item[$key]['separator'] = $this->getSeparatorParams();
-
-            if ($item['installed']) {
-                if ($item['state'] === 'outdated') {
-                    $item[$key]['update'] = $this->getUpdateLinkParams($item);
-                }
-
-                if ($item['enabled']) {
-                    $item[$key]['disable'] = $this->getDisableLinkParams($item);
-                } else {
-                    $item[$key]['enable'] = $this->getEnableLinkParams($item);
-                }
-
-                $item[$key]['delete'] = $this->getUninstallLinkParams($item);
-            } else {
-                $item[$key]['install'] = $this->getInstallLinkParams($item);
-            }
+            $item[$key]['update'] = $this->getUpdateLinkParams($item);
+            $item[$key]['disable'] = $this->getDisableLinkParams($item);
+            $item[$key]['enable'] = $this->getEnableLinkParams($item);
+            $item[$key]['uninstall'] = $this->getUninstallLinkParams($item);
+            $item[$key]['install'] = $this->getInstallLinkParams($item);
         }
 
         return $dataSource;

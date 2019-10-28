@@ -1,10 +1,11 @@
 define([
+    'ko',
     'jquery',
     'underscore',
     'Magento_Ui/js/grid/columns/actions',
     'Magento_Ui/js/modal/alert',
     'mage/translate'
-], function ($, _, Column, uiAlert, $t) {
+], function (ko, $, _, Column, uiAlert, $t) {
     'use strict';
 
     return Column.extend({
@@ -14,6 +15,33 @@ define([
                 dataType: 'json'
             },
             forceMultiple: false
+        },
+
+        /**
+         * Checks if action should be displayed.
+         *
+         * @param {Object} action - Action object.
+         * @returns {Boolean}
+         */
+        isActionVisible: function (action) {
+            switch (action.index) {
+                case 'update':
+                    return this.rows[action.rowIndex].state === 'outdated';
+
+                case 'disable':
+                    return this.rows[action.rowIndex].enabled && this.rows[action.rowIndex].installed;
+
+                case 'enable':
+                    return !this.rows[action.rowIndex].enabled && this.rows[action.rowIndex].installed;
+
+                case 'uninstall':
+                    return this.rows[action.rowIndex].installed;
+
+                case 'install':
+                    return !this.rows[action.rowIndex].installed;
+            }
+
+            return this._super(action);
         },
 
         /**
@@ -86,10 +114,8 @@ define([
                             return;
                         }
 
-                        this.trigger('action', {
-                            action: actionIndex,
-                            data: data
-                        });
+                        this.rows[action.rowIndex].enabled = response.package.enabled;
+                        this.rows.splice(0, 0); // trigger grid re-render
                     }.bind(this));
             } else {
                 this._super();
