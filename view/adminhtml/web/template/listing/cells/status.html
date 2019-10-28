@@ -7,7 +7,10 @@
         <span class="time" text="$col.getDate($row())"/>
     </span>
 
-    <span if="$row().state === 'outdated'" class="action">Update</span>
-    <span if="$row().state === 'na'" class="action">Install</span>
-    <span if="$row().installed && !$row().enabled" class="action primary">Enable</span>
+    <!-- ko foreach: {data: $col.getActions($row()), as: '$action'} -->
+        <span if="$col.isActionVisible($action)"
+            click="$col.getActionHandler($action)"
+            text="$action.label"
+            attr="'class': $action.class"/>
+    <!-- /ko -->
 </div>

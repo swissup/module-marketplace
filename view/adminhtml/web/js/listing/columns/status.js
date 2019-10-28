@@ -1,8 +1,10 @@
 define([
+    'uiRegistry',
     'mageUtils',
     'moment',
-    'Magento_Ui/js/grid/columns/column'
-], function (utils, moment, Column) {
+    'Magento_Ui/js/grid/columns/column',
+    'mage/translate'
+], function (registry, utils, moment, Column, $t) {
     'use strict';
 
     return Column.extend({
@@ -25,6 +27,50 @@ define([
 
         /**
          * @param {Object} row
+         * @return {Array}
+         */
+        getActions: function (row) {
+            return [{
+                index: 'update',
+                class: 'action',
+                rowIndex: row._rowIndex,
+                label: $t('Update')
+            }, {
+                index: 'install',
+                class: 'action',
+                rowIndex: row._rowIndex,
+                label: $t('Install')
+            }, {
+                index: 'enable',
+                class: 'action primary',
+                rowIndex: row._rowIndex,
+                label: $t('Enable')
+            }, {
+                index: 'disable',
+                class: 'action',
+                hidden: true,
+                rowIndex: row._rowIndex,
+                label: $t('Disable')
+            }];
+        },
+
+        /**
+         * @param {Object} action
+         */
+        getActionHandler: function (action) {
+            return registry.get(this.parentName + '.links').getActionHandler(action);
+        },
+
+        /**
+         * @param {Object} action
+         * @return {Boolean}
+         */
+        isActionVisible: function (action) {
+            return registry.get(this.parentName + '.links').isActionVisible(action);
+        },
+
+        /**
+         * @param {Object} row
          * @return {String}
          */
         getTitle: function (row) {
@@ -32,16 +78,17 @@ define([
 
             switch (row.state) {
                 case 'outdated':
-                    title = row.remote.version + ' is available since ' +
-                        this._renderDate(row.remote.time);
+                    title = $t('%1 is available since %2')
+                        .replace('%1', row.remote.version)
+                        .replace('%2', this._renderDate(row.remote.time));
                     break;
 
                 case 'updated':
-                    title = 'The module is up to date';
+                    title = $t('The module is up to date');
                     break;
 
                 case 'na':
-                    title = 'This module is not installed yet';
+                    title = $t('This module is not installed yet');
                     break;
             }
 

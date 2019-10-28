@@ -24,6 +24,10 @@ define([
          * @returns {Boolean}
          */
         isActionVisible: function (action) {
+            if (action.hidden) {
+                return false;
+            }
+
             switch (action.index) {
                 case 'update':
                     return this.rows[action.rowIndex].state === 'outdated';
