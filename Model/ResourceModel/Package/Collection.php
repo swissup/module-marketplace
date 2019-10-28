@@ -203,10 +203,14 @@ class Collection extends \Magento\Framework\Data\Collection
     protected function _sortPackages($a, $b)
     {
         if ($a['installed'] === $b['installed']) {
-            if ($a['state'] !== $b['state']) {
-                return $a['state'] === 'outdated' ? -1 : 1;
+            if ($a['enabled'] === $b['enabled']) {
+                if ($a['state'] !== $b['state']) {
+                    return $a['state'] === 'outdated' ? -1 : 1;
+                }
+                return $a['remote']['time'] > $b['remote']['time'] ? -1 : 1;
             }
-            return $a['remote']['time'] > $b['remote']['time'] ? -1 : 1;
+
+            return $a['enabled'] > $b['enabled'] ? -1 : 1;
         }
 
         return $a['installed'] > $b['installed'] ? -1 : 1;
