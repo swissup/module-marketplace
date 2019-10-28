@@ -36,8 +36,8 @@ class Collection extends \Magento\Framework\Data\Collection
         $localPackages = $this->localPackages->getList();
         $remotePackages = $this->remotePackages->getList();
 
-        foreach ($remotePackages as $id => $data) {
-            if (!empty($data['marketplace']['hidden']) ||
+        foreach ($remotePackages as $id => $remoteData) {
+            if (!empty($remoteData['marketplace']['hidden']) ||
                 !empty($localPackages[$id]['marketplace']['hidden'])
             ) {
                 continue;
@@ -51,22 +51,26 @@ class Collection extends \Magento\Framework\Data\Collection
 
             $this->data[$id] = [
                 'name' => $id,
-                'description' => $data['description'] ?? '',
-                'image_src' => $data['marketplace']['gallery'][0] ??
+                'description' => $remoteData['description'] ?? '',
+                'image_src' => $remoteData['marketplace']['gallery'][0] ??
                     ($localPackages[$id]['marketplace']['gallery'][0] ?? false),
-                'keywords' => $data['keywords'] ?? [],
+                'keywords' => $remoteData['keywords'] ?? [],
                 'version' => $localVersion,
-                'time' => $data['versions'][$localVersion]['time'] ?? false,
+                'time' => $remoteData['versions'][$localVersion]['time'] ?? false,
                 'installed' => isset($localPackages[$id]),
                 'enabled' => $localPackages[$id]['enabled'] ?? false,
-                'remote' => $data,
+                'remote' => $remoteData,
                 'local' => $localPackages[$id] ?? false,
             ];
 
             if (!$this->data[$id]['version']) {
                 $code = 'na';
             } else {
-                $updated = version_compare($this->data[$id]['version'], $data['version'], '>=');
+                $updated = version_compare(
+                    $this->data[$id]['version'],
+                    $remoteData['version'],
+                    '>='
+                );
                 $code = $updated ? 'updated' : 'outdated';
             }
 
