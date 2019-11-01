@@ -77,6 +77,7 @@ class Collection extends \Magento\Framework\Data\Collection
             $this->data[$id]['state'] = $code;
         }
 
+        $this->_renderFilters();
         $this->_renderOrders();
 
         foreach ($this->data as $values) {
@@ -88,6 +89,36 @@ class Collection extends \Magento\Framework\Data\Collection
         }
 
         $this->_setIsLoaded(true);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function _renderFilters()
+    {
+        if ($this->_isFiltersRendered) {
+            return $this;
+        }
+
+        $this->data = array_filter($this->data, function ($item) {
+            foreach ($this->_filters as $filter) {
+                $value = $filter->getValue();
+
+                if ($filter->getField() === 'fulltext') {
+                    if (strpos($item['name'], $value) === false &&
+                        strpos($item['description'], $value) === false
+                    ) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        });
+
+        $this->_isFiltersRendered = true;
 
         return $this;
     }
@@ -126,7 +157,7 @@ class Collection extends \Magento\Framework\Data\Collection
      */
     public function addFieldToFilter($field, $condition)
     {
-        return $this;
+        return $this->addFilter($field, current($condition));
     }
 
     /**
