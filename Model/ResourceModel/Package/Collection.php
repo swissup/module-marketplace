@@ -118,6 +118,11 @@ class Collection extends \Magento\Framework\Data\Collection
         return $a['installed'] > $b['installed'] ? -1 : 1;
     }
 
+    public function addFieldToFilter($field, $condition)
+    {
+        return $this;
+    }
+
     /**
      * Compatibility with Ui/DataProvider
      *
