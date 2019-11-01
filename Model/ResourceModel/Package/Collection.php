@@ -77,7 +77,7 @@ class Collection extends \Magento\Framework\Data\Collection
             $this->data[$id]['state'] = $code;
         }
 
-        usort($this->data, [$this, '_sortPackages']);
+        $this->_renderOrders();
 
         foreach ($this->data as $values) {
             $item = $this->getNewEmptyItem();
@@ -100,32 +100,36 @@ class Collection extends \Magento\Framework\Data\Collection
      *  - disabled
      *  - na
      *
-     * @param array $a
-     * @param array $b
-     * @return int
+     *  @return $this
      */
-    protected function _sortPackages($a, $b)
+    protected function _renderOrders()
     {
-        if ($a['installed'] === $b['installed']) {
-            if ($a['enabled'] === $b['enabled']) {
-                if ($a['state'] !== $b['state']) {
-                    return $a['state'] === 'outdated' ? -1 : 1;
+        usort($this->data, function ($a, $b) {
+            if ($a['installed'] === $b['installed']) {
+                if ($a['enabled'] === $b['enabled']) {
+                    if ($a['state'] !== $b['state']) {
+                        return $a['state'] === 'outdated' ? -1 : 1;
+                    }
+                    return $a['remote']['time'] > $b['remote']['time'] ? -1 : 1;
                 }
-                return $a['remote']['time'] > $b['remote']['time'] ? -1 : 1;
+                return $a['enabled'] > $b['enabled'] ? -1 : 1;
             }
-            return $a['enabled'] > $b['enabled'] ? -1 : 1;
-        }
-        return $a['installed'] > $b['installed'] ? -1 : 1;
+            return $a['installed'] > $b['installed'] ? -1 : 1;
+        });
+
+        return $this;
     }
 
+    /**
+     * @param string $field
+     * @param [type] $condition
+     */
     public function addFieldToFilter($field, $condition)
     {
         return $this;
     }
 
     /**
-     * Compatibility with Ui/DataProvider
-     *
      * @param string $field
      * @param string $direction
      */
