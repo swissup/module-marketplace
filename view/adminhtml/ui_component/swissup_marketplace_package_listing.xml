@@ -86,8 +86,6 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
-                    <item name="index" xsi:type="string">remote.description</item>
-                    <item name="dataScope" xsi:type="string">remote</item>
                     <item name="label" xsi:type="string" translate="true">Description</item>
                     <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/text</item>
                 </item>
