@@ -8,8 +8,7 @@
     flex-wrap: wrap;
     justify-content: flex-start;
 
-    max-width: 1280px;
-    margin: 20px auto 0;
+    margin-top: 20px;
 
     .grid-item {
         width: @grid-item__width - @grid-item__gap;
@@ -43,6 +42,16 @@
             &:last-child {
                 margin-bottom: 0;
             }
+        }
+    }
+}
+
+@media (min-width: 1440px) {
+    .marketplace-grid-items {
+        margin-top: 30px;
+        .grid-item {
+            width: @grid-item__desktop__width - @grid-item__desktop__gap;
+            margin: 0 @grid-item__desktop__gap / 2 @grid-item__desktop__gap;
         }
     }
 }
