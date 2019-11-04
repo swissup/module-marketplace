@@ -51,6 +51,7 @@ class Collection extends \Magento\Framework\Data\Collection
 
             $this->data[$id] = [
                 'name' => $id,
+                'type' => $remoteData['type'] ?? '',
                 'description' => $remoteData['description'] ?? '',
                 'image_src' => $remoteData['marketplace']['gallery'][0] ??
                     ($localPackages[$id]['marketplace']['gallery'][0] ?? false),

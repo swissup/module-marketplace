@@ -2,6 +2,8 @@
 
 namespace Swissup\Marketplace\Ui\Component\Listing\Columns;
 
+use Magento\Framework\Composer\ComposerInformation;
+
 class Links extends \Magento\Ui\Component\Listing\Columns\Column
 {
     const URL_PATH_DETAILS = 'swissup_marketplace/package/details';
@@ -41,8 +43,12 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
 
             $item[$key]['separator'] = $this->getSeparatorParams();
             $item[$key]['update'] = $this->getUpdateLinkParams($item);
-            $item[$key]['disable'] = $this->getDisableLinkParams($item);
-            $item[$key]['enable'] = $this->getEnableLinkParams($item);
+
+            if ($item['type'] === ComposerInformation::MODULE_PACKAGE_TYPE) {
+                $item[$key]['disable'] = $this->getDisableLinkParams($item);
+                $item[$key]['enable'] = $this->getEnableLinkParams($item);
+            }
+
             $item[$key]['uninstall'] = $this->getUninstallLinkParams($item);
             $item[$key]['install'] = $this->getInstallLinkParams($item);
         }
@@ -73,7 +79,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         return [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_UPDATE),
-            'label' => __('Update Module'),
+            'label' => $this->getLinkTitle('Update', $item),
         ];
     }
 
@@ -82,10 +88,10 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         return [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_DISABLE),
-            'label' => __('Disable Module'),
+            'label' => $this->getLinkTitle('Disable', $item),
             'confirm' => [
-                'title' => __('Disable Module'),
-                'message' => __('Are you sure you want to disable this module?')
+                'title' => $this->getLinkTitle('Disable', $item),
+                'message' => __('Are you sure you want to do this?')
             ]
         ];
     }
@@ -95,7 +101,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         return [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_ENABLE),
-            'label' => __('Enable Module'),
+            'label' =>$this->getLinkTitle('Enable', $item),
         ];
     }
 
@@ -104,10 +110,10 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         return [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_UNINSTALL),
-            'label' => __('Uninstall Module'),
+            'label' => $this->getLinkTitle('Uninstall', $item),
             'confirm' => [
-                'title' => __('Uninstall Module'),
-                'message' => __('Are you sure you want to uninstall this module?')
+                'title' => $this->getLinkTitle('Uninstall', $item),
+                'message' => __('Are you sure you want to do this?')
             ]
         ];
     }
@@ -117,7 +123,34 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         return [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_INSTALL),
-            'label' => __('Install Module'),
+            'label' => $this->getLinkTitle('Install', $item),
         ];
+    }
+
+    protected function getLinkTitle($actionTitle, $item)
+    {
+        switch ($item['type']) {
+            case ComposerInformation::MODULE_PACKAGE_TYPE:
+                $suffix = 'Module';
+                break;
+            case ComposerInformation::METAPACKAGE_PACKAGE_TYPE:
+                $suffix = 'Metapackage';
+                break;
+            case ComposerInformation::THEME_PACKAGE_TYPE:
+                $suffix = 'Theme';
+                break;
+            case ComposerInformation::LANGUAGE_PACKAGE_TYPE:
+                $suffix = 'Language';
+                break;
+            case ComposerInformation::LIBRARY_PACKAGE_TYPE:
+                $suffix = 'Library';
+                break;
+            case ComposerInformation::COMPONENT_PACKAGE_TYPE:
+                $suffix = 'Component';
+                break;
+            default:
+                $suffix = 'Item';
+        }
+        return __($actionTitle . ' ' . $suffix);
     }
 }
