@@ -106,10 +106,18 @@ class Collection extends \Magento\Framework\Data\Collection
         $this->data = array_filter($this->data, function ($item) {
             foreach ($this->_filters as $filter) {
                 $value = $filter->getValue();
+                $keywords = implode(' ', $item['keywords']);
+                $require = '';
+
+                if (!empty($item['remote']['require'])) {
+                    $require = implode(' ', array_keys($item['remote']['require']));
+                }
 
                 if ($filter->getField() === 'fulltext') {
                     if (strpos($item['name'], $value) === false &&
-                        strpos($item['description'], $value) === false
+                        strpos($item['description'], $value) === false &&
+                        strpos($keywords, $value) === false &&
+                        strpos($require, $value) === false
                     ) {
                         return false;
                     }
