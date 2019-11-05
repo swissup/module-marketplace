@@ -134,7 +134,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
                 $suffix = 'Module';
                 break;
             case ComposerInformation::METAPACKAGE_PACKAGE_TYPE:
-                $suffix = 'Metapackage';
+                $suffix = 'Bundle';
                 break;
             case ComposerInformation::THEME_PACKAGE_TYPE:
                 $suffix = 'Theme';
