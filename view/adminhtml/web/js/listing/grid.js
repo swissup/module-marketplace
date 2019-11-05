@@ -6,7 +6,18 @@ define([
     'use strict';
 
     return Listing.extend({
-        filters: ko.observableArray(),
+        defaults: {
+            filters: ko.observableArray(),
+            activeFilters: {
+                type: 'metapackage'
+            },
+            tracks: {
+                activeFilters: true
+            },
+            statefull: {
+                activeFilters: true
+            }
+        },
 
         /**
          * Handler of the data providers' 'reloaded' event.
@@ -21,10 +32,18 @@ define([
             if (!this.filters().length) {
                 this.filters([{
                     type: 'type',
-                    value: ko.observable('metapackage'),
+                    value: ko.observable(this.getFilterValue('type')),
                     options: ko.observable(this.getFilterOptions('type'))
                 }]);
             }
+        },
+
+        /**
+         * @param {String} filterType
+         * @return {String}
+         */
+        getFilterValue: function (filterType) {
+            return this.activeFilters[filterType];
         },
 
         /**
@@ -50,7 +69,10 @@ define([
                     return;
                 }
                 el.value(option.value);
-            });
+
+                this.activeFilters[filter.type] = option.value;
+                this.set('activeFilters', this.activeFilters);
+            }, this);
         },
 
         /**
@@ -68,7 +90,7 @@ define([
          */
         isRowVisible: function (row) {
             return this.filters().findIndex(function (filter) {
-                if (filter.value() === undefined) {
+                if (!filter.value()) {
                     return false;
                 }
 
