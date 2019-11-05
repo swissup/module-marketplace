@@ -1,7 +1,34 @@
+<ol class="marketplace-filters">
+    <!--ko foreach: {data: filters(), as: '$filter'}-->
+        <!--ko foreach: {data: $filter.options(), as: '$option'}-->
+            <li attr="title: $option.title"
+                data-bind="
+                    click: $parents[1].activateFilter.bind($parents[1], $filter, $option),
+                    css: {
+                        active: $parents[1].isFilterActive($filter, $option)
+                    }
+                ">
+                <span text="$option.label"/>
+                <span class="count" text="$option.count"/>
+            </li>
+        <!-- /ko -->
+    <!-- /ko -->
+</ol>
+
 <ol class="marketplace-grid-items">
-    <li class="grid-item" repeat="foreach: rows, item: '$row'">
+    <li class="grid-item" repeat="foreach: rows, item: '$row'" data-bind="
+        css: {
+            hidden: !isRowVisible($row())
+        }
+    ">
         <!--ko foreach: {data: getVisible(), as: '$col'}-->
             <!-- ko template: getBody() --><!-- /ko -->
         <!-- /ko -->
     </li>
 </ol>
+
+<!-- ko if: filters().length && !hasVisibleRows() -->
+    <div class="marketplace-no-items">
+        <!-- ko text: getEmptyMessage() --><!-- /ko -->
+    </div>
+<!-- /ko -->

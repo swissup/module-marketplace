@@ -50,6 +50,7 @@
     <columns name="swissup_marketplace_package_columns">
         <argument name="data" xsi:type="array">
             <item name="config" xsi:type="array">
+                <item name="component" xsi:type="string">Swissup_Marketplace/js/listing/grid</item>
                 <item name="template" xsi:type="string">Swissup_Marketplace/listing/grid</item>
                 <item name="dndConfig" xsi:type="array">
                     <item name="enabled" xsi:type="boolean">false</item>
