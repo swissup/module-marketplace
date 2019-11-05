@@ -42,10 +42,7 @@
     </dataSource>
     <listingToolbar name="listing_top">
         <bookmark name="bookmarks"/>
-        <!-- <columnsControls name="columns_controls"/> -->
         <filterSearch name="fulltext"/>
-        <!-- <filters name="listing_filters"/> -->
-        <!-- <paging name="listing_paging"/> -->
     </listingToolbar>
     <columns name="swissup_marketplace_package_columns">
         <argument name="data" xsi:type="array">
@@ -74,15 +71,6 @@
                 </item>
             </argument>
         </column>
-        <!-- <column name="type">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Type</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/text</item>
-                </item>
-            </argument>
-        </column> -->
         <column name="description">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
