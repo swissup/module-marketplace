@@ -64,14 +64,16 @@ define([
          * @param {Object} option
          */
         activateFilter: function (filter, option) {
-            this.filters().forEach(function (el) {
+            this.filters().findIndex(function (el) {
                 if (el.type !== filter.type) {
-                    return;
+                    return false;
                 }
-                el.value(option.value);
 
+                el.value(option.value);
                 this.activeFilters[filter.type] = option.value;
                 this.set('activeFilters', this.activeFilters);
+
+                return true;
             }, this);
         },
 
