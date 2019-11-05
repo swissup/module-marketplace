@@ -43,10 +43,6 @@ class Collection extends \Magento\Framework\Data\Collection
                 continue;
             }
 
-            // if ($data['type'] !== 'magento2-module') {
-            //     continue;
-            // }
-
             $localVersion = $localPackages[$id]['version'] ?? false;
 
             $this->data[$id] = [
