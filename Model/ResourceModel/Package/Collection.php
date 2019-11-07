@@ -11,6 +11,11 @@ class Collection extends \Magento\Framework\Data\Collection
      */
     protected $_itemObjectClass = \Swissup\Marketplace\Model\Package::class;
 
+    /**
+     * @var array
+     */
+    protected $data = [];
+
     public function __construct(
         EntityFactoryInterface $entityFactory,
         \Swissup\Marketplace\Model\PackagesList\Local $localPackages,
