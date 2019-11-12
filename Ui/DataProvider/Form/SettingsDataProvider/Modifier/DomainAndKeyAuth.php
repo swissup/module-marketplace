@@ -48,7 +48,7 @@ class DomainAndKeyAuth extends HttpBasicAuth
                         ],
                     ],
                 ],
-            ]
+            ],
         ]);
     }
 }
