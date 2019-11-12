@@ -20,6 +20,19 @@
                 <item name="class" xsi:type="string">primary</item>
                 <item name="component" xsi:type="string">Magento_Ui/js/form/components/button</item>
                 <item name="url" xsi:type="string">*/*/config</item>
+                <item name="on_click" xsi:type="string"></item>
+                <item name="data_attribute" xsi:type="array">
+                    <item name="mage-init" xsi:type="array">
+                        <item name="Magento_Ui/js/form/button-adapter" xsi:type="array">
+                            <item name="actions" xsi:type="array">
+                                <item name="0" xsi:type="array">
+                                    <item name="targetName" xsi:type="string">swissup_marketplace_package_listing.swissup_marketplace_package_listing.marketplace_settings</item>
+                                    <item name="actionName" xsi:type="string">toggleModal</item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
             </item>
         </item>
     </argument>
@@ -120,4 +133,34 @@
         </column>
         -->
     </columns>
+
+    <modal name="marketplace_settings">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="isTemplate" xsi:type="boolean">false</item>
+                <item name="componentType" xsi:type="string">modal</item>
+                <item name="provider" xsi:type="string">swissup_marketplace_package_listing.swissup_marketplace_package_listing_data_source</item>
+                <item name="options" xsi:type="array">
+                    <item name="title" xsi:type="string" translate="true">Settings</item>
+                </item>
+            </item>
+        </argument>
+        <container name="settings_form">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/form/components/insert-form</item>
+                    <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                    <item name="render_url" xsi:type="url" path="mui/index/render_handle/handle/swissup_marketplace_settings/buttons/1/id/main"/>
+                    <item name="autoRender" xsi:type="boolean">true</item>
+                    <item name="dataLinks" xsi:type="array">
+                        <item name="imports" xsi:type="boolean">false</item>
+                        <item name="exports" xsi:type="boolean">false</item>
+                    </item>
+                    <item name="realTimeLink" xsi:type="boolean">false</item>
+                    <item name="ns" xsi:type="string">swissup_marketplace_settings</item>
+                    <item name="toolbarContainer" xsi:type="string">${ $.parentName }</item>
+                </item>
+            </argument>
+        </container>
+    </modal>
 </listing>
