@@ -9,12 +9,12 @@ class Local extends AbstractList
     public function __construct(
         \Magento\Framework\Module\Dir\Reader $moduleDirReader,
         \Magento\Framework\Component\ComponentRegistrarInterface $registrar,
-        \Magento\Framework\Json\DecoderInterface $jsonDecoder,
+        \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Magento\Framework\Filesystem\Driver\File $filesystemDriver
     ) {
         $this->moduleDirReader = $moduleDirReader;
         $this->registrar = $registrar;
-        $this->jsonDecoder = $jsonDecoder;
+        $this->jsonSerializer = $jsonSerializer;
         $this->filesystemDriver = $filesystemDriver;
     }
 
@@ -41,7 +41,7 @@ class Local extends AbstractList
 
                 try {
                     $config = $this->filesystemDriver->fileGetContents($path);
-                    $config = $this->jsonDecoder->decode($config);
+                    $config = $this->jsonSerializer->unserialize($config);
                     $this->data[$config['name']] = $this->extractPackageData($config);
                     $this->data[$config['name']]['enabled'] =
                         $component === ComponentRegistrar::THEME || // themes are always enabled

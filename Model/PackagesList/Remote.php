@@ -6,11 +6,11 @@ class Remote extends AbstractList
 {
     public function __construct(
         \Magento\Framework\App\RequestInterface $request,
-        \Magento\Framework\Json\Helper\Data $jsonHelper,
+        \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory
     ) {
         $this->request = $request;
-        $this->jsonHelper = $jsonHelper;
+        $this->jsonSerializer = $jsonSerializer;
         $this->httpClientFactory = $httpClientFactory;
     }
 
@@ -74,7 +74,7 @@ class Remote extends AbstractList
 
         try {
             $response = $this->fetch($url);
-            $response = $this->jsonHelper->jsonDecode($response);
+            $response = $this->jsonSerializer->unserialize($response);
         } catch (\Exception $e) {
             return false;
         }
@@ -88,7 +88,7 @@ class Remote extends AbstractList
 
             try {
                 $response = $this->fetch($url . key($response['includes']));
-                $response = $this->jsonHelper->jsonDecode($response);
+                $response = $this->jsonSerializer->unserialize($response);
             } catch (\Exception $e) {
                 return false;
             }
