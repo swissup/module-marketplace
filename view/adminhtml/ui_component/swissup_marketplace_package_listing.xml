@@ -46,6 +46,7 @@
             <argument name="requestFieldName" xsi:type="string">name</argument>
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
+                    <item name="aclResource" xsi:type="string">Swissup_Marketplace::package_index</item>
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
                     <item name="update_url" xsi:type="url" path="mui/index/render"/>
                     <item name="storageConfig" xsi:type="array">

@@ -29,6 +29,7 @@
             <argument name="requestFieldName" xsi:type="string">id</argument>
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
+                    <item name="aclResource" xsi:type="string">Swissup_Marketplace::settings_save</item>
                     <item name="submit_url" xsi:type="url" path="swissup_marketplace/settings/save"/>
                 </item>
             </argument>
