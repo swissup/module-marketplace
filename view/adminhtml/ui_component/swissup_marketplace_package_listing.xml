@@ -12,6 +12,7 @@
                 <item name="name" xsi:type="string">update</item>
                 <item name="label" xsi:type="string" translate="true">Update All</item>
                 <item name="component" xsi:type="string">Magento_Ui/js/form/components/button</item>
+                <item name="aclResource" xsi:type="string">Swissup_Marketplace::package_manage</item>
                 <item name="url" xsi:type="string">*/*/update</item>
             </item>
             <item name="configuration" xsi:type="array">
@@ -19,6 +20,7 @@
                 <item name="label" xsi:type="string" translate="true">Configuration</item>
                 <item name="class" xsi:type="string">primary</item>
                 <item name="component" xsi:type="string">Magento_Ui/js/form/components/button</item>
+                <item name="aclResource" xsi:type="string">Swissup_Marketplace::settings_save</item>
                 <item name="url" xsi:type="string">*/*/config</item>
                 <item name="on_click" xsi:type="string"></item>
                 <item name="data_attribute" xsi:type="array">
