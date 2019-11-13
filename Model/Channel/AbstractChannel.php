@@ -5,24 +5,9 @@ namespace Swissup\Marketplace\Model\Channel;
 class AbstractChannel
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $url;
-
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var string
-     */
-    protected $hostname;
-
-    /**
-     * @var string
-     */
-    protected $identifier;
+    protected $data = [];
 
     /**
      * @var \Swissup\Marketplace\Model\Composer
@@ -35,14 +20,9 @@ class AbstractChannel
     protected $scopeConfig;
 
     /**
-     * @var array
-     */
-    protected $data = [];
-
-    /**
      * @var string
      */
-    protected $authType = ''; // http-basic
+    protected $authType = '';
 
     /**
      * @var string
@@ -67,18 +47,29 @@ class AbstractChannel
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         array $data = []
     ) {
-        $this->url = $url;
-        $this->title = $title;
-        $this->identifier = $identifier;
-        $this->hostname = $hostname;
         $this->composer = $composer;
         $this->scopeConfig = $scopeConfig;
-        $this->data = $data;
+        $this->data = array_merge(
+            $this->getDefaultData(),
+            $data,
+            [
+                'url' => $url,
+                'title' => $title,
+                'identifier' => $identifier,
+                'hostname' => $hostname,
+            ]
+        );
     }
 
-    public function save()
+    /**
+     * @return array
+     */
+    protected function getDefaultData()
     {
-        $this->composer->updateChannel($this);
+        return [
+            'authType' => $this->authType,
+            'type' => $this->type,
+        ];
     }
 
     /**
@@ -98,7 +89,12 @@ class AbstractChannel
      */
     public function isEnabled()
     {
-        return (bool) $this->getDataFromComposerJson('url');
+        foreach ($this->composer->getChannels() as $channel) {
+            if ($channel['url'] === $this->getUrl()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -106,7 +102,7 @@ class AbstractChannel
      */
     public function getTitle()
     {
-        return $this->title;
+        return $this->data['title'];
     }
 
     /**
@@ -114,7 +110,7 @@ class AbstractChannel
      */
     public function getUrl()
     {
-        return $this->url;
+        return $this->data['url'];
     }
 
     /**
@@ -122,7 +118,7 @@ class AbstractChannel
      */
     public function getHostname()
     {
-        return $this->hostname;
+        return $this->data['hostname'];
     }
 
     /**
@@ -130,7 +126,7 @@ class AbstractChannel
      */
     public function getIdentifier()
     {
-        return $this->identifier;
+        return $this->data['identifier'];
     }
 
     /**
@@ -138,7 +134,7 @@ class AbstractChannel
      */
     public function getAuthType()
     {
-        return $this->authType;
+        return $this->data['authType'];
     }
 
     /**
@@ -146,28 +142,24 @@ class AbstractChannel
      */
     public function getType()
     {
-        return $this->type;
+        return $this->data['type'];
     }
 
     /**
-     * @param string $key
-     * @return mixed
+     * @return array
      */
-    public function getDataFromComposerJson($key = null)
+    public function getAuthJsonCredentials()
     {
-        $result = [];
+        return [];
+    }
 
-        foreach ($this->composer->getChannels() as $channel) {
-            if ($channel['url'] === $this->getUrl()) {
-                $result = $channel;
-                break;
-            }
-        }
+    /**
+     * @return $this
+     */
+    public function save()
+    {
+        $this->composer->updateChannel($this);
 
-        if ($key) {
-            return $result[$key] ?? null;
-        }
-
-        return $result;
+        return $this;
     }
 }
