@@ -66,7 +66,9 @@ define([
          * @return {Boolean}
          */
         isActionVisible: function (action) {
-            return registry.get(this.parentName + '.links').isActionVisible(action);
+            var links = registry.get(this.parentName + '.links');
+
+            return links.getAction(action) && links.isActionVisible(action);
         },
 
         /**

@@ -2,7 +2,10 @@
 
 namespace Swissup\Marketplace\Ui\Component\Listing\Columns;
 
+use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\Composer\ComposerInformation;
+use Magento\Framework\View\Element\UiComponentFactory;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
 
 class Links extends \Magento\Ui\Component\Listing\Columns\Column
 {
@@ -14,6 +17,29 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
     const URL_PATH_DISABLE = 'swissup_marketplace/package/disable';
 
     /**
+     * @var AuthorizationInterface
+     */
+    protected $authorization;
+
+    /**
+     * @param ContextInterface $context
+     * @param UiComponentFactory $uiComponentFactory
+     * @param AuthorizationInterface $authorization
+     * @param array $components
+     * @param array $data
+     */
+    public function __construct(
+        ContextInterface $context,
+        UiComponentFactory $uiComponentFactory,
+        AuthorizationInterface $authorization,
+        array $components = [],
+        array $data = []
+    ) {
+        $this->authorization = $authorization;
+        parent::__construct($context, $uiComponentFactory, $components, $data);
+    }
+
+    /**
      * @param array $dataSource
      * @return array
      */
@@ -22,6 +48,8 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         if (!isset($dataSource['data']['items'])) {
             return $dataSource;
         }
+
+        $isAllowed = $this->authorization->isAllowed('Swissup_Marketplace::package_manage');
 
         foreach ($dataSource['data']['items'] as &$item) {
             $key = $this->getData('name');
@@ -39,6 +67,10 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
                     'label' => __($link['label']),
                     'target' => '_blank',
                 ];
+            }
+
+            if (!$isAllowed) {
+                continue;
             }
 
             $item[$key]['separator'] = $this->getSeparatorParams();
