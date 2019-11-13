@@ -41,7 +41,8 @@ class Save extends \Magento\Backend\App\Action
         if ($channelsData) {
             try {
                 foreach ($this->channelRepository->getList() as $channel) {
-                    if (!isset($channelsData[$channel->getIdentifier()])) {
+                    $data = $channelsData[$channel->getIdentifier()] ?? false;
+                    if (!$data) {
                         continue;
                     }
                     $channel->addData($data)->save();
