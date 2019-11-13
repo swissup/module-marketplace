@@ -40,10 +40,11 @@ class Save extends \Magento\Backend\App\Action
 
         if ($channelsData) {
             try {
-                foreach ($channelsData as $id => $data) {
-                    $this->channelRepository->getById($id)
-                        ->addData($data)
-                        ->save();
+                foreach ($this->channelRepository->getList() as $channel) {
+                    if (!isset($channelsData[$channel->getIdentifier()])) {
+                        continue;
+                    }
+                    $channel->addData($data)->save();
                 }
 
                 $this->messageManager->addSuccess(__('Marketplace settings successfully updated.'));
