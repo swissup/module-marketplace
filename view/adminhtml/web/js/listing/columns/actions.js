@@ -150,9 +150,18 @@ define([
                         content: response.message
                     });
                 })
-                .fail(function () {
+                .fail(function (response) {
+                    var title = $t('Attention'),
+                        content = $t('Sorry, there has been an error processing your request. Please try again later.');
+
+                    if (response.status === 403) {
+                        title = $t(response.statusText);
+                        content = $t('Sorry, you do not have permission for this operation.');
+                    }
+
                     uiAlert({
-                        content: $t('Sorry, there has been an error processing your request. Please try again later.')
+                        title: title,
+                        content: content
                     });
                 })
                 .always(function () {
