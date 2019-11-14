@@ -6,23 +6,10 @@ class Remote extends AbstractList
 {
     public function __construct(
         \Magento\Framework\App\RequestInterface $request,
-        \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
-        \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory
+        \Swissup\Marketplace\Model\ChannelRepository $channelRepository
     ) {
         $this->request = $request;
-        $this->jsonSerializer = $jsonSerializer;
-        $this->httpClientFactory = $httpClientFactory;
-    }
-
-    /**
-     * @return array
-     */
-    private function getRemoteUrls()
-    {
-        return [
-            'https://swissup.github.io/packages/packages.json',
-            // 'https://ci.swissuplabs.com/api/packages.json',
-        ];
+        $this->channelRepository = $channelRepository;
     }
 
     /**
@@ -34,14 +21,12 @@ class Remote extends AbstractList
             return $this->data;
         }
 
-        foreach ($this->getRemoteUrls() as $remoteUrl) {
-            $packages = $this->fetchPackages($remoteUrl);
-
-            if (!$packages) {
+        foreach ($this->channelRepository->getList() as $channel) {
+            if (!$channel->isEnabled()) {
                 continue;
             }
 
-            foreach ($packages as $id => $packageData) {
+            foreach ($channel->getPackages() as $id => $packageData) {
                 $versions = array_keys($packageData);
                 $latestVersion = array_reduce($versions, function ($carry, $item) {
                     if (version_compare($carry, $item) === -1) {
@@ -60,60 +45,5 @@ class Remote extends AbstractList
         $this->isLoaded(true);
 
         return $this->data;
-    }
-
-    /**
-     * Fetch packages from remote server.
-     *
-     * @param string $url
-     * @return array|false
-     */
-    protected function fetchPackages($url)
-    {
-        $response = [];
-
-        try {
-            $response = $this->fetch($url);
-            $response = $this->jsonSerializer->unserialize($response);
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        if (!is_array($response)) {
-            return false;
-        }
-
-        if (isset($response['includes'])) {
-            $url = substr($url, 0, strrpos($url, '/') + 1);
-
-            try {
-                $response = $this->fetch($url . key($response['includes']));
-                $response = $this->jsonSerializer->unserialize($response);
-            } catch (\Exception $e) {
-                return false;
-            }
-
-            if (!is_array($response)) {
-                return false;
-            }
-        }
-
-        return $response['packages'] ?? false;
-    }
-
-    /**
-     * @param  string $url
-     * @return string
-     */
-    protected function fetch($url)
-    {
-        $client = $this->httpClientFactory->create();
-        $client->setUri($url);
-        $client->setConfig([
-            'maxredirects' => 5,
-            'timeout' => 30
-        ]);
-        $client->setParameterGet('domain', $this->request->getHttpHost());
-        return $client->request()->getBody();
     }
 }

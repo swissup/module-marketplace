@@ -47,4 +47,11 @@ class HttpBasicAuth extends AbstractChannel
             'password' => $this->getPassword(),
         ];
     }
+
+    protected function getHttpClient()
+    {
+        $client = parent::getHttpClient();
+
+        return $client->setAuth($this->getUsername(), $this->getPassword());
+    }
 }
