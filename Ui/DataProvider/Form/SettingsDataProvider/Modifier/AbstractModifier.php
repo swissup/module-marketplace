@@ -77,7 +77,7 @@ class AbstractModifier implements \Magento\Ui\DataProvider\Modifier\ModifierInte
                         'dataScope' => 'channels.' . $this->channel->getIdentifier(),
                         'componentType' => 'fieldset',
                         'collapsible' => true,
-                        'opened' => true,
+                        'opened' => false,
                     ],
                 ],
             ],
