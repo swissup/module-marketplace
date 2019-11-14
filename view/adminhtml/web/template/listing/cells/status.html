@@ -4,7 +4,7 @@
 >
     <span class="version" attr="title: $col.getTitle($row())">
         <span class="number" text="$col.getVersion($row())"/>
-        <span class="time" text="$col.getDate($row())"/>
+        <span class="time" if="$row().time || $row().remote.time" text="$col.getDate($row())"/>
     </span>
 
     <!-- ko foreach: {data: $col.getActions($row()), as: '$action'} -->
