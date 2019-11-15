@@ -4,11 +4,33 @@ namespace Swissup\Marketplace\Model\PackagesList;
 
 class Remote extends AbstractList
 {
+    /**
+     * @var \Magento\Framework\App\RequestInterface
+     */
+    private $request;
+
+    /**
+     * @var \Swissup\Marketplace\Model\Session
+     */
+    private $session;
+
+    /**
+     * @var \Swissup\Marketplace\Model\ChannelRepository
+     */
+    private $channelRepository;
+
+    /**
+     * @param \Magento\Framework\App\RequestInterface $request
+     * @param \Swissup\Marketplace\Model\Session $session
+     * @param \Swissup\Marketplace\Model\ChannelRepository $channelRepository
+     */
     public function __construct(
         \Magento\Framework\App\RequestInterface $request,
+        \Swissup\Marketplace\Model\Session $session,
         \Swissup\Marketplace\Model\ChannelRepository $channelRepository
     ) {
         $this->request = $request;
+        $this->session = $session;
         $this->channelRepository = $channelRepository;
     }
 
@@ -21,10 +43,10 @@ class Remote extends AbstractList
             return $this->data;
         }
 
-        foreach ($this->channelRepository->getList() as $channel) {
-            if (!$channel->isEnabled()) {
-                continue;
-            }
+        $id = $this->session->getChannelId();
+
+        try {
+            $channel = $this->channelRepository->getById($id, true);
 
             foreach ($channel->getPackages() as $id => $packageData) {
                 $versions = array_keys($packageData);
@@ -40,6 +62,8 @@ class Remote extends AbstractList
                     $this->data[$id]['versions'][$version] = $this->extractPackageData($data);
                 }
             }
+        } catch (\Exception $e) {
+            $this->data = [];
         }
 
         $this->isLoaded(true);

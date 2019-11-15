@@ -5,6 +5,9 @@
         <css src="Swissup_Marketplace::css/styles.css"/>
     </head>
     <body>
+        <referenceContainer name="page.main.actions">
+            <block class="Swissup\Marketplace\Block\Adminhtml\Channel\Switcher" name="marketplace.channel.switcher" template="Swissup_Marketplace::channel/switcher.phtml"/>
+        </referenceContainer>
         <referenceContainer name="content">
             <uiComponent name="swissup_marketplace_package_listing"/>
         </referenceContainer>

@@ -42,24 +42,47 @@ class ChannelRepository
     }
 
     /**
+     * @param string $identifier
+     * @param boolean $orFirst
      * @return ChannelInterface
      * @throws NoSuchEntityException
      */
-    public function getById($identifier)
+    public function getById($identifier, $orFirst = false)
     {
-        foreach ($this->channels as $channel) {
-            if ($channel->getIdentifier() === $identifier) {
+        if ($identifier) {
+            foreach ($this->getList() as $channel) {
+                if ($channel->getIdentifier() === $identifier) {
+                    return $channel;
+                }
+            }
+        }
+
+        if ($orFirst) {
+            foreach ($this->getList(true) as $channel) {
                 return $channel;
             }
         }
+
         throw new NoSuchEntityException(__('Channel "%1" does not exist.', $identifier));
     }
 
     /**
      * @return ChannelInterface[]
      */
-    public function getList()
+    public function getList($enabledOnly = false)
     {
-        return $this->channels;
+        if (!$enabledOnly) {
+            return $this->channels;
+        }
+
+        $result = [];
+        foreach ($this->channels as $channel) {
+            if (!$channel->isEnabled()) {
+                continue;
+            }
+            $result[] = $channel;
+        }
+
+        return $result;
     }
 }
