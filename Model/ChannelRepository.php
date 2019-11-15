@@ -2,35 +2,48 @@
 
 namespace Swissup\Marketplace\Model;
 
+use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Swissup\Marketplace\Model\Channel\AbstractChannel;
+use Swissup\Marketplace\Api\ChannelInterface;
 
 class ChannelRepository
 {
     /**
-     * @var array
+     * @var ChannelInterface[]
      */
-    private $channels;
+    private $channels = [];
 
     /**
-     * @var \Swissup\Marketplace\Model\Composer
-     */
-    private $composer;
-
-    /**
-     * @param array $channels
-     * @param \Swissup\Marketplace\Model\Composer $composer
+     * @param ChannelInterface[] $channels
      */
     public function __construct(
-        array $channels,
-        \Swissup\Marketplace\Model\Composer $composer
+        array $channels
     ) {
-        $this->channels = $channels;
-        $this->composer = $composer;
+        $this->setChannels($channels);
     }
 
     /**
-     * @return AbstractChannel
+     * @param ChannelInterface[] $channels
+     * @throws AlreadyExistsException
+     */
+    private function setChannels($channels)
+    {
+        foreach ($channels as $channel) {
+            $identifier = $channel->getIdentifier();
+
+            if (array_key_exists($identifier, $this->channels)) {
+                throw new AlreadyExistsException(__('Channel "%1" already exists.', $identifier));
+            }
+
+            $this->channels[$identifier] = $channel;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return ChannelInterface
+     * @throws NoSuchEntityException
      */
     public function getById($identifier)
     {
@@ -43,7 +56,7 @@ class ChannelRepository
     }
 
     /**
-     * @return array
+     * @return ChannelInterface[]
      */
     public function getList()
     {

@@ -2,17 +2,17 @@
 
 namespace Swissup\Marketplace\Model\Channel;
 
-class AbstractChannel
+/**
+ * Composer repository type implementation.
+ *
+ * @see https://getcomposer.org/doc/05-repositories.md#composer
+ */
+class Composer implements \Swissup\Marketplace\Api\ChannelInterface
 {
     /**
      * @var array
      */
     protected $data = [];
-
-    /**
-     * @var \Swissup\Marketplace\Model\Composer
-     */
-    protected $composer;
 
     /**
      * @var \Magento\Framework\App\CacheInterface
@@ -49,7 +49,7 @@ class AbstractChannel
      * @param string $title
      * @param string $identifier
      * @param string $hostname
-     * @param \Swissup\Marketplace\Model\Composer $composer
+     * @param \Swissup\Marketplace\Model\ChannelManager $channelManager
      * @param \Magento\Framework\App\CacheInterface $cache
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
@@ -61,14 +61,14 @@ class AbstractChannel
         $title,
         $identifier,
         $hostname,
-        \Swissup\Marketplace\Model\Composer $composer,
+        \Swissup\Marketplace\Model\ChannelManager $channelManager,
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory,
         array $data = []
     ) {
-        $this->composer = $composer;
+        $this->channelManager = $channelManager;
         $this->cache = $cache;
         $this->scopeConfig = $scopeConfig;
         $this->jsonSerializer = $jsonSerializer;
@@ -84,6 +84,28 @@ class AbstractChannel
                 'cacheable' => true,
             ]
         );
+    }
+
+    /**
+     * @return $this
+     */
+    public function save()
+    {
+        $enableFlag = $this->getData('enabled');
+
+        if ($enableFlag !== null) {
+            if (!$this->isEnabled() && $enableFlag) {
+                $this->channelManager->enable($this);
+            } elseif ($this->isEnabled() && !$enableFlag) {
+                $this->channelManager->disable($this);
+            }
+        }
+
+        if ($this->getAuthType() && $this->getAuthSettingValue()) {
+            $this->channelManager->saveCredentials($this);
+        }
+
+        return $this;
     }
 
     /**
@@ -108,18 +130,13 @@ class AbstractChannel
     }
 
     /**
-     * Returns true, when channel is found in composer.json repos.
-     *
-     * @return boolean
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
      */
-    public function isEnabled()
+    public function getData($key, $default = null)
     {
-        foreach ($this->composer->getChannels() as $channel) {
-            if ($channel['url'] === $this->getUrl()) {
-                return true;
-            }
-        }
-        return false;
+        return $this->data[$key] ?? $default;
     }
 
     /**
@@ -180,11 +197,29 @@ class AbstractChannel
     }
 
     /**
+     * @return boolean
+     */
+    public function isEnabled()
+    {
+        return $this->channelManager->isEnabled($this);
+    }
+
+    /**
      * @return string
      */
     public function getUsername()
     {
-        return '';
+        if (isset($this->data['username'])) {
+            return $this->data['username'];
+        }
+
+        if (!$this->getAuthType()) {
+            return '';
+        }
+
+        $data = $this->channelManager->getCredentials($this);
+
+        return $data['username'] ?? '';
     }
 
     /**
@@ -192,25 +227,28 @@ class AbstractChannel
      */
     public function getPassword()
     {
-        return '';
+        if (isset($this->data['password'])) {
+            return $this->data['password'];
+        }
+
+        if (!$this->getAuthType()) {
+            return '';
+        }
+
+        $data = $this->channelManager->getCredentials($this);
+
+        return $data['password'] ?? '';
     }
 
     /**
      * @return array
      */
-    public function getAuthJsonCredentials()
+    public function getAuthSettingValue()
     {
-        return [];
-    }
-
-    /**
-     * @return $this
-     */
-    public function save()
-    {
-        $this->composer->updateChannel($this);
-
-        return $this;
+        return [
+            $this->getUsername(),
+            $this->getPassword(),
+        ];
     }
 
     /**
@@ -270,11 +308,17 @@ class AbstractChannel
      */
     protected function getHttpClient()
     {
-        return $this->httpClientFactory->create()
+        $client = $this->httpClientFactory->create()
             ->setConfig([
                 'maxredirects' => 5,
                 'timeout' => 30,
             ]);
+
+        if ($this->getAuthType()) {
+            $client->setAuth($this->getUsername(), $this->getPassword());
+        }
+
+        return $client;
     }
 
     /**
@@ -282,7 +326,7 @@ class AbstractChannel
      */
     protected function isCacheable()
     {
-        return (bool) $this->data['cacheable'];
+        return !empty($this->data['cacheable']);
     }
 
     /**

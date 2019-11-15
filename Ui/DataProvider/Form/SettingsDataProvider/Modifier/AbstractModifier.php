@@ -2,24 +2,26 @@
 
 namespace Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier;
 
+use Swissup\Marketplace\Api\ChannelInterface;
+
 class AbstractModifier implements \Magento\Ui\DataProvider\Modifier\ModifierInterface
 {
     /**
-     * @var \Swissup\Marketplace\Model\Channel\AbstractChannel
+     * @var ChannelInterface
      */
     protected $channel;
 
     /**
-     * @param \Swissup\Marketplace\Model\Channel\AbstractChannel $channel
+     * @param ChannelInterface $channel
      */
     public function __construct(
-        \Swissup\Marketplace\Model\Channel\AbstractChannel $channel
+        ChannelInterface $channel
     ) {
         $this->channel = $channel;
     }
 
     /**
-     * @return \Swissup\Marketplace\Model\Channel\AbstractChannel $channel
+     * @return ChannelInterface $channel
      */
     public function getChannel()
     {
@@ -87,12 +89,6 @@ class AbstractModifier implements \Magento\Ui\DataProvider\Modifier\ModifierInte
                         'data' => [
                             'config' => [
                                 'label' => __('Enabled'),
-                                'notice' => $this->channel->isEnabled() ? '' : __(
-                                    'Run this shell command to enable channel: composer config repositories.%1 %2 %3',
-                                    $this->channel->getIdentifier(),
-                                    $this->channel->getType(),
-                                    $this->channel->getUrl()
-                                ),
                                 'dataType' => 'boolean',
                                 'componentType' => 'field',
                                 'formElement' => 'checkbox',
@@ -102,8 +98,6 @@ class AbstractModifier implements \Magento\Ui\DataProvider\Modifier\ModifierInte
                                     'false' => 0,
                                 ],
                                 'default' => 0,
-                                'disabled' => true,
-                                'visible' => !$this->channel->isEnabled(),
                             ],
                         ],
                     ],

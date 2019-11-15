@@ -2,7 +2,7 @@
 
 namespace Swissup\Marketplace\Model\Channel;
 
-class DomainAndKeyAuth extends HttpBasicAuth
+class DomainAsUsername extends Composer
 {
     /**
      * @return string

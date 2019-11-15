@@ -2,21 +2,27 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <virtualType name="Swissup\Marketplace\Model\Channel\Magento"
-                 type="Swissup\Marketplace\Model\Channel\HttpBasicAuth">
+                 type="Swissup\Marketplace\Model\Channel\Composer">
         <arguments>
             <argument name="title" xsi:type="string">Magento Marketplace</argument>
             <argument name="url" xsi:type="string">https://repo.magento.com/</argument>
             <argument name="hostname" xsi:type="string">repo.magento.com</argument>
             <argument name="identifier" xsi:type="string">magento</argument>
+            <argument name="data" xsi:type="array">
+                <item name="authType" xsi:type="string">http-basic</item>
+            </argument>
         </arguments>
     </virtualType>
     <virtualType name="Swissup\Marketplace\Model\Channel\Swissup"
-                 type="Swissup\Marketplace\Model\Channel\DomainAndKeyAuth">
+                 type="Swissup\Marketplace\Model\Channel\DomainAsUsername">
         <arguments>
             <argument name="title" xsi:type="string">Swissup, Argento, and Firecheckout</argument>
             <argument name="url" xsi:type="string">https://ci.swissuplabs.com/api/packages.json</argument>
             <argument name="hostname" xsi:type="string">ci.swissuplabs.com</argument>
             <argument name="identifier" xsi:type="string">swissuplabs</argument>
+            <argument name="data" xsi:type="array">
+                <item name="authType" xsi:type="string">http-basic</item>
+            </argument>
         </arguments>
     </virtualType>
 
