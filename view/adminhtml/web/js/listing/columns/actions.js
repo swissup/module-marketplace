@@ -115,11 +115,12 @@ define([
                         channel: data.remote.channel
                     })
                     .done(function (response) {
-                        if (response.error) {
+                        if (response.error || !response.package) {
                             return;
                         }
 
-                        this.rows[action.rowIndex].enabled = response.package.enabled;
+                        _.extend(this.rows[action.rowIndex], response.package);
+
                         this.rows.splice(0, 0); // trigger grid re-render
                     }.bind(this));
             } else {
