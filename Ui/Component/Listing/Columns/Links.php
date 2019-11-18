@@ -142,7 +142,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         return [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_UNINSTALL),
-            'label' => $this->getLinkTitle('(N/A) Uninstall', $item),
+            'label' => $this->getLinkTitle('Uninstall', $item),
             'confirm' => [
                 'title' => $this->getLinkTitle('Uninstall', $item),
                 'message' => __('Are you sure you want to do this?')
@@ -155,7 +155,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         return [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_INSTALL),
-            'label' => $this->getLinkTitle('(N/A) Install', $item),
+            'label' => $this->getLinkTitle('Install', $item),
         ];
     }
 
