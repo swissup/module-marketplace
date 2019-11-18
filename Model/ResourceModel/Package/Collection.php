@@ -41,9 +41,12 @@ class Collection extends \Magento\Framework\Data\Collection
         $this->_setIsLoaded(true);
 
         $localPackages = $this->localPackages->getList();
-        $remotePackages = $this->remotePackages->getList();
 
-        foreach ($remotePackages as $id => $remoteData) {
+        if ($filter = $this->getFilter('channel')) {
+            $this->remotePackages->setChannelId($channel->getValue());
+        }
+
+        foreach ($this->remotePackages->getList() as $id => $remoteData) {
             if (!empty($remoteData['marketplace']['hidden']) ||
                 !empty($localPackages[$id]['marketplace']['hidden'])
             ) {

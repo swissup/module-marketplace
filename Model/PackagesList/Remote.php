@@ -20,6 +20,11 @@ class Remote extends AbstractList
     private $channelRepository;
 
     /**
+     * @var string
+     */
+    private $channelId;
+
+    /**
      * @param \Magento\Framework\App\RequestInterface $request
      * @param \Swissup\Marketplace\Model\Session $session
      * @param \Swissup\Marketplace\Model\ChannelRepository $channelRepository
@@ -35,6 +40,26 @@ class Remote extends AbstractList
     }
 
     /**
+     * @param mixed $id
+     * @return $this
+     */
+    public function setChannelId($id)
+    {
+        $this->channelId = $id;
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $id
+     * @return $this
+     */
+    public function getChannelId()
+    {
+        return $this->channelId ?? $this->session->getChannelId();
+    }
+
+    /**
      * @return array
      */
     public function getList()
@@ -43,10 +68,8 @@ class Remote extends AbstractList
             return $this->data;
         }
 
-        $id = $this->session->getChannelId();
-
         try {
-            $channel = $this->channelRepository->getById($id, true);
+            $channel = $this->channelRepository->getById($this->getChannelId(), true);
 
             foreach ($channel->getPackages() as $id => $packageData) {
                 $versions = array_keys($packageData);
