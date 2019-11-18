@@ -111,7 +111,8 @@ define([
                 });
 
                 this.request(action.href, {
-                        package: data.id
+                        package: data.id,
+                        channel: data.remote.channel
                     })
                     .done(function (response) {
                         if (response.error) {
