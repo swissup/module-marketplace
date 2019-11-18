@@ -8,14 +8,14 @@ class PackageManager
         \Magento\Framework\Module\PackageInfo $packageInfo,
         \Magento\Framework\Module\Status $moduleStatus,
         \Magento\Framework\Code\GeneratedFiles $generatedFiles,
-        \Magento\Framework\Composer\MagentoComposerApplicationFactory $composerApplicationFactory,
+        \Swissup\Marketplace\Model\ComposerApplication $composer,
         \Swissup\Marketplace\Model\ResourceModel\Package\CollectionFactory $packageCollectionFactory
     ) {
         $this->packageInfo = $packageInfo;
         $this->moduleStatus = $moduleStatus;
         $this->generatedFiles = $generatedFiles;
+        $this->composer = $composer;
         $this->packageCollection = $packageCollectionFactory->create();
-        $this->composerApplicationFactory = $composerApplicationFactory;
     }
 
     public function get($packageName)
@@ -27,16 +27,14 @@ class PackageManager
     {
         ini_set('memory_limit', '1G');
 
-        return $this->composerApplicationFactory
-            ->create()
-            ->runComposerCommand([
-                'command' => 'update',
-                'packages' => [$packageName],
-                '--with-all-dependencies' => true,
-                '--no-interaction' => true,
-                '--no-dev' => true,
-                '--no-progress' => true,
-            ]);
+        return $this->composer->run([
+            'command' => 'update',
+            'packages' => [$packageName],
+            '--no-progress' => true,
+            '--no-interaction' => true,
+            '--with-all-dependencies' => true,
+            '--no-dev' => true,
+        ]);
     }
 
     public function disable($packageName)
@@ -49,13 +47,13 @@ class PackageManager
         $this->changeStatus($packageName, true);
     }
 
-    public function changeStatus($packageName, $flag)
+    protected function changeStatus($packageName, $flag)
     {
         $this->moduleStatus->setIsEnabled($flag, [$this->getModuleName($packageName)]);
         $this->generatedFiles->requestRegeneration();
     }
 
-    public function getModuleName($packageName)
+    protected function getModuleName($packageName)
     {
         $moduleName = $this->packageInfo->getModuleName($packageName);
 

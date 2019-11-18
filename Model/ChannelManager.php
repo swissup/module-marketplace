@@ -7,14 +7,9 @@ use Swissup\Marketplace\Api\ChannelInterface;
 class ChannelManager
 {
     /**
-     * @var \Magento\Framework\Composer\MagentoComposerApplication
+     * @var \Swissup\Marketplace\Model\ComposerApplication
      */
-    protected $app;
-
-    /**
-     * @var \Magento\Framework\Composer\MagentoComposerApplicationFactory
-     */
-    protected $appFactory;
+    protected $composer;
 
     /**
      * @var \Magento\Framework\Serialize\Serializer\Json
@@ -22,14 +17,14 @@ class ChannelManager
     protected $jsonSerializer;
 
     /**
-     * @param \Magento\Framework\Composer\MagentoComposerApplicationFactory $appFactory
+     * @param \Swissup\Marketplace\Model\ComposerApplication $appFactory
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      */
     public function __construct(
-        \Magento\Framework\Composer\MagentoComposerApplicationFactory $appFactory,
+        \Swissup\Marketplace\Model\ComposerApplication $composer,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
     ) {
-        $this->appFactory = $appFactory;
+        $this->composer = $composer;
         $this->jsonSerializer = $jsonSerializer;
     }
 
@@ -39,7 +34,7 @@ class ChannelManager
      */
     public function enable($channel)
     {
-        return $this->run([
+        return $this->composer->run([
             'command' => 'config',
             'setting-key' => 'repositories.' . $channel->getIdentifier(),
             'setting-value' => [
@@ -65,7 +60,7 @@ class ChannelManager
             }
         }
 
-        return $this->run([
+        return $this->composer->run([
             'command' => 'config',
             '--unset' => true,
             'setting-key' => 'repositories.' . $id,
@@ -78,7 +73,7 @@ class ChannelManager
      */
     public function saveCredentials($channel)
     {
-        return $this->run([
+        return $this->composer->run([
             'command' => 'config',
             '-a' => true,
             '-g' => true,
@@ -94,7 +89,7 @@ class ChannelManager
     public function getCredentials($channel)
     {
         try {
-            $string = $this->run([
+            $string = $this->composer->run([
                 'command' => 'config',
                 '-a' => true,
                 '-g' => true,
@@ -126,30 +121,10 @@ class ChannelManager
      */
     public function getEnabledChannels()
     {
-        $channels = $this->run([
+        $channels = $this->composer->run([
             'command' => 'config',
             'setting-key' => 'repositories',
         ]);
         return $this->jsonSerializer->unserialize($channels);
-    }
-
-    /**
-     * @param array $command
-     * @return string
-     */
-    protected function run(array $command)
-    {
-        return $this->getApp()->runComposerCommand($command);
-    }
-
-    /**
-     * @return \Magento\Framework\Composer\MagentoComposerApplication
-     */
-    protected function getApp()
-    {
-        if (!$this->app) {
-            $this->app = $this->appFactory->create();
-        }
-        return $this->app;
     }
 }
