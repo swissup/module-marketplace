@@ -176,6 +176,11 @@ class Collection extends \Magento\Framework\Data\Collection
     {
         $page = $this->getCurPage();
         $size = $this->getPageSize();
+
+        if (!$size || !$page) {
+            return $this;
+        }
+
         $offset = ($page - 1) * $size;
 
         $this->data = array_slice($this->data, $offset, $size);
