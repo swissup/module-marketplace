@@ -38,6 +38,8 @@ class Collection extends \Magento\Framework\Data\Collection
             return $this;
         }
 
+        $this->_setIsLoaded(true);
+
         $localPackages = $this->localPackages->getList();
         $remotePackages = $this->remotePackages->getList();
 
@@ -79,8 +81,11 @@ class Collection extends \Magento\Framework\Data\Collection
             $this->data[$id]['state'] = $code;
         }
 
+        $this->_totalRecords = count($this->data);
+
         $this->_renderFilters();
         $this->_renderOrders();
+        $this->_renderLimit();
 
         foreach ($this->data as $values) {
             $item = $this->getNewEmptyItem();
@@ -90,7 +95,6 @@ class Collection extends \Magento\Framework\Data\Collection
             $this->addItem($item);
         }
 
-        $this->_setIsLoaded(true);
 
         return $this;
     }
@@ -161,6 +165,20 @@ class Collection extends \Magento\Framework\Data\Collection
             }
             return $a['installed'] > $b['installed'] ? -1 : 1;
         });
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function _renderLimit()
+    {
+        $page = $this->getCurPage();
+        $size = $this->getPageSize();
+        $offset = ($page - 1) * $size;
+
+        $this->data = array_slice($this->data, $offset, $size);
 
         return $this;
     }
