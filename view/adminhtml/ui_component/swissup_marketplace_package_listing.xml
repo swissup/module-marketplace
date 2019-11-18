@@ -79,22 +79,6 @@
                 </item>
             </argument>
         </column>
-        <column name="name">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="label" xsi:type="string" translate="true">Package Name</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/text</item>
-                </item>
-            </argument>
-        </column>
-        <column name="description">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="label" xsi:type="string" translate="true">Description</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/text</item>
-                </item>
-            </argument>
-        </column>
         <actionsColumn name="links" class="Swissup\Marketplace\Ui\Component\Listing\Columns\Links">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -115,6 +99,22 @@
                 </item>
             </argument>
         </actionsColumn>
+        <column name="name">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="label" xsi:type="string" translate="true">Package Name</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/text</item>
+                </item>
+            </argument>
+        </column>
+        <column name="description">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="label" xsi:type="string" translate="true">Description</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/text</item>
+                </item>
+            </argument>
+        </column>
         <column name="status">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
