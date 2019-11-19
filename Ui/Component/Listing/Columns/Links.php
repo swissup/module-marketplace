@@ -10,11 +10,11 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 class Links extends \Magento\Ui\Component\Listing\Columns\Column
 {
     const URL_PATH_DETAILS = 'swissup_marketplace/package/details';
-    const URL_PATH_INSTALL = 'swissup_marketplace/package/install';
-    const URL_PATH_UNINSTALL = 'swissup_marketplace/package/uninstall';
-    const URL_PATH_UPDATE = 'swissup_marketplace/package/update';
-    const URL_PATH_ENABLE = 'swissup_marketplace/package/enable';
-    const URL_PATH_DISABLE = 'swissup_marketplace/package/disable';
+    const URL_PATH_INSTALL = 'swissup_marketplace/package/manage/job/install';
+    const URL_PATH_UNINSTALL = 'swissup_marketplace/package/manage/job/uninstall';
+    const URL_PATH_UPDATE = 'swissup_marketplace/package/manage/job/update';
+    const URL_PATH_ENABLE = 'swissup_marketplace/package/manage/job/enable';
+    const URL_PATH_DISABLE = 'swissup_marketplace/package/manage/job/disable';
 
     /**
      * @var AuthorizationInterface

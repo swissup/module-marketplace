@@ -2,9 +2,20 @@
 
 namespace Swissup\Marketplace\Controller\Adminhtml\Package;
 
-class Update extends \Magento\Backend\App\Action
+class Manage extends \Magento\Backend\App\Action
 {
     const ADMIN_RESOURCE = 'Swissup_Marketplace::package_manage';
+
+    /**
+     * @var array
+     */
+    protected $allowedJobs = [
+        'install',
+        'uninstall',
+        'update',
+        'enable',
+        'disable',
+    ];
 
     /**
      * @var \Magento\Framework\Controller\Result\JsonFactory
@@ -37,12 +48,12 @@ class Update extends \Magento\Backend\App\Action
     public function execute()
     {
         $package = $this->getRequest()->getPost('package');
+        $job = $this->getRequest()->getParam('job');
         $response = new \Magento\Framework\DataObject();
 
         try {
-            $output = $this->packageManager->update($package);
-            $response->setPackage($this->packageManager->get($package)->getData());
-            $response->setOutput($output);
+            $this->validate();
+            $this->packageManager->{$job}($package);
         } catch (\Exception $e) {
             $response->setMessage($e->getMessage());
             $response->setError(1);
@@ -52,5 +63,20 @@ class Update extends \Magento\Backend\App\Action
         $resultJson->setData($response);
 
         return $resultJson;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected function validate()
+    {
+        $package = $this->getRequest()->getPost('package');
+        $job = $this->getRequest()->getParam('job');
+
+        if (!in_array($job, $this->allowedJobs) ||
+            !method_exists($this->packageManager, $job)
+        ) {
+            throw new \Exception(__('Operation "%1" is not permitted.', $job));
+        }
     }
 }
