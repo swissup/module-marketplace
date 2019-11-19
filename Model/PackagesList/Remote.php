@@ -10,11 +10,6 @@ class Remote extends AbstractList
     private $request;
 
     /**
-     * @var \Swissup\Marketplace\Model\Session
-     */
-    private $session;
-
-    /**
      * @var \Swissup\Marketplace\Model\ChannelRepository
      */
     private $channelRepository;
@@ -26,16 +21,13 @@ class Remote extends AbstractList
 
     /**
      * @param \Magento\Framework\App\RequestInterface $request
-     * @param \Swissup\Marketplace\Model\Session $session
      * @param \Swissup\Marketplace\Model\ChannelRepository $channelRepository
      */
     public function __construct(
         \Magento\Framework\App\RequestInterface $request,
-        \Swissup\Marketplace\Model\Session $session,
         \Swissup\Marketplace\Model\ChannelRepository $channelRepository
     ) {
         $this->request = $request;
-        $this->session = $session;
         $this->channelRepository = $channelRepository;
     }
 
@@ -56,7 +48,7 @@ class Remote extends AbstractList
      */
     public function getChannelId()
     {
-        return $this->channelId ?? $this->session->getChannelId();
+        return $this->channelId;
     }
 
     /**

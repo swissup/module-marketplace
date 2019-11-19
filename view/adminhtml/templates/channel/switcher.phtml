@@ -1,29 +1,14 @@
-<div class="channel-switcher store-switcher store-view">
-    <span class="store-switcher-label"><?= $block->escapeHtml(__('Channel:')) ?></span>
+<div class="channel-switcher store-switcher"
+     data-mage-init='{"Swissup_Marketplace/js/channel-switcher":{}}'
+     style="display: none">
+    <span class="store-switcher-label"><?= $block->escapeHtml(__('Channel')) ?>:</span>
     <div class="actions dropdown closable">
         <button
             type="button"
             class="admin__action-dropdown"
             data-mage-init='{"dropdown":{}}'
             data-toggle="dropdown"
-            aria-haspopup="true"
-            id="store-change-button">
-            <?= $block->escapeHtml($block->getCurrentChannelTitle()) ?>
-        </button>
-        <ul class="dropdown-menu action-menu" data-role="channels-list">
-            <?php foreach ($block->getChannels() as $channel) : ?>
-                <?php $isSelected = $block->isChannelSelected($channel); ?>
-                <li class="<?php if ($isSelected) : ?>disabled current<?php endif; ?>">
-                    <?php if (!$isSelected) : ?>
-                        <a class="action-menu-item"
-                            href="<?= $block->getSwitchChannelUrl($channel) ?>">
-                            <?= $block->escapeHtml($channel->getTitle()) ?>
-                        </a>
-                    <?php else : ?>
-                        <span class="action-menu-item"><?= $block->escapeHtml($channel->getTitle()) ?></span>
-                    <?php endif; ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+            aria-haspopup="true"></button>
+        <ul class="dropdown-menu action-menu" data-role="channels-list"></ul>
     </div>
 </div>

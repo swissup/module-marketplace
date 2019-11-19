@@ -43,7 +43,7 @@ class Collection extends \Magento\Framework\Data\Collection
         $localPackages = $this->localPackages->getList();
 
         if ($filter = $this->getFilter('channel')) {
-            $this->remotePackages->setChannelId($channel->getValue());
+            $this->remotePackages->setChannelId($filter->getValue());
         }
 
         foreach ($this->remotePackages->getList() as $id => $remoteData) {

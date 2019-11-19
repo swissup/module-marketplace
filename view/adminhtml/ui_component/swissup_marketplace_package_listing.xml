@@ -59,6 +59,15 @@
     <listingToolbar name="listing_top">
         <bookmark name="bookmarks"/>
         <filterSearch name="fulltext"/>
+        <filters name="listing_filters">
+            <filterSelect name="channel" provider="${ $.parentName }">
+                <settings>
+                    <options class="Swissup\Marketplace\Ui\Component\Listing\Columns\Channel"/>
+                    <label translate="true">Channel</label>
+                    <dataScope>channel</dataScope>
+                </settings>
+            </filterSelect>
+        </filters>
     </listingToolbar>
     <columns name="swissup_marketplace_package_columns">
         <argument name="data" xsi:type="array">
