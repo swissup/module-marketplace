@@ -31,7 +31,7 @@ define([
                 selected = false,
                 template = _.template(
                     '<li class="<%= css %>">' +
-                        '<a class="action-menu-item" data-channel="<%= id %>" href="#">' +
+                        '<a class="action-menu-item" data-channel="<%= channel %>" href="#">' +
                             '<%= title %>' +
                         '</a>' +
                     '</li>'
@@ -47,9 +47,9 @@ define([
                 }
 
                 dropdown.append(template({
-                    css: selected ? 'disabled current' : '',
+                    css: $(option).is(':selected') ? 'current' : '',
                     title: $(option).text(),
-                    id: $(option).attr('value')
+                    channel: $(option).attr('value')
                 }));
             });
 
