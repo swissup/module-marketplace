@@ -110,7 +110,6 @@ class AbstractModifier implements \Magento\Ui\DataProvider\Modifier\ModifierInte
                                 'formElement' => 'input',
                                 'componentType' => 'field',
                                 'elementTmpl' => 'ui/form/element/text',
-                                'visible' => $this->channel->isEnabled(),
                             ],
                         ],
                     ],
