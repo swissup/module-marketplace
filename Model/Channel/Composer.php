@@ -2,6 +2,10 @@
 
 namespace Swissup\Marketplace\Model\Channel;
 
+use Magento\Framework\Exception\AuthenticationException;
+use Magento\Framework\Exception\NotFoundException;
+use Magento\Framework\Exception\RuntimeException;
+
 /**
  * Composer repository type implementation.
  *
@@ -255,6 +259,9 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
      * Get packages from remote server.
      *
      * @return array
+     * @throws AuthenticationException
+     * @throws RuntimeException
+     * @throws \Zend_Http_Client_Exception
      */
     public function getPackages()
     {
@@ -263,28 +270,10 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
             return $response;
         }
 
-        try {
-            $response = $this->fetch($this->getUrl('packages.json'));
-            $response = $this->jsonSerializer->unserialize($response);
-        } catch (\Exception $e) {
-            return [];
-        }
-
-        if (!is_array($response)) {
-            return [];
-        }
+        $response = $this->fetch($this->getUrl('packages.json'));
 
         if (isset($response['includes'])) {
-            try {
-                $response = $this->fetch($this->getUrl(key($response['includes'])));
-                $response = $this->jsonSerializer->unserialize($response);
-            } catch (\Exception $e) {
-                return [];
-            }
-
-            if (!is_array($response)) {
-                return [];
-            }
+            $response = $this->fetch($this->getUrl(key($response['includes'])));
         }
 
         if (isset($response['packages'])) {
@@ -297,10 +286,33 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     /**
      * @param string $url
      * @return string
+     * @throws AuthenticationException
+     * @throws RuntimeException
+     * @throws \Zend_Http_Client_Exception
      */
-    protected function fetch($url)
+    protected function fetch($url, $parseResponse = true)
     {
-        return $this->getHttpClient()->setUri($url)->request()->getBody();
+        $response = $this->getHttpClient()->setUri($url)->request();
+
+        switch ($response->getStatus()) {
+            case 200:
+                $body = $response->getBody();
+                return $parseResponse ? $this->parseResponse($body) : $body;
+            case 401:
+                throw new AuthenticationException(
+                    __('An authentication error occurred. Verify and try again.')
+                );
+            case 404:
+                throw new NotFoundException(
+                    __('Remote channel returned "404 - Not Found" response.')
+                );
+        }
+
+        throw new RuntimeException(__(
+            'An error occured. Response code - %1. Response message - %2',
+            $response->getStatus(),
+            $response->getMessage()
+        ));
     }
 
     /**
@@ -319,6 +331,23 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
         }
 
         return $client;
+    }
+
+    /**
+     * @param string $string
+     * @return array
+     * @throws RuntimeException
+     */
+    protected function parseResponse($string)
+    {
+        try {
+            return $this->jsonSerializer->unserialize($string);
+        } catch (\Exception $e) {
+            throw new RuntimeException(__(
+                'Unable to parse response: %1',
+                $string
+            ));
+        }
     }
 
     /**
