@@ -17,6 +17,14 @@
         transform: rotate(360deg);
     }
 }
+@keyframes marketplace-appear {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
 
 .marketplace-validate-button-group {
     position: relative;
@@ -58,6 +66,7 @@
                 border-right: 2px solid #5cb85c;
                 border-bottom: 2px solid #5cb85c;
                 transform: rotate(45deg);
+                animation: marketplace-appear 0.42s linear both;
             }
         }
     }
