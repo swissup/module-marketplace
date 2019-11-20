@@ -62,7 +62,9 @@ define([
                         this.responseError(response.message);
                     } else {
                         this.responseSuccess(
-                            $t('Remote channel returned %1 packages').replace('%1', response.total)
+                            response.total > 1 ?
+                                $t('Remote channel returned %1 packages').replace('%1', response.total) :
+                                $t('Remote channel returned %1 package').replace('%1', response.total)
                         );
                     }
                 }.bind(this))
