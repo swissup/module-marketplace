@@ -286,21 +286,34 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     /**
      * @param string $url
      * @return string
-     * @throws AuthenticationException
-     * @throws RuntimeException
      * @throws \Zend_Http_Client_Exception
      */
     protected function fetch($url, $parseResponse = true)
     {
         $response = $this->getHttpClient()->setUri($url)->request();
 
+        $this->validateResponse($response);
+
+        $body = $response->getBody();
+
+        return $parseResponse ? $this->parseResponseText($body) : $body;
+    }
+
+    /**
+     * @param Zend_Http_Response $response
+     * @return boolean
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws RuntimeException
+     */
+    protected function validateResponse($response)
+    {
         switch ($response->getStatus()) {
             case 200:
-                $body = $response->getBody();
-                return $parseResponse ? $this->parseResponse($body) : $body;
+                return true;
             case 401:
                 throw new AuthenticationException(
-                    __('An authentication error occurred. Verify and try again.')
+                    __('An authentication error occurred. Verify your credentials and try again.')
                 );
             case 404:
                 throw new NotFoundException(
@@ -313,6 +326,22 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
             $response->getStatus(),
             $response->getMessage()
         ));
+    }
+
+    /**
+     * @param string $string
+     * @return array
+     * @throws RuntimeException
+     */
+    protected function parseResponseText($string)
+    {
+        try {
+            return $this->jsonSerializer->unserialize($string);
+        } catch (\Exception $e) {
+            throw new RuntimeException(
+                __('Remote channel returned malformed response.')
+            );
+        }
     }
 
     /**
@@ -331,23 +360,6 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
         }
 
         return $client;
-    }
-
-    /**
-     * @param string $string
-     * @return array
-     * @throws RuntimeException
-     */
-    protected function parseResponse($string)
-    {
-        try {
-            return $this->jsonSerializer->unserialize($string);
-        } catch (\Exception $e) {
-            throw new RuntimeException(__(
-                'Unable to parse response: %1',
-                $string
-            ));
-        }
     }
 
     /**
