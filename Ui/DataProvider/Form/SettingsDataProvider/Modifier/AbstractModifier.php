@@ -2,6 +2,7 @@
 
 namespace Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier;
 
+use Magento\Framework\UrlInterface;
 use Swissup\Marketplace\Api\ChannelInterface;
 
 class AbstractModifier implements \Magento\Ui\DataProvider\Modifier\ModifierInterface
@@ -12,12 +13,20 @@ class AbstractModifier implements \Magento\Ui\DataProvider\Modifier\ModifierInte
     protected $channel;
 
     /**
+     * @var UrlInterface
+     */
+    protected $urlBuilder;
+
+    /**
      * @param ChannelInterface $channel
+     * @param UrlInterface $urlBuilder
      */
     public function __construct(
-        ChannelInterface $channel
+        ChannelInterface $channel,
+        UrlInterface $urlBuilder
     ) {
         $this->channel = $channel;
+        $this->urlBuilder = $urlBuilder;
     }
 
     /**

@@ -1,0 +1,97 @@
+@keyframes marketplace-shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+    20%, 80% {
+        transform: translate3d(1px, 0, 0);
+    }
+    30%, 50%, 70% {
+        transform: translate3d(-1px, 0, 0);
+    }
+    40%, 60% {
+        transform: translate3d(1px, 0, 0);
+    }
+}
+@keyframes marketplace-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.marketplace-validate-button-group {
+    position: relative;
+
+    button ~ ._error,
+    button ~ ._success {
+        position: absolute;
+        top: 7px;
+        right: -26px;
+
+        transform: translate3d(0, 0, 0);
+        perspective: 1000px;
+
+        .admin__page-nav-item-message {
+            width: 16px;
+            height: 14px;
+            display: block;
+        }
+        .admin__page-nav-item-message-tooltip {
+            left: -2.8rem;
+        }
+        .admin__page-nav-item-message-icon {
+            padding: 0;
+        }
+    }
+
+    button ~ ._success {
+        .admin__page-nav-item-message-icon {
+            &::before,
+            &::after {
+                content: '';
+            }
+            &::after {
+                margin-top: -1px;
+                margin-left: 4px;
+                display: block;
+                width: 8px;
+                height: 13px;
+                border-right: 2px solid #5cb85c;
+                border-bottom: 2px solid #5cb85c;
+                transform: rotate(45deg);
+            }
+        }
+    }
+    button ~ ._error {
+        animation: marketplace-shake 0.42s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    button {
+        position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 18px;
+            height: 18px;
+            margin-left: -9px;
+            margin-top: -9px;
+            border: 2px solid #fff;
+            border-right-color: transparent;
+            border-radius: 50%;
+
+            opacity: 0;
+            animation: marketplace-rotate 0.55s linear infinite;
+        }
+
+        &[data-loading] {
+            span {
+                opacity: 0;
+            }
+            &::before {
+                opacity: .8;
+            }
+        }
+    }
+}

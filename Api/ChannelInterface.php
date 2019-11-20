@@ -53,4 +53,9 @@ interface ChannelInterface
      * @return array
      */
     public function getPackages();
+
+    /**
+     * @return $this
+     */
+    public function removeCache();
 }

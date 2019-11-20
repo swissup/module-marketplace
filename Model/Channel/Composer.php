@@ -395,6 +395,16 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     }
 
     /**
+     * @return $this
+     */
+    public function removeCache()
+    {
+        $this->cache->remove($this->getCacheKey());
+
+        return $this;
+    }
+
+    /**
      * @param array $data
      * @return void
      */

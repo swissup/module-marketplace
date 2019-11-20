@@ -1,0 +1,31 @@
+<button type="button"
+        css="buttonClasses"
+        click="action"
+        disable="disabled"
+        attr="'data-index': index, 'data-loading': loading()">
+    <span text="title"/>
+</button>
+
+<if args="responseError">
+    <strong class="_error">
+        <span class="admin__page-nav-item-messages">
+            <span class="admin__page-nav-item-message _error">
+                <span class="admin__page-nav-item-message-icon"></span>
+                <span class="admin__page-nav-item-message-tooltip"
+                      text="responseError"></span>
+            </span>
+        </span>
+    </strong>
+</if>
+
+<if args="responseSuccess">
+    <strong class="_success">
+        <span class="admin__page-nav-item-messages">
+            <span class="admin__page-nav-item-message _success">
+                <span class="admin__page-nav-item-message-icon"></span>
+                <span class="admin__page-nav-item-message-tooltip"
+                      text="responseSuccess"></span>
+            </span>
+        </span>
+    </strong>
+</if>
