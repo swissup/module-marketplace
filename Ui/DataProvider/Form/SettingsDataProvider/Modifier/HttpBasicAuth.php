@@ -38,6 +38,7 @@ class HttpBasicAuth extends AbstractModifier
                             'config' => [
                                 'showLabel' => true,
                                 'breakLine' => false,
+                                'sortOrder' => 100,
                                 'componentType' => 'container',
                                 'formElement' => 'container',
                                 'component' => 'Magento_Ui/js/form/components/group',
