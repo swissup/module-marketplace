@@ -61,7 +61,7 @@ class Remote extends AbstractList
         }
 
         try {
-            $channel = $this->channelRepository->getById($this->getChannelId(), true);
+            $channel = $this->channelRepository->getFirstEnabled($this->getChannelId());
 
             foreach ($channel->getPackages() as $id => $packageData) {
                 $versions = array_keys($packageData);

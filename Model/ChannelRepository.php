@@ -47,23 +47,41 @@ class ChannelRepository
      * @return ChannelInterface
      * @throws NoSuchEntityException
      */
-    public function getById($identifier, $orFirst = false)
+    public function getById($identifier)
     {
-        if ($identifier) {
-            foreach ($this->getList() as $channel) {
-                if ($channel->getIdentifier() === $identifier) {
-                    return $channel;
-                }
-            }
-        }
-
-        if ($orFirst) {
-            foreach ($this->getList(true) as $channel) {
+        foreach ($this->getList() as $channel) {
+            if ($channel->getIdentifier() === $identifier) {
                 return $channel;
             }
         }
 
         throw new NoSuchEntityException(__('Channel "%1" does not exist.', $identifier));
+    }
+
+    /**
+     * @param string $identifier
+     * @return ChannelInterface
+     * @throws NoSuchEntityException
+     */
+    public function getFirstEnabled($identifier = null)
+    {
+        if ($identifier) {
+            try {
+                $channel = $this->getById($identifier);
+            } catch (NoSuchEntityException $e) {
+                // not found
+            }
+
+            if ($channel->isEnabled()) {
+                return $channel;
+            }
+        }
+
+        foreach ($this->getList(true) as $channel) {
+            return $channel;
+        }
+
+        throw new NoSuchEntityException(__('No active channels found.'));
     }
 
     /**
