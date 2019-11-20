@@ -2,11 +2,10 @@
 
 namespace Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier;
 
-class DomainAndKeyAuth extends HttpBasicAuth
+class DomainAndKey extends DomainAsUsername
 {
     /**
-     * Modify fields to authenticate by domain name and access_key.
-     * We use it for swissuplabs.com, argentotheme.com, and firecheckout.com
+     * Modify fields to hide password field and show access_key field.
      *
      * @return array
      */
@@ -15,25 +14,30 @@ class DomainAndKeyAuth extends HttpBasicAuth
         $fields = parent::getAuthFields();
 
         return array_replace_recursive($fields, [
-            'username' => [
+            'password' => [
                 'arguments' => [
                     'data' => [
                         'config' => [
-                            'label' => __('Domain'),
+                            // @todo custom renderer
+                            'dataType' => 'text',
+                            'sortOrder' => 90,
+                            'label' => '',
                             'formElement' => 'input',
                             'componentType' => 'field',
-                            'elementTmpl' => 'ui/form/element/text',
                         ],
                     ],
                 ],
             ],
             'password_wrapper' => [
                 'children' => [
-                    'password' => [
+                    'key' => [
                         'arguments' => [
                             'data' => [
                                 'config' => [
-                                    'label' => __('Access Key')
+                                    'dataType' => 'text',
+                                    'label' => __('Access Key'),
+                                    'formElement' => 'input',
+                                    'componentType' => 'field',
                                 ],
                             ],
                         ],
@@ -43,6 +47,7 @@ class DomainAndKeyAuth extends HttpBasicAuth
                             'data' => [
                                 'config' => [
                                     'title' => __('Add'),
+                                    'component' => 'Swissup_Marketplace/js/channel-form/add-key-button'
                                 ],
                             ],
                         ],
@@ -50,5 +55,17 @@ class DomainAndKeyAuth extends HttpBasicAuth
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Remove password field. Will move it above password row.
+     * @see getAuthFields
+     *
+     * @param array $config
+     * @return array
+     */
+    protected function getPasswordField(array $config = [])
+    {
+        return [];
     }
 }

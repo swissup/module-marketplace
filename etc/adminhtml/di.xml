@@ -42,7 +42,7 @@
         </arguments>
     </virtualType>
     <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Swissup"
-                 type="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\DomainAndKeyAuth">
+                 type="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\DomainAndKey">
         <arguments>
             <argument name="channel" xsi:type="object">Swissup\Marketplace\Model\Channel\Swissup</argument>
         </arguments>
