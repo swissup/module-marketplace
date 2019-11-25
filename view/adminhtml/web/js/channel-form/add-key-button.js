@@ -6,6 +6,10 @@ define([
     'use strict';
 
     return Button.extend({
+        defaults: {
+            keysSeparator: ' '
+        },
+
         /** @inheritdoc */
         initObservable: function () {
             this._super();
@@ -13,14 +17,17 @@ define([
             this.responseSuccess.subscribe(function (flag) {
                 var provider = registry.get(this.provider),
                     data = this.getData(),
-                    password = data._password;
+                    password = data._password,
+                    value;
 
                 if (!flag) {
                     return;
                 }
 
                 if (password.indexOf(data.key) === -1) {
-                    provider.set(this.dataScope + '.password', password + ' ' + data.key);
+                    value = password + this.keysSeparator + data.key;
+                    value = _.uniq(value.split(this.keysSeparator));
+                    provider.set(this.dataScope + '.password', value.join(this.keysSeparator));
                 }
 
                 provider.set(this.dataScope + '.key', '');
