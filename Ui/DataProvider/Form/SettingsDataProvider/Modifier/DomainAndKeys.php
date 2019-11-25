@@ -2,7 +2,7 @@
 
 namespace Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier;
 
-class DomainAndKey extends DomainAsUsername
+class DomainAndKeys extends DomainAsUsername
 {
     /**
      * Modify fields to hide password field and show access_key field.
@@ -18,12 +18,12 @@ class DomainAndKey extends DomainAsUsername
                 'arguments' => [
                     'data' => [
                         'config' => [
-                            // @todo custom renderer
                             'dataType' => 'text',
                             'sortOrder' => 90,
-                            'label' => '',
+                            'label' => 'Saved Keys',
                             'formElement' => 'input',
                             'componentType' => 'field',
+                            'component' => 'Swissup_Marketplace/js/channel-form/keys'
                         ],
                     ],
                 ],

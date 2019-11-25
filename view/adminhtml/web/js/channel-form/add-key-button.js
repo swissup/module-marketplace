@@ -1,7 +1,8 @@
 define([
     'underscore',
+    'uiRegistry',
     'Swissup_Marketplace/js/channel-form/validate-button'
-], function (_, Button) {
+], function (_, registry, Button) {
     'use strict';
 
     return Button.extend({
@@ -10,16 +11,20 @@ define([
             this._super();
 
             this.responseSuccess.subscribe(function (flag) {
-                console.log(flag);
+                var provider = registry.get(this.provider),
+                    data = this.getData(),
+                    password = data._password;
 
                 if (!flag) {
                     return;
                 }
 
-                // 1. add key to password field
+                if (password.indexOf(data.key) === -1) {
+                    provider.set(this.dataScope + '.password', password + ' ' + data.key);
+                }
 
-                // 2. cleanup key field
-            });
+                provider.set(this.dataScope + '.key', '');
+            }.bind(this));
 
             return this;
         },
@@ -34,7 +39,8 @@ define([
             var data = this._super();
 
             return _.extend(data, {
-                password: data.key ? data.key : data.password
+                password: data.key ? data.key : data.password,
+                _password: data.password
             });
         }
     });

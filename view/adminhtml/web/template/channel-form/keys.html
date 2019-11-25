@@ -1,0 +1,36 @@
+<ul class="marketplace-keys" data-bind="foreach: getKeys()">
+    <li>
+        <div>
+            <span class="domain" data-bind="text: letter, attr: {
+                title: title,
+                'data-domain': domain
+            }"/>
+            <span class="key" data-bind="text: key"/>
+        </div>
+        <span class="actions">
+            <span class="action-validate" data-bind="
+                click: $parent.validateKey.bind($parent, key),
+                text: $t('Validate'),
+                attr: {
+                    title: $t('Validate this key')
+                }"/>
+            <span class="action-delete" data-bind="
+                click: $parent.removeKey.bind($parent, key),
+                text: $t('Delete'),
+                attr: {
+                    title: $t('Remove this key')
+                }"/>
+        </span>
+    </li>
+</ul>
+
+<input class="admin__control-text" type="hidden"
+       data-bind="
+        value: value,
+        hasFocus: focused,
+        attr: {
+            name: inputName,
+            placeholder: placeholder,
+            'aria-describedby': noticeId,
+            id: uid
+    }"/>
