@@ -2,20 +2,47 @@
 
 namespace Swissup\Marketplace\Model\PackagesList;
 
-use Magento\Framework\Component\ComponentRegistrar;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Composer\ComposerInformation;
 
 class Local extends AbstractList
 {
+    /**
+     * @var \Magento\Framework\Filesystem
+     */
+    protected $filesystem;
+
+    /**
+     * @var \Magento\Framework\Module\ModuleListInterface
+     */
+    protected $moduleList;
+
+    /**
+     * @var \Magento\Framework\Module\PackageInfo
+     */
+    protected $packageInfo;
+
+    /**
+     * @var \Magento\Framework\Serialize\Serializer\Json
+     */
+    protected $jsonSerializer;
+
+    /**
+     * @param \Magento\Framework\Filesystem $filesystem
+     * @param \Magento\Framework\Module\ModuleListInterface $moduleList
+     * @param \Magento\Framework\Module\PackageInfo $packageInfo
+     * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
+     */
     public function __construct(
-        \Magento\Framework\Module\Dir\Reader $moduleDirReader,
-        \Magento\Framework\Component\ComponentRegistrarInterface $registrar,
-        \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
-        \Magento\Framework\Filesystem\Driver\File $filesystemDriver
+        \Magento\Framework\Filesystem $filesystem,
+        \Magento\Framework\Module\ModuleListInterface $moduleList,
+        \Magento\Framework\Module\PackageInfo $packageInfo,
+        \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
     ) {
-        $this->moduleDirReader = $moduleDirReader;
-        $this->registrar = $registrar;
+        $this->filesystem = $filesystem;
+        $this->moduleList = $moduleList;
+        $this->packageInfo = $packageInfo;
         $this->jsonSerializer = $jsonSerializer;
-        $this->filesystemDriver = $filesystemDriver;
     }
 
     /**
@@ -27,32 +54,26 @@ class Local extends AbstractList
             return $this->data;
         }
 
-        $components = [
-            ComponentRegistrar::THEME,
-            ComponentRegistrar::MODULE,
-        ];
+        $this->isLoaded(true);
 
-        $enabledModules = $this->moduleDirReader->getComposerJsonFiles()->toArray();
-
-        foreach ($components as $component) {
-            $paths = $this->registrar->getPaths($component);
-            foreach ($paths as $name => $path) {
-                $path = $path . '/composer.json';
-
-                try {
-                    $config = $this->filesystemDriver->fileGetContents($path);
-                    $config = $this->jsonSerializer->unserialize($config);
-                    $this->data[$config['name']] = $this->extractPackageData($config);
-                    $this->data[$config['name']]['enabled'] =
-                        $component === ComponentRegistrar::THEME || // themes are always enabled
-                        !empty($enabledModules[$path]);
-                } catch (\Exception $e) {
-                    // skip module with broken composer.json file
-                }
+        $enabledModules = [];
+        foreach ($this->moduleList->getNames() as $moduleName) {
+            $packageName = $this->packageInfo->getPackageName($moduleName);
+            if ($packageName) {
+                $enabledModules[$packageName] = $packageName;
             }
         }
 
-        $this->isLoaded(true);
+        $directory = $this->filesystem->getDirectoryRead(DirectoryList::ROOT);
+        $data = $directory->readFile('composer.lock');
+        $data = $this->jsonSerializer->unserialize($data);
+
+        foreach ($data['packages'] as $config) {
+            $this->data[$config['name']] = $this->extractPackageData($config);
+            $this->data[$config['name']]['enabled'] =
+                $config['type'] === ComposerInformation::THEME_PACKAGE_TYPE || // themes are always enabled
+                !empty($enabledModules[$config['name']]);
+        }
 
         return $this->data;
     }
