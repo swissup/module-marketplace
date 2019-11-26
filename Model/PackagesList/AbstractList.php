@@ -22,6 +22,7 @@ class AbstractList
             'require',
             'time',
             'type',
+            'accessible',
         ]));
 
         $result['marketplace'] = $data['extra']['swissup'] ?? [];

@@ -121,6 +121,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
             'type' => $this->type,
             'authType' => $this->authType,
             'authNotice' => '',
+            'publicUrl' => '',
         ];
     }
 
@@ -156,9 +157,9 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
      * @param string $suffix
      * @return string
      */
-    public function getUrl($suffix = null)
+    public function getUrl($suffix = null, $prefix = null)
     {
-        $url = $this->data['url'];
+        $url = $prefix ?: $this->data['url'];
 
         if ($suffix && strpos($url, $suffix) === false) {
             $url = rtrim($url, '/');
@@ -167,6 +168,23 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
         }
 
         return $url;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasPublicUrl()
+    {
+        return !empty($this->data['publicUrl']);
+    }
+
+    /**
+     * @param string $suffix
+     * @return string
+     */
+    public function getPublicUrl($suffix = null)
+    {
+        return $this->getUrl($suffix, $this->data['publicUrl']);
     }
 
     /**
@@ -283,6 +301,28 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
 
         if (isset($response['includes'])) {
             $response = $this->fetch($this->getUrl(key($response['includes'])));
+        }
+
+        if ($this->hasPublicUrl()) {
+            $public = $this->fetch($this->getPublicUrl('packages.json'));
+            if (isset($public['includes'])) {
+                $public = $this->fetch($this->getPublicUrl(key($public['includes'])));
+            }
+
+            foreach ($response['packages'] as $name => $versions) {
+                if (!isset($public['packages'][$name])) {
+                    continue;
+                }
+
+                foreach ($public['packages'][$name] as $version => $info) {
+                    if (isset($response['packages'][$name][$version])) {
+                        continue;
+                    }
+
+                    $info['accessible'] = false;
+                    $response['packages'][$name][$version] = $info;
+                }
+            }
         }
 
         if (isset($response['packages'])) {

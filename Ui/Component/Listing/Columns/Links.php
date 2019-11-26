@@ -108,11 +108,21 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
 
     protected function getUpdateLinkParams($item)
     {
-        return [
+        $link = [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_UPDATE),
             'label' => $this->getLinkTitle('Update', $item),
         ];
+
+        if (!$item['accessible']) {
+            $link['label'] .= '*';
+            $link['confirm'] = [
+                'title' => $this->getLinkTitle('Update', $item),
+                'message' => __("Looks like you don't have access to the latest version. Do you want to proceed anyway?")
+            ];
+        }
+
+        return $link;
     }
 
     protected function getDisableLinkParams($item)
@@ -152,11 +162,21 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
 
     protected function getInstallLinkParams($item)
     {
-        return [
+        $link = [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_INSTALL),
             'label' => $this->getLinkTitle('Install', $item),
         ];
+
+        if (!$item['accessible']) {
+            $link['label'] .= '*';
+            $link['confirm'] = [
+                'title' => $this->getLinkTitle('Install', $item),
+                'message' => __("Looks like you don't have access to the latest version. Do you want to proceed anyway?")
+            ];
+        }
+
+        return $link;
     }
 
     protected function getLinkTitle($actionTitle, $item)

@@ -22,6 +22,7 @@
             <argument name="hostname" xsi:type="string">ci.swissuplabs.com</argument>
             <argument name="identifier" xsi:type="string">swissuplabs</argument>
             <argument name="data" xsi:type="array">
+                <item name="publicUrl" xsi:type="string">https://docs.swissuplabs.com/packages/</item>
                 <item name="authType" xsi:type="string">http-basic</item>
                 <item name="authNotice" xsi:type="string"><![CDATA[1. Navigate to your account ("Activation Information" section) on the site where you've made a purchase.<br/>2. Activate domain from the field above.<br/>3. Copy your access key and paste it here.]]></item>
             </argument>
