@@ -23,9 +23,23 @@ class PackageManager
         return $this->packageCollection->getItemById($packageName);
     }
 
+    public function install($packageName)
+    {
+        ini_set('memory_limit', '2G');
+
+        return $this->composer->run([
+            'command' => 'require',
+            'packages' => [$packageName],
+            '--no-progress' => true,
+            '--no-interaction' => true,
+            '--update-with-all-dependencies' => true,
+            '--update-no-dev' => true,
+        ]);
+    }
+
     public function update($packageName)
     {
-        ini_set('memory_limit', '1G');
+        ini_set('memory_limit', '2G');
 
         return $this->composer->run([
             'command' => 'update',
