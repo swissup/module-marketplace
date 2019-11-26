@@ -38,6 +38,9 @@ class DomainAndKeys extends DomainAsUsername
                                     'label' => __('Access Key'),
                                     'formElement' => 'input',
                                     'componentType' => 'field',
+                                    'tooltip' => [
+                                        'description' => $this->channel->getAuthNotice(),
+                                    ],
                                 ],
                             ],
                         ],

@@ -110,6 +110,9 @@ class HttpBasicAuth extends AbstractModifier
                             'label' => __('Password'),
                             'formElement' => 'input',
                             'componentType' => 'field',
+                            'tooltip' => [
+                                'description' => $this->channel->getAuthNotice(),
+                            ],
                         ], $config),
                     ],
                 ],

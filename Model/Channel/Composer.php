@@ -118,8 +118,9 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     protected function getDefaultData()
     {
         return [
-            'authType' => $this->authType,
             'type' => $this->type,
+            'authType' => $this->authType,
+            'authNotice' => '',
         ];
     }
 
@@ -190,6 +191,14 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     public function getAuthType()
     {
         return $this->data['authType'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthNotice()
+    {
+        return $this->data['authNotice'];
     }
 
     /**
