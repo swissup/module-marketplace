@@ -24,6 +24,10 @@
     </li>
 </ul>
 
+<!-- ko if: !hasKeys() -->
+    <span data-bind="text: $t('None')"/>
+<!-- /ko -->
+
 <input class="admin__control-text" type="hidden"
        data-bind="
         value: value,

@@ -15,6 +15,19 @@ define([
         },
 
         /**
+         * @return {Boolean}
+         */
+        hasKeys: function () {
+            var keys = this.value().split(this.keysSeparator);
+
+            keys = keys.filter(function (key) {
+                return key;
+            });
+
+            return keys.length > 0;
+        },
+
+        /**
          * @return {Array}
          */
         getKeys: function () {

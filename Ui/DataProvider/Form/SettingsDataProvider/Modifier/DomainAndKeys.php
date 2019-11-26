@@ -19,7 +19,7 @@ class DomainAndKeys extends DomainAsUsername
                     'data' => [
                         'config' => [
                             'dataType' => 'text',
-                            'sortOrder' => 90,
+                            'sortOrder' => 110,
                             'label' => 'Saved Keys',
                             'formElement' => 'input',
                             'componentType' => 'field',
