@@ -74,6 +74,7 @@ class Remote extends AbstractList
 
                 $this->data[$id] = $this->extractPackageData($packageData[$latestVersion]);
                 $this->data[$id]['channel'] = $channel->getIdentifier();
+                $this->data[$id]['uniqid'] = sha1($channel->getIdentifier() . $id);
                 foreach ($packageData as $version => $data) {
                     $this->data[$id]['versions'][$version] = $this->extractPackageData($data);
                 }

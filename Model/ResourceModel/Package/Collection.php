@@ -68,6 +68,7 @@ class Collection extends \Magento\Framework\Data\Collection
                 'enabled' => $localPackages[$id]['enabled'] ?? false,
                 'remote' => $remoteData,
                 'local' => $localPackages[$id] ?? false,
+                'uniqid' => $remoteData['uniqid'] ?? $id,
             ];
 
             if (!$this->data[$id]['version']) {
