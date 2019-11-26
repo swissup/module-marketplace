@@ -34,12 +34,14 @@ define([
                 index: 'update',
                 class: 'action',
                 rowIndex: row._rowIndex,
-                label: $t('Update') + (row.accessible ? '' : '*')
+                label: $t('Update') + (row.accessible ? '' : '*'),
+                title: row.accessible ? '' : $t('Latest version is not accessible')
             }, {
                 index: 'install',
                 class: 'action',
                 rowIndex: row._rowIndex,
-                label: $t('Install') + (row.accessible ? '' : '*')
+                label: $t('Install') + (row.accessible ? '' : '*'),
+                title: row.accessible ? '' : $t('Latest version is not accessible')
             }, {
                 index: 'enable',
                 class: 'action primary',
