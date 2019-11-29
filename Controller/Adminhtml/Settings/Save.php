@@ -4,26 +4,27 @@ namespace Swissup\Marketplace\Controller\Adminhtml\Settings;
 
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Exception\LocalizedException;
-use Swissup\Marketplace\Model\ChannelRepository;
+use Swissup\Marketplace\Job\ChannelsSave;
+use Swissup\Marketplace\Service\JobDispatcher;
 
 class Save extends \Magento\Backend\App\Action
 {
     const ADMIN_RESOURCE = 'Swissup_Marketplace::settings_save';
 
     /**
-     * @var ChannelRepository
+     * @var JobDispatcher
      */
-    protected $channelRepository;
+    protected $dispatcher;
 
     /**
      * @param Context $context
-     * @param ChannelRepository $channelRepository
+     * @param JobDispatcher $dispatcher
      */
     public function __construct(
         Context $context,
-        ChannelRepository $channelRepository
+        JobDispatcher $dispatcher
     ) {
-        $this->channelRepository = $channelRepository;
+        $this->dispatcher = $dispatcher;
         parent::__construct($context);
     }
 
@@ -36,19 +37,13 @@ class Save extends \Magento\Backend\App\Action
     {
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
-        $channelsData = $this->getRequest()->getPostValue('channels');
+        $channels = $this->getRequest()->getPostValue('channels');
 
-        if ($channelsData) {
+        if ($channels) {
             try {
-                foreach ($this->channelRepository->getList() as $channel) {
-                    $data = $channelsData[$channel->getIdentifier()] ?? false;
-                    if (!$data) {
-                        continue;
-                    }
-                    $channel->addData($data)->save();
-                }
-
-                $this->messageManager->addSuccess(__('Marketplace settings successfully updated.'));
+                $this->dispatcher->dispatch(ChannelsSave::class, [
+                    'data' => $channels
+                ]);
             } catch (LocalizedException $e) {
                 $this->messageManager->addError($e->getMessage());
             } catch (\Exception $e) {

@@ -2,6 +2,13 @@
 
 namespace Swissup\Marketplace\Controller\Adminhtml\Package;
 
+use Swissup\Marketplace\Job\PackageInstall;
+use Swissup\Marketplace\Job\PackageUninstall;
+use Swissup\Marketplace\Job\PackageUpdate;
+use Swissup\Marketplace\Job\PackageEnable;
+use Swissup\Marketplace\Job\PackageDisable;
+use Swissup\Marketplace\Service\JobDispatcher;
+
 class Manage extends \Magento\Backend\App\Action
 {
     const ADMIN_RESOURCE = 'Swissup_Marketplace::package_manage';
@@ -9,12 +16,12 @@ class Manage extends \Magento\Backend\App\Action
     /**
      * @var array
      */
-    protected $allowedJobs = [
-        'install',
-        'uninstall',
-        'update',
-        'enable',
-        'disable',
+    protected $jobs = [
+        'install' => PackageInstall::class,
+        'uninstall' => PackageUninstall::class,
+        'update' => PackageUpdate::class,
+        'enable' => PackageEnable::class,
+        'disable' => PackageDisable::class,
     ];
 
     /**
@@ -23,22 +30,22 @@ class Manage extends \Magento\Backend\App\Action
     protected $resultJsonFactory;
 
     /**
-     * @var \Swissup\Marketplace\Model\PackageManager
+     * @var \Swissup\Marketplace\Service\JobDispatcher
      */
-    protected $packageManager;
+    protected $dispatcher;
 
     /**
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
-     * @param \Swissup\Marketplace\Model\PackageManager $packageManager
+     * @param \Swissup\Marketplace\Service\JobDispatcher $dispatcher
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
-        \Swissup\Marketplace\Model\PackageManager $packageManager
+        \Swissup\Marketplace\Service\JobDispatcher $dispatcher
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
-        $this->packageManager = $packageManager;
+        $this->dispatcher = $dispatcher;
         parent::__construct($context);
     }
 
@@ -52,8 +59,12 @@ class Manage extends \Magento\Backend\App\Action
         $response = new \Magento\Framework\DataObject();
 
         try {
-            $this->validate();
-            $this->packageManager->{$job}($package);
+            $this->dispatcher->dispatch(
+                $this->getJobClassName($job),
+                [
+                    'packageName' => $package
+                ]
+            );
         } catch (\Exception $e) {
             $response->setMessage($e->getMessage());
             $response->setError(1);
@@ -66,17 +77,15 @@ class Manage extends \Magento\Backend\App\Action
     }
 
     /**
+     * @return string
      * @throws \Exception
      */
-    protected function validate()
+    protected function getJobClassName($jobCode)
     {
-        $package = $this->getRequest()->getPost('package');
-        $job = $this->getRequest()->getParam('job');
-
-        if (!in_array($job, $this->allowedJobs) ||
-            !method_exists($this->packageManager, $job)
-        ) {
-            throw new \Exception(__('Operation "%1" is not permitted.', $job));
+        if (isset($this->jobs[$jobCode])) {
+            return $this->jobs[$jobCode];
         }
+
+        throw new \Exception(__('Operation "%1" is not permitted.', $jobCode));
     }
 }
