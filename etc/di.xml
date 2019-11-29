@@ -11,6 +11,16 @@
         </arguments>
     </type>
 
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="channelListCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelListCommand</item>
+                <item name="channelEnableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelEnableCommand</item>
+                <item name="channelDisableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelDisableCommand</item>
+            </argument>
+        </arguments>
+    </type>
+
     <!-- Magento Marketplace Channel -->
     <virtualType name="Swissup\Marketplace\Model\Channel\Magento"
                  type="Swissup\Marketplace\Model\Channel\Composer">
