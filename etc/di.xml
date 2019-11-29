@@ -1,6 +1,17 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType
+        name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Pool"
+        type="Magento\Ui\DataProvider\Modifier\Pool"
+    />
+    <type name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider">
+        <arguments>
+            <argument name="pool" xsi:type="object">Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Pool</argument>
+        </arguments>
+    </type>
+
+    <!-- Magento Marketplace Channel -->
     <virtualType name="Swissup\Marketplace\Model\Channel\Magento"
                  type="Swissup\Marketplace\Model\Channel\Composer">
         <arguments>
@@ -14,6 +25,31 @@
             </argument>
         </arguments>
     </virtualType>
+    <type name="Swissup\Marketplace\Model\ChannelRepository">
+        <arguments>
+            <argument name="channels" xsi:type="array">
+                <item name="magento" xsi:type="object">Swissup\Marketplace\Model\Channel\Magento</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Magento"
+                 type="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\HttpBasicAuth">
+        <arguments>
+            <argument name="channel" xsi:type="object">Swissup\Marketplace\Model\Channel\Magento</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Pool">
+        <arguments>
+            <argument name="modifiers" xsi:type="array">
+                <item name="magento" xsi:type="array">
+                    <item name="class" xsi:type="string">Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Magento</item>
+                    <item name="sortOrder" xsi:type="number">10</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Swissup, Argento, and Firecheckout Channel -->
     <virtualType name="Swissup\Marketplace\Model\Channel\Swissup"
                  type="Swissup\Marketplace\Model\Channel\DomainAsUsername">
         <arguments>
@@ -28,37 +64,22 @@
             </argument>
         </arguments>
     </virtualType>
-
     <type name="Swissup\Marketplace\Model\ChannelRepository">
         <arguments>
             <argument name="channels" xsi:type="array">
-                <item name="magento" xsi:type="object">Swissup\Marketplace\Model\Channel\Magento</item>
                 <item name="swissup" xsi:type="object">Swissup\Marketplace\Model\Channel\Swissup</item>
             </argument>
         </arguments>
     </type>
-
-    <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Magento"
-                 type="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\HttpBasicAuth">
-        <arguments>
-            <argument name="channel" xsi:type="object">Swissup\Marketplace\Model\Channel\Magento</argument>
-        </arguments>
-    </virtualType>
     <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Swissup"
                  type="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\DomainAndKeys">
         <arguments>
             <argument name="channel" xsi:type="object">Swissup\Marketplace\Model\Channel\Swissup</argument>
         </arguments>
     </virtualType>
-
-    <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Pool"
-                 type="Magento\Ui\DataProvider\Modifier\Pool">
+    <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Pool">
         <arguments>
             <argument name="modifiers" xsi:type="array">
-                <item name="magento" xsi:type="array">
-                    <item name="class" xsi:type="string">Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Magento</item>
-                    <item name="sortOrder" xsi:type="number">10</item>
-                </item>
                 <item name="swissup" xsi:type="array">
                     <item name="class" xsi:type="string">Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Swissup</item>
                     <item name="sortOrder" xsi:type="number">20</item>
@@ -66,10 +87,4 @@
             </argument>
         </arguments>
     </virtualType>
-
-    <type name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider">
-        <arguments>
-            <argument name="pool" xsi:type="object">Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Pool</argument>
-        </arguments>
-    </type>
 </config>
