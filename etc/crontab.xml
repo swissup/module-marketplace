@@ -5,5 +5,8 @@
         <job name="swissup_marketplace_job_run" instance="Swissup\Marketplace\Cron\ProcessQueue" method="execute">
             <schedule>* * * * *</schedule>
         </job>
+        <job name="swissup_marketplace_job_cleanup" instance="Swissup\Marketplace\Cron\CleanupQueue" method="execute">
+            <schedule>45 2 * * *</schedule>
+        </job>
     </group>
 </config>
