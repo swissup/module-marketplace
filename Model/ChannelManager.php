@@ -93,9 +93,11 @@ class ChannelManager
                 'command' => 'config',
                 '-a' => true,
                 '-g' => true,
-                'setting-key' => $channel->getAuthType() . '.' . $channel->getHostname(),
+                'setting-key' => $channel->getAuthType(), // don't use concat to fix error when domain level > 3
             ]);
-            return $this->jsonSerializer->unserialize($string);
+            $data = $this->jsonSerializer->unserialize($string);
+
+            return $data[$channel->getHostname()] ?? [];
         } catch (\Exception $e) {
             return [];
         }
