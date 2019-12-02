@@ -17,6 +17,11 @@
                 <item name="channelListCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelListCommand</item>
                 <item name="channelEnableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelEnableCommand</item>
                 <item name="channelDisableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelDisableCommand</item>
+                <item name="channelAuthKeyAddCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthKeyAddCommand</item>
+                <item name="channelAuthKeyRemoveCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthKeyRemoveCommand</item>
+                <item name="channelAuthSetCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthSetCommand</item>
+                <item name="channelAuthShowCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthShowCommand</item>
+                <item name="channelAuthCheckCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthCheckCommand</item>
             </argument>
         </arguments>
     </type>
