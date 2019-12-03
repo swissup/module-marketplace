@@ -4,23 +4,42 @@ namespace Swissup\Marketplace\Model;
 
 class PackageManager
 {
+    /**
+     * @var \Magento\Framework\Module\PackageInfo
+     */
+    protected $packageInfo;
+
+    /**
+     * @var \Magento\Framework\Module\Status
+     */
+    protected $moduleStatus;
+
+    /**
+     * @var \Magento\Framework\Code\GeneratedFiles
+     */
+    protected $generatedFiles;
+
+    /**
+     * @var \Swissup\Marketplace\Model\ComposerApplication
+     */
+    protected $composer;
+
+    /**
+     * @param \Magento\Framework\Module\PackageInfo $packageInfo
+     * @param \Magento\Framework\Module\Status $moduleStatus
+     * @param \Magento\Framework\Code\GeneratedFiles $generatedFiles
+     * @param \Swissup\Marketplace\Model\ComposerApplication $composer
+     */
     public function __construct(
         \Magento\Framework\Module\PackageInfo $packageInfo,
         \Magento\Framework\Module\Status $moduleStatus,
         \Magento\Framework\Code\GeneratedFiles $generatedFiles,
-        \Swissup\Marketplace\Model\ComposerApplication $composer,
-        \Swissup\Marketplace\Model\ResourceModel\Package\CollectionFactory $packageCollectionFactory
+        \Swissup\Marketplace\Model\ComposerApplication $composer
     ) {
         $this->packageInfo = $packageInfo;
         $this->moduleStatus = $moduleStatus;
         $this->generatedFiles = $generatedFiles;
         $this->composer = $composer;
-        $this->packageCollection = $packageCollectionFactory->create();
-    }
-
-    public function get($packageName)
-    {
-        return $this->packageCollection->getItemById($packageName);
     }
 
     public function install($packageName)
