@@ -28,4 +28,18 @@ class Job extends \Magento\Framework\Model\AbstractModel
             ->setStartedAt(null)
             ->setFinishedAt(null);
     }
+
+    /**
+     * @return array
+     */
+    public function getAvailableStatuses()
+    {
+        return [
+            self::STATUS_PENDING => __('Pending'),
+            self::STATUS_RUNNING => __('Running'),
+            self::STATUS_SUCCESS => __('Success'),
+            self::STATUS_SKIPPED => __('Skipped'),
+            self::STATUS_ERRORED => __('Errored'),
+        ];
+    }
 }
