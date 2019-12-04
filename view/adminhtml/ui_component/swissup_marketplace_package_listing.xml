@@ -17,7 +17,7 @@
             </item>
             <item name="jobs" xsi:type="array">
                 <item name="name" xsi:type="string">jobs</item>
-                <item name="label" xsi:type="string" translate="true">View Tasks</item>
+                <item name="label" xsi:type="string" translate="true">Tasks Queue</item>
                 <item name="component" xsi:type="string">Magento_Ui/js/form/components/button</item>
                 <item name="aclResource" xsi:type="string">Swissup_Marketplace::package_manage</item>
                 <item name="url" xsi:type="string">*/jobs/index</item>
@@ -203,7 +203,19 @@
                 <item name="componentType" xsi:type="string">modal</item>
                 <item name="provider" xsi:type="string">swissup_marketplace_package_listing.swissup_marketplace_package_listing_data_source</item>
                 <item name="options" xsi:type="array">
-                    <item name="title" xsi:type="string" translate="true">Tasks Dashboard</item>
+                    <item name="title" xsi:type="string" translate="true">Tasks Queue</item>
+                    <item name="buttons" xsi:type="array">
+                        <item name="0" xsi:type="array">
+                            <item name="text" xsi:type="string">Refresh List</item>
+                            <item name="class" xsi:type="string">action-primary</item>
+                            <item name="actions" xsi:type="array">
+                                <item name="0" xsi:type="array">
+                                    <item name="targetName" xsi:type="string">swissup_marketplace_job_listing.swissup_marketplace_job_listing_data_source</item>
+                                    <item name="actionName" xsi:type="string">reload</item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
                 </item>
             </item>
         </argument>

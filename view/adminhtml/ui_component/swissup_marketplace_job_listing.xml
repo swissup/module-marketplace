@@ -7,15 +7,6 @@
             <item name="deps" xsi:type="string">swissup_marketplace_job_listing.swissup_marketplace_job_listing_data_source</item>
         </item>
         <item name="spinner" xsi:type="string">swissup_marketplace_job_columns</item>
-        <item name="buttons" xsi:type="array">
-            <item name="reload" xsi:type="array">
-                <item name="name" xsi:type="string">reload</item>
-                <item name="label" xsi:type="string" translate="true">Reload</item>
-                <item name="class" xsi:type="string">primary</item>
-                <item name="component" xsi:type="string">Magento_Ui/js/form/components/button</item>
-                <item name="url" xsi:type="string">*/*/new</item>
-            </item>
-        </item>
     </argument>
     <dataSource name="swissup_marketplace_job_listing_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
@@ -29,13 +20,13 @@
                     <item name="update_url" xsi:type="url" path="mui/index/render"/>
                     <item name="storageConfig" xsi:type="array">
                         <item name="indexField" xsi:type="string">job_id</item>
+                        <item name="cacheRequests" xsi:type="boolean">false</item>
                     </item>
                 </item>
             </argument>
         </argument>
     </dataSource>
     <listingToolbar name="listing_top">
-        <filters name="listing_filters"/>
         <paging name="listing_paging"/>
     </listingToolbar>
     <columns name="swissup_marketplace_job_columns">
