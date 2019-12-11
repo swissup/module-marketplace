@@ -2,15 +2,26 @@
 
 namespace Swissup\Marketplace\Cron;
 
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Stdlib\DateTime;
 use Swissup\Marketplace\Model\Job;
 
 class ProcessQueue
 {
     /**
-     * @var \Magento\Framework\Code\GeneratedFiles
+     * @var \Magento\Framework\App\Cache\Manager
      */
-    private $generatedFiles;
+    private $cacheManager;
+
+    /**
+     * @var \Magento\Framework\App\MaintenanceMode
+     */
+    private $maintenanceMode;
+
+    /**
+     * @var WriteInterface
+     */
+    private $write;
 
     /**
      * @var \Magento\Framework\Serialize\Serializer\Json
@@ -33,20 +44,29 @@ class ProcessQueue
     private $dispatcher;
 
     /**
-     * @param \Magento\Framework\Code\GeneratedFiles $generatedFiles
+     * @param \Magento\Framework\App\Cache\Manager $cacheManager
+     * @param \Magento\Framework\App\Filesystem\DirectoryList $directoryList
+     * @param \Magento\Framework\App\MaintenanceMode $maintenanceMode
+     * @param \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      * @param \Swissup\Marketplace\Helper\Data $helper
      * @param \Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory $collectionFactory
      * @param \Swissup\Marketplace\Service\JobDispatcher $dispatcher
      */
     public function __construct(
-        \Magento\Framework\Code\GeneratedFiles $generatedFiles,
+        \Magento\Framework\App\Cache\Manager $cacheManager,
+        \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
+        \Magento\Framework\App\MaintenanceMode $maintenanceMode,
+        \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Swissup\Marketplace\Helper\Data $helper,
         \Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory $collectionFactory,
         \Swissup\Marketplace\Service\JobDispatcher $dispatcher
     ) {
-        $this->generatedFiles = $generatedFiles;
+        $this->cacheManager = $cacheManager;
+        $this->directoryList = $directoryList;
+        $this->maintenanceMode = $maintenanceMode;
+        $this->write = $writeFactory->create(BP);
         $this->jsonSerializer = $jsonSerializer;
         $this->helper = $helper;
         $this->collectionFactory = $collectionFactory;
@@ -80,7 +100,7 @@ class ProcessQueue
             $job->reset()->setStatus(Job::STATUS_QUEUED)->save();
         }
 
-        // @todo: enable maintenance mode
+        $this->maintenanceMode->set(true);
 
         foreach ($jobs as $job) {
             try {
@@ -104,9 +124,15 @@ class ProcessQueue
             }
         }
 
-        $this->generatedFiles->requestRegeneration();
+        // Don't use GeneratedFiles::requestRegeneration 'cos is has a
+        // race condition bug that leads to disabled cache
+        try {
+            $this->cleanGeneratedFiles();
+        } catch (\Exception $e) {
+            //
+        }
 
-        // @todo disable maintenance mode
+        $this->maintenanceMode->set(false);
     }
 
     /**
@@ -115,5 +141,35 @@ class ProcessQueue
     private function getCurrentDate()
     {
         return (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT);
+    }
+
+    /**
+     * @return void
+     */
+    private function cleanGeneratedFiles()
+    {
+        $cacheTypes = [];
+        foreach ($this->cacheManager->getStatus() as $type => $status) {
+            if (!$status) {
+                continue;
+            }
+            $cacheTypes[] = $type;
+        }
+
+        $paths = [
+            $this->write->getRelativePath($this->directoryList->getPath(DirectoryList::CACHE)),
+            $this->write->getRelativePath($this->directoryList->getPath(DirectoryList::GENERATED_CODE)),
+            $this->write->getRelativePath($this->directoryList->getPath(DirectoryList::GENERATED_METADATA)),
+        ];
+
+        foreach ($paths as $path) {
+            if ($this->write->isDirectory($path)) {
+                $this->write->delete($path);
+            }
+        }
+
+        if ($cacheTypes) {
+            $this->cacheManager->setEnabled($cacheTypes, true);
+        }
     }
 }

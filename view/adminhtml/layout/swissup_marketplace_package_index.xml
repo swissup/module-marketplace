@@ -10,6 +10,7 @@
         </referenceContainer>
         <referenceContainer name="content">
             <uiComponent name="swissup_marketplace_package_listing"/>
+            <uiComponent name="swissup_marketplace_job_activity_listing"/>
         </referenceContainer>
     </body>
 </page>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">swissup_marketplace_job_activity_listing.swissup_marketplace_job_activity_listing_data_source</item>
+            <item name="deps" xsi:type="string">swissup_marketplace_job_activity_listing.swissup_marketplace_job_activity_listing_data_source</item>
+        </item>
+        <item name="spinner" xsi:type="string">swissup_marketplace_job_activity_columns</item>
+    </argument>
+    <dataSource name="swissup_marketplace_job_activity_listing_data_source">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">Swissup\Marketplace\Ui\DataProvider\JobActivityDataProvider</argument>
+            <argument name="name" xsi:type="string">swissup_marketplace_job_activity_listing_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">job_id</argument>
+            <argument name="requestFieldName" xsi:type="string">job_id</argument>
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Swissup_Marketplace/js/activity/grid/provider</item>
+                    <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                    <item name="storageConfig" xsi:type="array">
+                        <item name="indexField" xsi:type="string">job_id</item>
+                        <item name="cacheRequests" xsi:type="boolean">false</item>
+                    </item>
+                </item>
+            </argument>
+        </argument>
+    </dataSource>
+    <columns name="swissup_marketplace_job_activity_columns">
+        <column name="class">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="label" xsi:type="string" translate="true">Task</item>
+                </item>
+            </argument>
+        </column>
+        <column name="status">
+            <argument name="data" xsi:type="array">
+                <item name="options" xsi:type="object">Swissup\Marketplace\Model\Config\Source\JobStatus</item>
+                <item name="config" xsi:type="array">
+                    <item name="label" xsi:type="string" translate="true">Status</item>
+                    <item name="dataType" xsi:type="string">select</item>
+                    <item name="component" xsi:type="string">Swissup_Marketplace/js/activity/grid/columns/status</item>
+                </item>
+            </argument>
+        </column>
+    </columns>
+</listing>

@@ -2,11 +2,13 @@
 
 namespace Swissup\Marketplace\Controller\Adminhtml\Package;
 
+use Magento\Framework\Controller\ResultFactory;
 use Swissup\Marketplace\Job\PackageInstall;
 use Swissup\Marketplace\Job\PackageUninstall;
 use Swissup\Marketplace\Job\PackageUpdate;
 use Swissup\Marketplace\Job\PackageEnable;
 use Swissup\Marketplace\Job\PackageDisable;
+use Swissup\Marketplace\Model\Job as AsyncJob;
 use Swissup\Marketplace\Service\JobDispatcher;
 
 class Manage extends \Magento\Backend\App\Action
@@ -25,26 +27,18 @@ class Manage extends \Magento\Backend\App\Action
     ];
 
     /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
-     */
-    protected $resultJsonFactory;
-
-    /**
      * @var \Swissup\Marketplace\Service\JobDispatcher
      */
     protected $dispatcher;
 
     /**
      * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
      * @param \Swissup\Marketplace\Service\JobDispatcher $dispatcher
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
         \Swissup\Marketplace\Service\JobDispatcher $dispatcher
     ) {
-        $this->resultJsonFactory = $resultJsonFactory;
         $this->dispatcher = $dispatcher;
         parent::__construct($context);
     }
@@ -56,24 +50,31 @@ class Manage extends \Magento\Backend\App\Action
     {
         $package = $this->getRequest()->getPost('package');
         $job = $this->getRequest()->getParam('job');
+
+        /** @var \Magento\Framework\Controller\Result\Json $resultJson */
+        $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
         $response = new \Magento\Framework\DataObject();
 
         try {
-            $this->dispatcher->dispatch(
-                $this->getJobClassName($job),
-                [
-                    'packageName' => $package
-                ]
-            );
+            $job = $this->dispatcher->dispatch($this->getJobClassName($job), [
+                'packageName' => $package
+            ]);
+
+            if ($job instanceof AsyncJob) {
+                $response->addData([
+                    'id' => $job->getId(),
+                    'created_at' => $job->getCreatedAt(),
+                ]);
+            } else {
+                $this->messageManager->addSuccess(__('Settings successfully updated.'));
+                $response->addData(['reload' => true]);
+            }
         } catch (\Exception $e) {
             $response->setMessage($e->getMessage());
             $response->setError(1);
         }
 
-        $resultJson = $this->resultJsonFactory->create();
-        $resultJson->setData($response);
-
-        return $resultJson;
+        return $resultJson->setData($response);
     }
 
     /**

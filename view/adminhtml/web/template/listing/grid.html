@@ -18,7 +18,8 @@
 <ol class="marketplace-grid-items">
     <li class="grid-item" repeat="foreach: rows, item: '$row'" data-bind="
         css: {
-            hidden: !isRowVisible($row())
+            hidden: !isRowVisible($row()),
+            busy: $row().busy
         }
     ">
         <!--ko foreach: {data: getVisible(), as: '$col'}-->

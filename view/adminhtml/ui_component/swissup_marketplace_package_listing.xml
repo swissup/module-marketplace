@@ -17,7 +17,7 @@
             </item>
             <item name="jobs" xsi:type="array">
                 <item name="name" xsi:type="string">jobs</item>
-                <item name="label" xsi:type="string" translate="true">Tasks Queue</item>
+                <item name="label" xsi:type="string" translate="true">Tasks History</item>
                 <item name="component" xsi:type="string">Magento_Ui/js/form/components/button</item>
                 <item name="aclResource" xsi:type="string">Swissup_Marketplace::package_manage</item>
                 <item name="url" xsi:type="string">*/jobs/index</item>
@@ -67,7 +67,7 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="aclResource" xsi:type="string">Swissup_Marketplace::package_index</item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+                    <item name="component" xsi:type="string">Swissup_Marketplace/js/listing/provider</item>
                     <item name="update_url" xsi:type="url" path="mui/index/render"/>
                     <item name="storageConfig" xsi:type="array">
                         <item name="indexField" xsi:type="string">uniqid</item>
@@ -180,7 +180,7 @@
         <container name="settings_form">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="component" xsi:type="string">Magento_Ui/js/form/components/insert-form</item>
+                    <item name="component" xsi:type="string">Swissup_Marketplace/js/settings-form</item>
                     <item name="update_url" xsi:type="url" path="mui/index/render"/>
                     <item name="render_url" xsi:type="url" path="mui/index/render_handle/handle/swissup_marketplace_settings/buttons/1/id/main"/>
                     <item name="autoRender" xsi:type="boolean">true</item>
@@ -191,6 +191,8 @@
                     <item name="realTimeLink" xsi:type="boolean">false</item>
                     <item name="ns" xsi:type="string">swissup_marketplace_settings</item>
                     <item name="toolbarContainer" xsi:type="string">${ $.parentName }</item>
+                    <item name="formSubmitType" xsi:type="string">ajax</item>
+                    <item name="modalProvider" xsi:type="string">${ $.parentName }</item>
                 </item>
             </argument>
         </container>
@@ -203,7 +205,7 @@
                 <item name="componentType" xsi:type="string">modal</item>
                 <item name="provider" xsi:type="string">swissup_marketplace_package_listing.swissup_marketplace_package_listing_data_source</item>
                 <item name="options" xsi:type="array">
-                    <item name="title" xsi:type="string" translate="true">Tasks Queue</item>
+                    <item name="title" xsi:type="string" translate="true">Tasks History</item>
                     <item name="buttons" xsi:type="array">
                         <item name="0" xsi:type="array">
                             <item name="text" xsi:type="string">Refresh List</item>

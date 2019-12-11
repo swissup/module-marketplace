@@ -1,26 +1,53 @@
 .marketplace-job-status {
-    &-0 {
+    // animated statuses
+    .main-col & {
+        border-radius: 3px;
+        margin: 0 0 0 auto;
+
+        &-queued,
+        &-running {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            text-indent: -99999px;
+            padding: 0;
+            background: none;
+            border-color: currentColor;
+            border-top-color: transparent;
+            border-left-color: transparent;
+        }
+        &-queued {
+            animation: marketplace-rotate 2s linear infinite;
+        }
+        &-running {
+            animation: marketplace-rotate 0.55s linear infinite;
+        }
+    }
+
+    &-pending,
+    &-skipped {
         background: #d8d8d8;
         border-color: #929292;
         color: #5f5f5f;
     }
-    &-1 {
-        background: #feeee1;
-        border-color: #f5be90;
-        color: #dc7622;
+    &-queued {
+        color: #929292;
     }
-    &-3 {
-        opacity: .5;
+    &-running {}
+    &-skipped {
+        opacity: .7;
     }
-    &-4 {
+    &-errored {
         background: #f9d4d4;
         border-color: #e22626;
         color: #e22626;
     }
 }
-.job-with-output {
+
+.marketplace-job-with-output {
     cursor: pointer;
 }
+
 .marketplace-job-output {
     .modal-inner-wrap {
         max-width: 900px;
@@ -28,5 +55,43 @@
     pre {
         white-space: pre-wrap;
         word-wrap: break-word;
+    }
+}
+
+body.busy {
+    &::before {
+        content: 'Please wait a minute...';
+        font-size: 25px;
+        font-weight: bold;
+        color: #555;
+        background: rgba(255,255,255,0.5);
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        position: fixed;
+        z-index: 998;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    &::after {
+        content: '';
+        top: 50%;
+        left: 50%;
+        margin-left: -20px;
+        margin-top: -75px;
+        position: fixed;
+        z-index: 999;
+
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        padding: 0;
+        background: none;
+        border: 3px solid #555;
+        border-top-color: transparent;
+        border-left-color: transparent;
+        animation: marketplace-rotate 0.7s linear infinite;
     }
 }

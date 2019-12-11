@@ -2,18 +2,15 @@ define([
     'ko',
     'jquery',
     'underscore',
+    'uiRegistry',
     'Magento_Ui/js/grid/columns/actions',
-    'Magento_Ui/js/modal/alert',
-    'mage/translate'
-], function (ko, $, _, Column, uiAlert, $t) {
+    'Swissup_Marketplace/js/utils/request',
+    'Swissup_Marketplace/js/utils/job-watcher'
+], function (ko, $, _, registry, Column, request, watcher) {
     'use strict';
 
     return Column.extend({
         defaults: {
-            ajaxSettings: {
-                method: 'POST',
-                dataType: 'json'
-            },
             forceMultiple: false
         },
 
@@ -106,21 +103,28 @@ define([
             var data;
 
             if (action.isAjax) {
-                data = _.findWhere(this.rows, {
-                    _rowIndex: action.rowIndex
-                });
+                data = this.rows[action.rowIndex];
 
-                this.request(action.href, {
+                this.rows[action.rowIndex].busy = true;
+                this.rows.splice(0, 0); // trigger grid re-render
+
+                request.post(action.href, {
                         package: data.id,
                         channel: data.remote.channel
                     })
                     .done(function (response) {
-                        if (response.error || !response.package) {
-                            return;
+                        if (response.reload === true) {
+                            return window.location.reload();
                         }
 
-                        _.extend(this.rows[action.rowIndex], response.package);
-
+                        if (response.id) {
+                            watcher.watch(response.id).done(function () {
+                                this.updateRowData(this.rows[action.rowIndex]);
+                            }.bind(this));
+                        }
+                    }.bind(this))
+                    .fail(function () {
+                        this.rows[action.rowIndex].busy = false;
                         this.rows.splice(0, 0); // trigger grid re-render
                     }.bind(this));
             } else {
@@ -129,46 +133,24 @@ define([
         },
 
         /**
-         * @param {String} href
-         * @param {Object} data
+         * @param {Object} row
          */
-        request: function (href, data) {
-            var settings = _.extend({}, this.ajaxSettings, {
-                url: href,
-                data: _.extend(data || {}, {
-                    'form_key': window.FORM_KEY
-                })
-            });
-
-            $('body').trigger('processStart');
-
-            return $.ajax(settings)
-                .done(function (response) {
-                    if (!response.error) {
-                        return;
-                    }
-
-                    uiAlert({
-                        content: response.message
-                    });
-                })
-                .fail(function (response) {
-                    var title = $t('Attention'),
-                        content = $t('Sorry, there has been an error processing your request. Please try again later.');
-
-                    if (response.status === 403) {
-                        title = $t(response.statusText);
-                        content = $t('Sorry, you do not have permission for this operation.');
-                    }
-
-                    uiAlert({
-                        title: title,
-                        content: content
-                    });
-                })
-                .always(function () {
-                    $('body').trigger('processStop');
+        updateRowData: function (row) {
+            this.source().softReload().done(function (response) {
+                var data = _.find(response.items, function (item) {
+                    return item.id === row.id;
                 });
+
+                this.rows[row._rowIndex] = $.extend(
+                    this.rows[row._rowIndex],
+                    {
+                        busy: false
+                    },
+                    data
+                );
+
+                this.rows.splice(0, 0); // trigger grid re-render
+            }.bind(this));
         }
     });
 });

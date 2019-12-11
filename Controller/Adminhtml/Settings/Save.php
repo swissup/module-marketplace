@@ -3,8 +3,10 @@
 namespace Swissup\Marketplace\Controller\Adminhtml\Settings;
 
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Swissup\Marketplace\Job\ChannelsSave;
+use Swissup\Marketplace\Model\Job as AsyncJob;
 use Swissup\Marketplace\Service\JobDispatcher;
 
 class Save extends \Magento\Backend\App\Action
@@ -35,22 +37,33 @@ class Save extends \Magento\Backend\App\Action
      */
     public function execute()
     {
-        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
-        $resultRedirect = $this->resultRedirectFactory->create();
+        /** @var \Magento\Framework\Controller\Result\Json $resultJson */
+        $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
+        $response = new \Magento\Framework\DataObject();
         $channels = $this->getRequest()->getPostValue('channels');
 
         if ($channels) {
             try {
-                $this->dispatcher->dispatch(ChannelsSave::class, [
+                $job = $this->dispatcher->dispatch(ChannelsSave::class, [
                     'data' => $channels
                 ]);
-            } catch (LocalizedException $e) {
-                $this->messageManager->addError($e->getMessage());
+
+                if ($job instanceof AsyncJob) {
+                    $response->addData([
+                        'message' => __('Please wait a minute until the changes will take place.'),
+                        'id' => $job->getId(),
+                        'created_at' => $job->getCreatedAt(),
+                    ]);
+                } else {
+                    $this->messageManager->addSuccess(__('Settings successfully updated.'));
+                    $response->addData(['reload' => true]);
+                }
             } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong while saving the settings.'));
+                $response->setMessage($e->getMessage());
+                $response->setError(1);
             }
         }
 
-        return $resultRedirect->setPath('*/package/index');
+        return $resultJson->setData($response);
     }
 }

@@ -1,8 +1,10 @@
 .swissup_marketplace-package-index {
-    .admin__data-grid-action-bookmarks,
-    .data-grid-filters-actions-wrap,
-    .admin__data-grid-filters-current {
-        display: none;
+    .main-col {
+        .admin__data-grid-action-bookmarks,
+        .data-grid-filters-actions-wrap,
+        .admin__data-grid-filters-current {
+            display: none;
+        }
     }
 }
 
@@ -44,6 +46,11 @@
 
         &.hidden {
             display: none;
+        }
+
+        &.busy {
+            pointer-events: none;
+            animation: marketplace-flicker 1s infinite;
         }
 
         &::before {
