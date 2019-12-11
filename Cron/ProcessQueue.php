@@ -8,6 +8,11 @@ use Swissup\Marketplace\Model\Job;
 class ProcessQueue
 {
     /**
+     * @var \Magento\Framework\Code\GeneratedFiles
+     */
+    private $generatedFiles;
+
+    /**
      * @var \Magento\Framework\Serialize\Serializer\Json
      */
     private $jsonSerializer;
@@ -28,17 +33,20 @@ class ProcessQueue
     private $dispatcher;
 
     /**
+     * @param \Magento\Framework\Code\GeneratedFiles $generatedFiles
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      * @param \Swissup\Marketplace\Helper\Data $helper
      * @param \Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory $collectionFactory
      * @param \Swissup\Marketplace\Service\JobDispatcher $dispatcher
      */
     public function __construct(
+        \Magento\Framework\Code\GeneratedFiles $generatedFiles,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Swissup\Marketplace\Helper\Data $helper,
         \Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory $collectionFactory,
         \Swissup\Marketplace\Service\JobDispatcher $dispatcher
     ) {
+        $this->generatedFiles = $generatedFiles;
         $this->jsonSerializer = $jsonSerializer;
         $this->helper = $helper;
         $this->collectionFactory = $collectionFactory;
@@ -62,6 +70,10 @@ class ProcessQueue
             ->setOrder('scheduled_at', 'ASC')
             ->setOrder('created_at', 'ASC')
             ->setPageSize(20);
+
+        if (!$jobs->count()) {
+            return;
+        }
 
         // prevent overlapping with next cronjob
         foreach ($jobs as $job) {
@@ -91,6 +103,8 @@ class ProcessQueue
                     ->save();
             }
         }
+
+        $this->generatedFiles->requestRegeneration();
 
         // @todo disable maintenance mode
     }

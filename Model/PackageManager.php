@@ -2,6 +2,8 @@
 
 namespace Swissup\Marketplace\Model;
 
+use Magento\Framework\Config\File\ConfigFilePool;
+
 class PackageManager
 {
     /**
@@ -15,9 +17,14 @@ class PackageManager
     protected $moduleStatus;
 
     /**
-     * @var \Magento\Framework\Code\GeneratedFiles
+     * @var \Magento\Framework\App\DeploymentConfig\Reader
      */
-    protected $generatedFiles;
+    protected $configReader;
+
+    /**
+     * @var \Magento\Framework\App\DeploymentConfig\Writer
+     */
+    protected $configWriter;
 
     /**
      * @var \Swissup\Marketplace\Model\ComposerApplication
@@ -27,18 +34,21 @@ class PackageManager
     /**
      * @param \Magento\Framework\Module\PackageInfo $packageInfo
      * @param \Magento\Framework\Module\Status $moduleStatus
-     * @param \Magento\Framework\Code\GeneratedFiles $generatedFiles
+     * @param \Magento\Framework\App\DeploymentConfig\Reader $configReader
+     * @param \Magento\Framework\App\DeploymentConfig\Writer $configWriter
      * @param \Swissup\Marketplace\Model\ComposerApplication $composer
      */
     public function __construct(
         \Magento\Framework\Module\PackageInfo $packageInfo,
         \Magento\Framework\Module\Status $moduleStatus,
-        \Magento\Framework\Code\GeneratedFiles $generatedFiles,
+        \Magento\Framework\App\DeploymentConfig\Reader $configReader,
+        \Magento\Framework\App\DeploymentConfig\Writer $configWriter,
         \Swissup\Marketplace\Model\ComposerApplication $composer
     ) {
         $this->packageInfo = $packageInfo;
         $this->moduleStatus = $moduleStatus;
-        $this->generatedFiles = $generatedFiles;
+        $this->configReader = $configReader;
+        $this->configWriter = $configWriter;
         $this->composer = $composer;
     }
 
@@ -82,8 +92,14 @@ class PackageManager
 
     protected function changeStatus($packageName, $flag)
     {
-        $this->moduleStatus->setIsEnabled($flag, [$this->getModuleName($packageName)]);
-        $this->generatedFiles->requestRegeneration();
+        $module = $this->getModuleName($packageName);
+        $config = $this->configReader->load(ConfigFilePool::APP_CONFIG);
+        $config['modules'][$module] = (int) $flag;
+
+        $this->configWriter->saveConfig(
+            [ConfigFilePool::APP_CONFIG => $config],
+            true
+        );
     }
 
     protected function getModuleName($packageName)
