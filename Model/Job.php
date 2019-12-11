@@ -5,10 +5,11 @@ namespace Swissup\Marketplace\Model;
 class Job extends \Magento\Framework\Model\AbstractModel
 {
     const STATUS_PENDING = 0;
-    const STATUS_RUNNING = 1;
-    const STATUS_SUCCESS = 2;
-    const STATUS_SKIPPED = 3;
-    const STATUS_ERRORED = 4;
+    const STATUS_QUEUED  = 1;
+    const STATUS_RUNNING = 2;
+    const STATUS_SUCCESS = 3;
+    const STATUS_SKIPPED = 4;
+    const STATUS_ERRORED = 5;
 
     /**
      * Initialize resource model
@@ -36,6 +37,7 @@ class Job extends \Magento\Framework\Model\AbstractModel
     {
         return [
             self::STATUS_PENDING => __('Pending'),
+            self::STATUS_QUEUED  => __('Queued'),
             self::STATUS_RUNNING => __('Running'),
             self::STATUS_SUCCESS => __('Success'),
             self::STATUS_SKIPPED => __('Skipped'),

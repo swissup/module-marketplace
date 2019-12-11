@@ -65,16 +65,15 @@ class ProcessQueue
 
         // prevent overlapping with next cronjob
         foreach ($jobs as $job) {
-            $job->reset()
-                ->setStatus(Job::STATUS_RUNNING)
-                ->save();
+            $job->reset()->setStatus(Job::STATUS_QUEUED)->save();
         }
 
         // @todo: enable maintenance mode
 
         foreach ($jobs as $job) {
             try {
-                $job->setStartedAt($this->getCurrentDate())
+                $job->setStatus(Job::STATUS_RUNNING)
+                    ->setStartedAt($this->getCurrentDate())
                     ->setAttempts($job->getAttempts() + 1)
                     ->save();
 
