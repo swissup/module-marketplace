@@ -93,6 +93,15 @@ class PackageManager
     protected function changeStatus($packageName, $flag)
     {
         $module = $this->getModuleName($packageName);
+
+        $constraints = $this->moduleStatus->checkConstraints($flag, [$module]);
+        if ($constraints) {
+            throw new \Exception(sprintf(
+                "Unable to change status of module because of the following constraints: \n%s",
+                implode("\n", $constraints)
+            ));
+        }
+
         $config = $this->configReader->load(ConfigFilePool::APP_CONFIG);
         $config['modules'][$module] = (int) $flag;
 
