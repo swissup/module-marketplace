@@ -37,7 +37,7 @@ class Index extends \Magento\Backend\App\Action
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('Swissup_Marketplace::package_index');
         $resultPage->addBreadcrumb(__('Marketplace'), __('Marketplace'));
-        $resultPage->getConfig()->getTitle()->prepend(__('Marketplace'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Package Manager'));
         return $resultPage;
     }
 }
