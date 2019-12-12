@@ -67,7 +67,7 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="aclResource" xsi:type="string">Swissup_Marketplace::package_index</item>
-                    <item name="component" xsi:type="string">Swissup_Marketplace/js/listing/provider</item>
+                    <item name="component" xsi:type="string">Swissup_Marketplace/js/packages/grid/provider</item>
                     <item name="update_url" xsi:type="url" path="mui/index/render"/>
                     <item name="storageConfig" xsi:type="array">
                         <item name="indexField" xsi:type="string">uniqid</item>
@@ -92,8 +92,8 @@
     <columns name="swissup_marketplace_package_columns">
         <argument name="data" xsi:type="array">
             <item name="config" xsi:type="array">
-                <item name="component" xsi:type="string">Swissup_Marketplace/js/listing/grid</item>
-                <item name="template" xsi:type="string">Swissup_Marketplace/listing/grid</item>
+                <item name="component" xsi:type="string">Swissup_Marketplace/js/packages/grid</item>
+                <item name="template" xsi:type="string">Swissup_Marketplace/packages/grid</item>
                 <item name="dndConfig" xsi:type="array">
                     <item name="enabled" xsi:type="boolean">false</item>
                 </item>
@@ -104,7 +104,7 @@
                 <item name="config" xsi:type="array">
                     <item name="label" xsi:type="string" translate="true">Image</item>
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/thumbnail</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/image</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/packages/grid/cells/image</item>
                 </item>
             </argument>
         </column>
@@ -112,8 +112,8 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="label" xsi:type="string" translate="true">Links</item>
-                    <item name="component" xsi:type="string">Swissup_Marketplace/js/listing/columns/actions</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/actions</item>
+                    <item name="component" xsi:type="string">Swissup_Marketplace/js/packages/grid/columns/actions</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/packages/grid/cells/actions</item>
                     <item name="forceMultiple" xsi:type="boolean">true</item>
                 </item>
                 <item name="links" xsi:type="array">
@@ -132,7 +132,7 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="label" xsi:type="string" translate="true">Package Name</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/text</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/packages/grid/cells/text</item>
                 </item>
             </argument>
         </column>
@@ -140,7 +140,7 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="label" xsi:type="string" translate="true">Description</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/text</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/packages/grid/cells/text</item>
                 </item>
             </argument>
         </column>
@@ -148,8 +148,8 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="label" xsi:type="string" translate="true">Status</item>
-                    <item name="component" xsi:type="string">Swissup_Marketplace/js/listing/columns/status</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/status</item>
+                    <item name="component" xsi:type="string">Swissup_Marketplace/js/packages/grid/columns/status</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/packages/grid/cells/status</item>
                 </item>
             </argument>
         </column>
@@ -159,7 +159,7 @@
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
                     <item name="label" xsi:type="string" translate="true">Keywords</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/listing/cells/keywords</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/packages/grid/cells/keywords</item>
                 </item>
             </argument>
         </column>

@@ -50,7 +50,7 @@ define([
             }, {
                 index: 'disable',
                 class: 'action',
-                hidden: true,
+                hidden: false,
                 rowIndex: row._rowIndex,
                 label: $t('Disable')
             }];
