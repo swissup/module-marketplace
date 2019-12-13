@@ -1,0 +1,37 @@
+<div class="marketplace-activity-grid-wrapper" css="active: hasData()">
+    <input type="checkbox" id="marketplace-activity-checkbox"/>
+    <label for="marketplace-activity-checkbox" data-bind="attr: {
+        title: secondsToNextQueuePhrase()
+    }">
+        <div class="marketplace-activity-loader"
+            css="active: isLoaderActive()"/>
+
+        <svg viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g stroke="none" stroke-width="1" fill-rule="evenodd">
+                <g>
+                    <path d="M14,14 L18,14 L18,2 L2,2 L2,14 L6,14 L6,14.0020869 C6,15.1017394 6.89458045,16 7.99810135,16 L12.0018986,16 C13.1132936,16 14,15.1055038 14,14.0020869 L14,14 L14,14 Z M0,1.99079514 C0,0.891309342 0.898212381,0 1.99079514,0 L18.0092049,0 C19.1086907,0 20,0.898212381 20,1.99079514 L20,18.0092049 C20,19.1086907 19.1017876,20 18.0092049,20 L1.99079514,20 C0.891309342,20 0,19.1017876 0,18.0092049 L0,1.99079514 L0,1.99079514 Z M4,4 L16,4 L16,6 L4,6 L4,4 L4,4 Z M4,7 L16,7 L16,9 L4,9 L4,7 L4,7 Z M4,10 L16,10 L16,12 L4,12 L4,10 L4,10 Z"></path>
+                </g>
+            </g>
+        </svg>
+    </label>
+
+    <div class="admin__data-grid-wrap" data-role="grid-wrapper">
+        <table class="data-grid" data-role="grid">
+            <thead>
+                <tr each="data: getVisible(), as: '$col'" render="getHeader()"/>
+            </thead>
+            <tbody>
+                <tr class="data-row" repeat="foreach: rows, item: '$row'" css="'_odd-row': $index % 2">
+                    <td outerfasteach="data: getVisible(), as: '$col'"
+                        css="getFieldClass($row())" click="getFieldHandler($row())" template="getBody()"/>
+                </tr>
+                <tr ifnot="hasData()" class="data-grid-tr-no-data">
+                    <td attr="colspan: countVisible()" translate="'We couldn\'t find any recent tasks.'"/>
+                </tr>
+            </tbody>
+        </table>
+        <div class="toolbar" if="hasData()">
+            <div class="timer" text="secondsToNextQueuePhrase()"/>
+        </div>
+    </div>
+</div>

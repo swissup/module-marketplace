@@ -50,7 +50,27 @@
 
         &.busy {
             pointer-events: none;
-            animation: marketplace-flicker 1s infinite;
+            opacity: 0.5;
+
+            &::after {
+                content: '';
+                top: 50%;
+                left: 50%;
+                margin-left: -20px;
+                margin-top: -75px;
+                position: absolute;
+                z-index: 999;
+
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                padding: 0;
+                background: none;
+                border: 3px solid #555;
+                border-top-color: transparent;
+                border-left-color: transparent;
+                animation: marketplace-rotate 0.7s linear infinite;
+            }
         }
 
         &::before {

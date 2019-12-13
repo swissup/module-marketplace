@@ -27,6 +27,15 @@
         </argument>
     </dataSource>
     <columns name="swissup_marketplace_job_activity_columns">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="component" xsi:type="string">Swissup_Marketplace/js/activity/grid</item>
+                <item name="template" xsi:type="string">Swissup_Marketplace/activity/grid</item>
+                <item name="dndConfig" xsi:type="array">
+                    <item name="enabled" xsi:type="boolean">false</item>
+                </item>
+            </item>
+        </argument>
         <column name="class">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">

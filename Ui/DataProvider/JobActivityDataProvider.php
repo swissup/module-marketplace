@@ -53,8 +53,11 @@ class JobActivityDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvi
      */
     public function getData()
     {
+        $date = new \DateTime();
+
         return array_merge($this->getCollection()->toArray(), [
-            'time' => (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT)
+            'secondsToNextQueue' => 60 - $date->format('s'),
+            'time' => $date->format(DateTime::DATETIME_PHP_FORMAT),
         ]);
     }
 }
