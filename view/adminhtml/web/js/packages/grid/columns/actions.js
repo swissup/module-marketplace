@@ -102,34 +102,34 @@ define([
         defaultCallback: function (actionIndex, recordId, action) {
             var data;
 
-            if (action.isAjax) {
-                data = this.rows[action.rowIndex];
-
-                this.rows[action.rowIndex].busy = true;
-                this.rows.splice(0, 0); // trigger grid re-render
-
-                request.post(action.href, {
-                        package: data.id,
-                        channel: data.remote.channel
-                    })
-                    .done(function (response) {
-                        if (response.reload === true) {
-                            return window.location.reload();
-                        }
-
-                        if (response.id) {
-                            watcher.watch(response.id).done(function () {
-                                this.updateRowData(this.rows[action.rowIndex]);
-                            }.bind(this));
-                        }
-                    }.bind(this))
-                    .fail(function () {
-                        this.rows[action.rowIndex].busy = false;
-                        this.rows.splice(0, 0); // trigger grid re-render
-                    }.bind(this));
-            } else {
-                this._super();
+            if (!action.isAjax) {
+                return this._super();
             }
+
+            data = this.rows[action.rowIndex];
+
+            this.rows[action.rowIndex].busy = true;
+            this.rows.splice(0, 0); // trigger grid re-render
+
+            request.post(action.href, {
+                    package: data.id,
+                    channel: data.remote.channel
+                })
+                .done(function (response) {
+                    if (response.reload === true) {
+                        return window.location.reload();
+                    }
+
+                    if (response.id) {
+                        watcher.watch(response.id).done(function () {
+                            this.updateRowData(this.rows[action.rowIndex]);
+                        }.bind(this));
+                    }
+                }.bind(this))
+                .fail(function () {
+                    this.rows[action.rowIndex].busy = false;
+                    this.rows.splice(0, 0); // trigger grid re-render
+                }.bind(this));
         },
 
         /**
