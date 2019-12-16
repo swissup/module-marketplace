@@ -54,8 +54,6 @@ class PackageManager
 
     public function install($packageName)
     {
-        ini_set('memory_limit', '2G');
-
         return $this->composer->run([
             'command' => 'require',
             'packages' => [$packageName],
@@ -68,8 +66,6 @@ class PackageManager
 
     public function update($packageName)
     {
-        ini_set('memory_limit', '2G');
-
         return $this->composer->run([
             'command' => 'update',
             'packages' => [$packageName],
