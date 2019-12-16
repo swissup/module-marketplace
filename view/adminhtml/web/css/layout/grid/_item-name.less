@@ -3,6 +3,17 @@
         [data-index="name"] {
             font-size: 1.3em;
             word-break: break-word;
+            margin-top: -7px;
+            margin-bottom: 7px;
+            padding-right: 12px;
+        }
+
+        [data-index="image"] {
+            ~ [data-index="name"] {
+                margin-top: 0;
+                margin-bottom: 5px;
+                padding-right: 0;
+            }
         }
     }
 }

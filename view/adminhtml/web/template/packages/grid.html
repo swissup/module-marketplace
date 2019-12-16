@@ -19,7 +19,8 @@
     <li class="grid-item" repeat="foreach: rows, item: '$row'" data-bind="
         css: {
             hidden: !isRowVisible($row()),
-            busy: $row().busy
+            busy: $row().busy,
+            noimage: !$row().image_src
         }
     ">
         <!--ko foreach: {data: getVisible(), as: '$col'}-->

@@ -3,7 +3,6 @@
         position: absolute;
         right: 0;
         top: 0;
-        z-index: 11;
 
         .action-select-wrap {
             .action-select {
@@ -69,7 +68,7 @@
         }
     }
 
-    .grid-item [data-index="image"] ~ [data-index="links"] {
+    .grid-item:not(.noimage) [data-index="image"] ~ [data-index="links"] {
         .action-select-wrap {
             .action-select {
                 &::before {

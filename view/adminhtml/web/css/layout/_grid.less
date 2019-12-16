@@ -34,7 +34,6 @@
     .grid-item {
         width: @grid-item__width - @grid-item__gap;
         margin: 0 @grid-item__gap / 2 @grid-item__gap;
-        min-height: 365px;
 
         display: flex;
         flex-direction: column;
@@ -43,6 +42,10 @@
         padding: @grid-item__padding @grid-item__padding @grid-item__padding - 3;
         border-radius: @grid-item__border-radius;
         position: relative;
+
+        &:not(.noimage) {
+            min-height: 365px;
+        }
 
         &.hidden {
             display: none;
