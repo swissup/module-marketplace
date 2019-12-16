@@ -19,3 +19,39 @@
         border-radius: @border-radius;
     }
 }
+
+.marketplace-spinner {
+    content: '';
+    top: 50%;
+    left: 50%;
+    margin-left: -20px;
+    margin-top: -75px;
+    position: fixed;
+    z-index: 999;
+
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+    background: none;
+    border: 3px solid #555;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    animation: marketplace-rotate 0.7s linear infinite;
+}
+.marketplace-spinner-title {
+    content: 'Please wait a minute...';
+    font-size: 25px;
+    font-weight: bold;
+    color: #555;
+    background: rgba(255,255,255,0.5);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    z-index: 998;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

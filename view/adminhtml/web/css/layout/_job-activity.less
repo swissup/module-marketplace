@@ -7,6 +7,17 @@
         opacity: 1;
         transform: none;
     }
+
+    body:not(.busy) & {
+        &.busy {
+            &::before {
+                .marketplace-spinner-title();
+            }
+            &::after {
+                .marketplace-spinner();
+            }
+        }
+    }
 }
 
 label[for="marketplace-activity-checkbox"] {
