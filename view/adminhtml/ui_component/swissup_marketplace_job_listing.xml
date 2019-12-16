@@ -28,8 +28,35 @@
     </dataSource>
     <listingToolbar name="listing_top">
         <paging name="listing_paging"/>
+        <massaction name="listing_massaction">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/tree-massactions</item>
+                </item>
+            </argument>
+            <action name="skip">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">skip</item>
+                        <item name="label" xsi:type="string" translate="true">Skip</item>
+                        <item name="url" xsi:type="url" path="swissup_marketplace/job/massSkip"/>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" xsi:type="string" translate="true">Skip tasks</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure you want to skip selected tasks?</item>
+                        </item>
+                    </item>
+                </argument>
+            </action>
+        </massaction>
     </listingToolbar>
     <columns name="swissup_marketplace_job_columns">
+        <selectionsColumn name="ids">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="indexField" xsi:type="string">job_id</item>
+                </item>
+            </argument>
+        </selectionsColumn>
         <column name="job_id">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
