@@ -76,3 +76,92 @@
         }
     }
 }
+
+.marketplace-keys {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    font-size: 12px;
+
+    li {
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin: 0 0 4px;
+
+        &:hover {
+            .actions {
+                opacity: 1;
+            }
+        }
+
+        > div {
+            display: inline-flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            background: #f4f4f4;
+        }
+    }
+
+    .actions {
+        position: absolute;
+        left: 20px;
+        top: 0;
+        opacity: 0;
+        display: flex;
+
+        span {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            height: 20px;
+            padding: 0 10px;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .action-delete {
+            color: #fff;
+            background: #e21616;
+        }
+        .action-validate {
+            color: #fff;
+            background: #7bc77b;
+        }
+    }
+
+    .domain {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 11px;
+
+        cursor: default;
+        background: #dcdcdc;
+        color: #666;
+
+        &[data-domain*="argentotheme"] {
+            background: #0769ad;
+            color: #fff;
+        }
+        &[data-domain*="firecheckout"] {
+            background: #f35a42;
+            color: #fff;
+        }
+        &[data-domain*="swissuplabs"] {
+            background: #b10005;
+            color: #fff;
+        }
+    }
+
+    .key {
+        margin: 0 5px 0 3px;
+        height: 20px;
+        line-height: 20px;
+    }
+}
