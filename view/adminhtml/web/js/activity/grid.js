@@ -61,7 +61,7 @@ define([
         /**
          * @return {Boolean}
          */
-        isLoaderActive: function () {
+        isRunning: function () {
             return this.secondsToNextQueue() <= 0 && this.source.hasUnfinishedJobs();
         }
     });

@@ -1,11 +1,9 @@
-<div class="marketplace-activity-grid-wrapper" css="active: hasData()">
+<div class="marketplace-activity-grid-wrapper" css="active: hasData(), busy: isRunning()">
     <input type="checkbox" id="marketplace-activity-checkbox" checked/>
     <label for="marketplace-activity-checkbox" data-bind="attr: {
         title: secondsToNextQueuePhrase()
     }">
-        <div class="marketplace-activity-loader"
-            css="active: isLoaderActive()"/>
-
+        <div class="marketplace-activity-loader" css="active: isRunning()"/>
         <svg viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g stroke="none" stroke-width="1" fill-rule="evenodd">
                 <g>
