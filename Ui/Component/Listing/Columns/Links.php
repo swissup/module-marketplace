@@ -116,10 +116,6 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
 
         if (!$item['accessible']) {
             $link['label'] .= '*';
-            $link['confirm'] = [
-                'title' => $this->getLinkTitle('Update', $item),
-                'message' => __("Looks like you don't have access to the latest version. Do you want to proceed anyway?")
-            ];
         }
 
         return $link;
@@ -170,10 +166,6 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
 
         if (!$item['accessible']) {
             $link['label'] .= '*';
-            $link['confirm'] = [
-                'title' => $this->getLinkTitle('Install', $item),
-                'message' => __("Looks like you don't have access to the latest version. Do you want to proceed anyway?")
-            ];
         }
 
         return $link;
