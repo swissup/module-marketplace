@@ -3,13 +3,11 @@
 namespace Swissup\Marketplace\Controller\Adminhtml\Job;
 
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Stdlib\DateTime;
 use Magento\Backend\App\Action\Context;
 use Magento\Ui\Component\MassAction\Filter;
-use Swissup\Marketplace\Model\Job;
 use Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory;
 
-class MassSkip extends \Magento\Backend\App\Action
+class MassCancel extends \Magento\Backend\App\Action
 {
     const ADMIN_RESOURCE = 'Swissup_Marketplace::package_manage';
 
@@ -49,9 +47,7 @@ class MassSkip extends \Magento\Backend\App\Action
         $collection = $this->filter->getCollection($this->collectionFactory->create());
 
         foreach ($collection as $item) {
-            $item->setStatus(Job::STATUS_SKIPPED);
-            $item->setFinishedAt((new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT));
-            $item->save();
+            $item->cancel();
         }
 
         $this->messageManager->addSuccess(

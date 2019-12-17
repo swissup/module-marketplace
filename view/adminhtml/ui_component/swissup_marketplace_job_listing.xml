@@ -38,11 +38,11 @@
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">
                         <item name="type" xsi:type="string">skip</item>
-                        <item name="label" xsi:type="string" translate="true">Skip</item>
-                        <item name="url" xsi:type="url" path="swissup_marketplace/job/massSkip"/>
+                        <item name="label" xsi:type="string" translate="true">Cancel</item>
+                        <item name="url" xsi:type="url" path="swissup_marketplace/job/massCancel"/>
                         <item name="confirm" xsi:type="array">
-                            <item name="title" xsi:type="string" translate="true">Skip tasks</item>
-                            <item name="message" xsi:type="string" translate="true">Are you sure you want to skip selected tasks?</item>
+                            <item name="title" xsi:type="string" translate="true">Cancel tasks</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure you want to cancel selected tasks?</item>
                         </item>
                     </item>
                 </argument>

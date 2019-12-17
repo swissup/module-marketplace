@@ -24,7 +24,8 @@ define([
                     '2': 'running',
                     '3': 'success',
                     '4': 'skipped',
-                    '5': 'errored'
+                    '5': 'errored',
+                    '6': 'canceled'
                 },
                 classes = [
                     'grid-severity-notice',

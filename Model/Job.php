@@ -2,6 +2,8 @@
 
 namespace Swissup\Marketplace\Model;
 
+use Magento\Framework\Stdlib\DateTime;
+
 class Job extends \Magento\Framework\Model\AbstractModel
 {
     const STATUS_PENDING = 0;
@@ -10,6 +12,7 @@ class Job extends \Magento\Framework\Model\AbstractModel
     const STATUS_SUCCESS = 3;
     const STATUS_SKIPPED = 4;
     const STATUS_ERRORED = 5;
+    const STATUS_CANCELED = 6;
 
     /**
      * Initialize resource model
@@ -30,6 +33,23 @@ class Job extends \Magento\Framework\Model\AbstractModel
             ->setFinishedAt(null);
     }
 
+    public function cancel()
+    {
+        $cancelable = [
+            self::STATUS_PENDING,
+            self::STATUS_QUEUED,
+            self::STATUS_RUNNING,
+        ];
+
+        if (!in_array($this->getStatus(), $cancelable)) {
+            return $this;
+        }
+
+        return $this->setStatus(Job::STATUS_CANCELED)
+            ->setFinishedAt((new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT))
+            ->save();
+    }
+
     /**
      * @return array
      */
@@ -42,6 +62,7 @@ class Job extends \Magento\Framework\Model\AbstractModel
             self::STATUS_SUCCESS => __('Success'),
             self::STATUS_SKIPPED => __('Skipped'),
             self::STATUS_ERRORED => __('Errored'),
+            self::STATUS_CANCELED => __('Canceled'),
         ];
     }
 }
