@@ -8,6 +8,6 @@ class PackageUpdate extends PackageAbstractJob implements JobInterface
 {
     public function execute()
     {
-        $this->packageManager->update($this->packageName);
+        return $this->packageManager->update($this->packageName);
     }
 }

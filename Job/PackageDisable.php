@@ -8,6 +8,6 @@ class PackageDisable extends PackageAbstractJob implements JobInterface
 {
     public function execute()
     {
-        $this->packageManager->disable($this->packageName);
+        return $this->packageManager->disable($this->packageName);
     }
 }

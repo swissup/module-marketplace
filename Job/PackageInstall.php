@@ -8,6 +8,6 @@ class PackageInstall extends PackageAbstractJob implements JobInterface
 {
     public function execute()
     {
-        $this->packageManager->install($this->packageName);
+        return $this->packageManager->install($this->packageName);
     }
 }

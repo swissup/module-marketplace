@@ -8,6 +8,6 @@ class PackageUninstall extends PackageAbstractJob implements JobInterface
 {
     public function execute()
     {
-        $this->packageManager->uninstall($this->packageName);
+        return $this->packageManager->uninstall($this->packageName);
     }
 }

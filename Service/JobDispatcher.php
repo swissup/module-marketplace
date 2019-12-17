@@ -62,7 +62,7 @@ class JobDispatcher
     /**
      * @param string $class
      * @param array $arguments
-     * @return void
+     * @return mixed
      */
     public function dispatchNow($class, array $arguments = [])
     {

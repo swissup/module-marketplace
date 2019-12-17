@@ -8,6 +8,6 @@ class PackageEnable extends PackageAbstractJob implements JobInterface
 {
     public function execute()
     {
-        $this->packageManager->enable($this->packageName);
+        return $this->packageManager->enable($this->packageName);
     }
 }
