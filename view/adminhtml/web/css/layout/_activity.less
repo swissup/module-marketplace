@@ -1,73 +1,3 @@
-.marketplace-job-status {
-    cursor: default;
-
-    // animated statuses
-    .main-col & {
-        border-radius: 3px;
-        margin: 0 0 0 auto;
-
-        &-queued,
-        &-running {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            text-indent: -99999px;
-            padding: 0;
-            background: none;
-            border-color: currentColor;
-            border-top-color: transparent;
-            border-left-color: transparent;
-        }
-        &-queued {
-            animation: marketplace-rotate 2s linear infinite;
-        }
-        &-running {
-            animation: marketplace-rotate 0.55s linear infinite;
-        }
-    }
-
-    &-pending,
-    &-skipped {
-        background: #d8d8d8;
-        border-color: #929292;
-        color: #5f5f5f;
-    }
-    &-queued {
-        background: #d8d8d8;
-        border-color: #929292;
-        color: #929292;
-    }
-    &-running {}
-    &-canceled,
-    &-skipped {
-        background: #fff;
-        border-color: #aaa;
-        color: #5f5f5f;
-    }
-    &-skipped {
-        opacity: .7;
-    }
-    &-errored {
-        background: #f9d4d4;
-        border-color: #e22626;
-        color: #e22626;
-    }
-}
-
-.marketplace-job-with-output {
-    cursor: pointer;
-}
-
-.marketplace-job-output {
-    .modal-inner-wrap {
-        max-width: 900px;
-    }
-    pre {
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
-}
-
 .marketplace-activity-grid-wrapper {
     opacity: 0;
     transform: translateX(150px);
@@ -85,59 +15,60 @@
             }
         }
     }
-}
 
-label[for="marketplace-activity-checkbox"] {
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    padding: 0;
-    margin: 0;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: #fff;
-    color: #373330;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-        fill: currentColor;
-        width: 20px;
-        height: 20px;
-    }
-
-    .marketplace-activity-loader {
+    label[for="marketplace-activity-checkbox"] {
+        cursor: pointer;
         position: absolute;
         right: 0;
         bottom: 0;
+        padding: 0;
+        margin: 0;
         width: 70px;
         height: 70px;
         border-radius: 50%;
-        border: 2px solid currentColor;
-        border-top-color: transparent;
-        border-right-color: transparent;
-        animation: marketplace-rotate 2s linear infinite;
-        opacity: 0;
-        transition: opacity 200ms linear;
+        background: #fff;
+        color: #373330;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 
-        &.active {
-            opacity: 1;
-            animation: marketplace-rotate 0.55s linear infinite;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+            fill: currentColor;
+            width: 20px;
+            height: 20px;
+        }
+
+        .marketplace-activity-loader {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid currentColor;
+            border-top-color: transparent;
+            border-right-color: transparent;
+            animation: marketplace-rotate 2s linear infinite;
+            opacity: 0;
+            transition: opacity 200ms linear;
+
+            &.active {
+                opacity: 1;
+                animation: marketplace-rotate 0.55s linear infinite;
+            }
         }
     }
-}
-#marketplace-activity-checkbox {
-    display: none;
-    &:checked {
-        ~ .admin__data-grid-wrap {
-            pointer-events: all;
-            opacity: 1;
-            transform: translateY(0);
+
+    #marketplace-activity-checkbox {
+        display: none;
+        &:checked {
+            ~ .admin__data-grid-wrap {
+                pointer-events: all;
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     }
 }
