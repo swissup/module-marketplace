@@ -2,26 +2,15 @@
 
 namespace Swissup\Marketplace\Cron;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Stdlib\DateTime;
 use Swissup\Marketplace\Model\Job;
 
 class ProcessQueue
 {
     /**
-     * @var \Magento\Framework\App\Cache\Manager
-     */
-    private $cacheManager;
-
-    /**
      * @var \Magento\Framework\App\MaintenanceMode
      */
     private $maintenanceMode;
-
-    /**
-     * @var WriteInterface
-     */
-    private $write;
 
     /**
      * @var \Magento\Framework\Serialize\Serializer\Json
@@ -34,6 +23,11 @@ class ProcessQueue
     private $helper;
 
     /**
+     * @var \Swissup\Marketplace\Model\JobFactory $jobFactory
+     */
+    private $jobFactory;
+
+    /**
      * @var \Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory
      */
     private $collectionFactory;
@@ -44,31 +38,25 @@ class ProcessQueue
     private $dispatcher;
 
     /**
-     * @param \Magento\Framework\App\Cache\Manager $cacheManager
-     * @param \Magento\Framework\App\Filesystem\DirectoryList $directoryList
      * @param \Magento\Framework\App\MaintenanceMode $maintenanceMode
-     * @param \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      * @param \Swissup\Marketplace\Helper\Data $helper
+     * @param \Swissup\Marketplace\Model\JobFactory $jobFactory
      * @param \Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory $collectionFactory
      * @param \Swissup\Marketplace\Service\JobDispatcher $dispatcher
      */
     public function __construct(
-        \Magento\Framework\App\Cache\Manager $cacheManager,
-        \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Framework\App\MaintenanceMode $maintenanceMode,
-        \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Swissup\Marketplace\Helper\Data $helper,
+        \Swissup\Marketplace\Model\JobFactory $jobFactory,
         \Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory $collectionFactory,
         \Swissup\Marketplace\Service\JobDispatcher $dispatcher
     ) {
-        $this->cacheManager = $cacheManager;
-        $this->directoryList = $directoryList;
         $this->maintenanceMode = $maintenanceMode;
-        $this->write = $writeFactory->create(BP);
         $this->jsonSerializer = $jsonSerializer;
         $this->helper = $helper;
+        $this->jobFactory = $jobFactory;
         $this->collectionFactory = $collectionFactory;
         $this->dispatcher = $dispatcher;
     }
@@ -79,18 +67,7 @@ class ProcessQueue
             return;
         }
 
-        $jobs = $this->collectionFactory->create()
-            ->addFieldToFilter('status', Job::STATUS_PENDING)
-            ->addFieldToFilter('scheduled_at', [
-                'or' => [
-                    ['date' => true, 'to' => $this->getCurrentDate()],
-                    ['is' => new \Zend_Db_Expr('null')],
-                ]
-            ])
-            ->setOrder('scheduled_at', 'ASC')
-            ->setOrder('created_at', 'ASC')
-            ->setPageSize(20);
-
+        $jobs = $this->getJobsToRun();
         if (!$jobs->count()) {
             return;
         }
@@ -109,12 +86,14 @@ class ProcessQueue
                     ->setAttempts($job->getAttempts() + 1)
                     ->save();
 
-                $this->dispatcher->dispatchNow(
-                    $job->getClass(),
-                    $this->jsonSerializer->unserialize($job->getArgumentsSerialized())
-                );
+                $class = $job->getClass();
+                $params = $job->getArgumentsSerialized() ?
+                    $this->jsonSerializer->unserialize($job->getArgumentsSerialized()) : [];
 
-                $job->setStatus(Job::STATUS_SUCCESS);
+                $output = $this->dispatcher->dispatchNow($class, $params);
+
+                $job->setStatus(Job::STATUS_SUCCESS)
+                    ->setOutput((string) $output);
             } catch (\Exception $e) {
                 $job->setStatus(Job::STATUS_ERRORED)
                     ->setOutput($e->getMessage());
@@ -122,14 +101,6 @@ class ProcessQueue
                 $job->setFinishedAt($this->getCurrentDate())
                     ->save();
             }
-        }
-
-        // Don't use GeneratedFiles::requestRegeneration 'cos is has a
-        // race condition bug that leads to disabled cache
-        try {
-            $this->cleanGeneratedFiles();
-        } catch (\Exception $e) {
-            //
         }
 
         $this->maintenanceMode->set(false);
@@ -144,32 +115,44 @@ class ProcessQueue
     }
 
     /**
-     * @return void
+     * @return \Swissup\Marketplace\Model\ResourceModel\Job\Collection
      */
-    private function cleanGeneratedFiles()
+    private function getJobsToRun()
     {
-        $cacheTypes = [];
-        foreach ($this->cacheManager->getStatus() as $type => $status) {
-            if (!$status) {
-                continue;
-            }
-            $cacheTypes[] = $type;
+        $jobs = $this->collectionFactory->create()
+            ->addFieldToFilter('status', Job::STATUS_PENDING)
+            ->addFieldToFilter('scheduled_at', [
+                'or' => [
+                    ['date' => true, 'to' => $this->getCurrentDate()],
+                    ['is' => new \Zend_Db_Expr('null')],
+                ]
+            ])
+            ->setOrder('scheduled_at', 'ASC')
+            ->setOrder('created_at', 'ASC')
+            ->setPageSize(20);
+
+        if (!$jobs->count()) {
+            return $jobs;
         }
 
-        $paths = [
-            $this->write->getRelativePath($this->directoryList->getPath(DirectoryList::CACHE)),
-            $this->write->getRelativePath($this->directoryList->getPath(DirectoryList::GENERATED_CODE)),
-            $this->write->getRelativePath($this->directoryList->getPath(DirectoryList::GENERATED_METADATA)),
+        // manually add post-jobs
+        $extraJobs = [
+            \Swissup\Marketplace\Job\CleanGeneratedFiles::class,
+            \Swissup\Marketplace\Job\SetupUpgrade::class,
         ];
+        foreach ($extraJobs as $className) {
+            $job = $this->jobFactory->create()
+                ->addData([
+                    'class' => $className,
+                    'arguments_serialized' => '{}',
+                    'created_at' => (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT),
+                    'status' => Job::STATUS_PENDING,
+                ])
+                ->save();
 
-        foreach ($paths as $path) {
-            if ($this->write->isDirectory($path)) {
-                $this->write->delete($path);
-            }
+            $jobs->addItem($job);
         }
 
-        if ($cacheTypes) {
-            $this->cacheManager->setEnabled($cacheTypes, true);
-        }
+        return $jobs;
     }
 }
