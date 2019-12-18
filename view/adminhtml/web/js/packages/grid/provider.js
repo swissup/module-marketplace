@@ -1,7 +1,8 @@
 define([
     'jquery',
+    'underscore',
     'Magento_Ui/js/grid/provider'
-], function ($, Provider) {
+], function ($, _, Provider) {
     'use strict';
 
     return Provider.extend({
@@ -10,7 +11,7 @@ define([
          *
          * @return {$.Deferred}
          */
-        softReload: function () {
+        softReload: _.debounce(function () {
             var request = this.storage().getData(this.params, {
                 refresh: true
             });
@@ -22,7 +23,7 @@ define([
                 .fail(this.onError.bind(this));
 
             return request;
-        },
+        }, 500, true),
 
         /**
          * Callback
