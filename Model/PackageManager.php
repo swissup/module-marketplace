@@ -64,6 +64,19 @@ class PackageManager
         ]);
     }
 
+    public function uninstall($packageName)
+    {
+        $this->disable($packageName);
+
+        return $this->composer->run([
+            'command' => 'remove',
+            'packages' => [$packageName],
+            '--no-progress' => true,
+            '--no-interaction' => true,
+            '--update-no-dev' => true,
+        ]);
+    }
+
     public function update($packageName)
     {
         return $this->composer->run([
