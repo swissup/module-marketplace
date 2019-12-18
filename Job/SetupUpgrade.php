@@ -4,7 +4,7 @@ namespace Swissup\Marketplace\Job;
 
 use Swissup\Marketplace\Api\JobInterface;
 
-class SetupUpgrade implements JobInterface
+class SetupUpgrade extends AbstractJob implements JobInterface
 {
     /**
      * \Magento\Framework\Console\Cli

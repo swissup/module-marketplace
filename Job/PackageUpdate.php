@@ -10,4 +10,25 @@ class PackageUpdate extends PackageAbstractJob implements JobInterface
     {
         return $this->packageManager->update($this->packageName);
     }
+
+    /**
+     * @return array
+     */
+    public function beforeQueue()
+    {
+        return [
+            MaintenanceEnable::class,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function afterQueue()
+    {
+        return [
+            SetupUpgrade::class,
+            MaintenanceDisable::class,
+        ];
+    }
 }

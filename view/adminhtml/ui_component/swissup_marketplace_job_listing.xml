@@ -60,7 +60,6 @@
         <column name="job_id">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="sorting" xsi:type="string">desc</item>
                     <item name="filter" xsi:type="string">textRange</item>
                     <item name="label" xsi:type="string" translate="true">ID</item>
                 </item>
@@ -77,6 +76,7 @@
         <column name="created_at" class="Magento\Ui\Component\Listing\Columns\Date">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
+                    <item name="sorting" xsi:type="string">desc</item>
                     <item name="filter" xsi:type="string">dateRange</item>
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
                     <item name="dataType" xsi:type="string">date</item>

@@ -43,6 +43,7 @@ class JobActivityDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvi
                     ],
                 ]
             ])
+            ->setOrder('created_at', 'DESC')
             ->setOrder('job_id', 'DESC');
     }
 

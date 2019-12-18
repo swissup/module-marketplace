@@ -2,7 +2,7 @@
 
 namespace Swissup\Marketplace\Job;
 
-class PackageAbstractJob
+class PackageAbstractJob extends AbstractJob
 {
     /**
      * @var string

@@ -5,7 +5,7 @@ namespace Swissup\Marketplace\Job;
 use Swissup\Marketplace\Api\JobInterface;
 use Swissup\Marketplace\Model\ChannelRepository;
 
-class ChannelsSave implements JobInterface
+class ChannelsSave extends AbstractJob implements JobInterface
 {
     /**
      * @var array

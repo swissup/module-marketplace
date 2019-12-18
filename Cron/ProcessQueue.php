@@ -33,7 +33,7 @@ class ProcessQueue
     private $collectionFactory;
 
     /**
-     * @var \Swissup\Marketplace\Service\JobDispatcher
+     * @var \Swissup\Marketplace\Service\QueueDispatcher
      */
     private $dispatcher;
 
@@ -43,7 +43,7 @@ class ProcessQueue
      * @param \Swissup\Marketplace\Helper\Data $helper
      * @param \Swissup\Marketplace\Model\JobFactory $jobFactory
      * @param \Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory $collectionFactory
-     * @param \Swissup\Marketplace\Service\JobDispatcher $dispatcher
+     * @param \Swissup\Marketplace\Service\QueueDispatcher $dispatcher
      */
     public function __construct(
         \Magento\Framework\App\MaintenanceMode $maintenanceMode,
@@ -51,7 +51,7 @@ class ProcessQueue
         \Swissup\Marketplace\Helper\Data $helper,
         \Swissup\Marketplace\Model\JobFactory $jobFactory,
         \Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory $collectionFactory,
-        \Swissup\Marketplace\Service\JobDispatcher $dispatcher
+        \Swissup\Marketplace\Service\QueueDispatcher $dispatcher
     ) {
         $this->maintenanceMode = $maintenanceMode;
         $this->jsonSerializer = $jsonSerializer;
@@ -67,58 +67,6 @@ class ProcessQueue
             return;
         }
 
-        $jobs = $this->getJobsToRun();
-        if (!$jobs->count()) {
-            return;
-        }
-
-        // prevent overlapping with next cronjob
-        foreach ($jobs as $job) {
-            $job->reset()->setStatus(Job::STATUS_QUEUED)->save();
-        }
-
-        $this->maintenanceMode->set(true);
-
-        foreach ($jobs as $job) {
-            try {
-                $job->setStatus(Job::STATUS_RUNNING)
-                    ->setStartedAt($this->getCurrentDate())
-                    ->setAttempts($job->getAttempts() + 1)
-                    ->save();
-
-                $class = $job->getClass();
-                $params = $job->getArgumentsSerialized() ?
-                    $this->jsonSerializer->unserialize($job->getArgumentsSerialized()) : [];
-
-                $output = $this->dispatcher->dispatchNow($class, $params);
-
-                $job->setStatus(Job::STATUS_SUCCESS)
-                    ->setOutput((string) $output);
-            } catch (\Exception $e) {
-                $job->setStatus(Job::STATUS_ERRORED)
-                    ->setOutput($e->getMessage());
-            } finally {
-                $job->setFinishedAt($this->getCurrentDate())
-                    ->save();
-            }
-        }
-
-        $this->maintenanceMode->set(false);
-    }
-
-    /**
-     * @return string
-     */
-    private function getCurrentDate()
-    {
-        return (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT);
-    }
-
-    /**
-     * @return \Swissup\Marketplace\Model\ResourceModel\Job\Collection
-     */
-    private function getJobsToRun()
-    {
         $jobs = $this->collectionFactory->create()
             ->addFieldToFilter('status', Job::STATUS_PENDING)
             ->addFieldToFilter('scheduled_at', [
@@ -128,31 +76,16 @@ class ProcessQueue
                 ]
             ])
             ->setOrder('scheduled_at', 'ASC')
-            ->setOrder('created_at', 'ASC')
-            ->setPageSize(20);
+            ->setOrder('created_at', 'ASC');
 
-        if (!$jobs->count()) {
-            return $jobs;
-        }
+        $this->dispatcher->dispatch($jobs);
+    }
 
-        // manually add post-jobs
-        $extraJobs = [
-            \Swissup\Marketplace\Job\CleanGeneratedFiles::class,
-            \Swissup\Marketplace\Job\SetupUpgrade::class,
-        ];
-        foreach ($extraJobs as $className) {
-            $job = $this->jobFactory->create()
-                ->addData([
-                    'class' => $className,
-                    'arguments_serialized' => '{}',
-                    'created_at' => (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT),
-                    'status' => Job::STATUS_PENDING,
-                ])
-                ->save();
-
-            $jobs->addItem($job);
-        }
-
-        return $jobs;
+    /**
+     * @return string
+     */
+    private function getCurrentDate()
+    {
+        return (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT);
     }
 }

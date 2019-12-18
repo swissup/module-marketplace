@@ -5,7 +5,7 @@ namespace Swissup\Marketplace\Job;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Swissup\Marketplace\Api\JobInterface;
 
-class CleanGeneratedFiles implements JobInterface
+class CleanGeneratedFiles extends AbstractJob implements JobInterface
 {
     /**
      * @var \Magento\Framework\App\Cache\Manager
