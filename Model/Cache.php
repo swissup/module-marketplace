@@ -110,6 +110,23 @@ class Cache
     }
 
     /**
+     * Removes outdated cache entries
+     * @return void
+     */
+    public function clean()
+    {
+        $dir = $this->getDirectory();
+
+        foreach ($dir->read($this->folder) as $path) {
+            $file = $dir->openFile($path);
+
+            if (!$this->validate($file)) {
+                $dir->delete($path);
+            }
+        }
+    }
+
+    /**
      * @param \Magento\Framework\Filesystem\File\ReadInterface $file
      * @return boolean
      * @throws FileSystemException

@@ -8,5 +8,8 @@
         <job name="swissup_marketplace_job_cleanup" instance="Swissup\Marketplace\Cron\CleanupQueue" method="execute">
             <schedule>45 2 * * *</schedule>
         </job>
+        <job name="swissup_marketplace_cache_cleanup" instance="Swissup\Marketplace\Cron\CleanupCache" method="execute">
+            <schedule>50 2 * * *</schedule>
+        </job>
     </group>
 </config>
