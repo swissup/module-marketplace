@@ -1,14 +1,14 @@
 <?php
 
-namespace Swissup\Marketplace\Job;
+namespace Swissup\Marketplace\Model\Handler;
 
-use Swissup\Marketplace\Api\JobInterface;
+use Swissup\Marketplace\Api\HandlerInterface;
 
-class PackageEnable extends PackageAbstractJob implements JobInterface
+class PackageInstall extends PackageAbstractHandler implements HandlerInterface
 {
     public function execute()
     {
-        return $this->packageManager->enable($this->packageName);
+        return $this->packageManager->install($this->packageName);
     }
 
     /**
@@ -27,7 +27,7 @@ class PackageEnable extends PackageAbstractJob implements JobInterface
     public function afterQueue()
     {
         return [
-            CleanGeneratedFiles::class,
+            SetupUpgrade::class,
             MaintenanceDisable::class,
         ];
     }

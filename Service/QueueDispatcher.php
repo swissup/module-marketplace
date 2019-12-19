@@ -3,7 +3,7 @@
 namespace Swissup\Marketplace\Service;
 
 use Magento\Framework\Stdlib\DateTime;
-use Swissup\Marketplace\Job\Wrapper;
+use Swissup\Marketplace\Model\Handler\Wrapper;
 use Swissup\Marketplace\Model\Job;
 use Swissup\Marketplace\Model\ResourceModel\Job\Collection;
 
@@ -83,8 +83,8 @@ class QueueDispatcher
 
             $job->setHandler($handler);
 
-            $preProcess->getHandler()->addJobs($handler->beforeQueue());
-            $postProcess->getHandler()->addJobs($handler->afterQueue());
+            $preProcess->getHandler()->addTasks($handler->beforeQueue());
+            $postProcess->getHandler()->addTasks($handler->afterQueue());
         }
 
         array_unshift($queue, $preProcess);
@@ -115,7 +115,7 @@ class QueueDispatcher
 
     /**
      * @param Job $job
-     * @return JobInterface
+     * @return HandlerInterface
      */
     private function createHandler(Job $job)
     {

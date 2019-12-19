@@ -1,6 +1,6 @@
 <?php
 
-namespace Swissup\Marketplace\Job;
+namespace Swissup\Marketplace\Model\Handler;
 
 class MaintenanceDisable extends MaintenanceEnable
 {

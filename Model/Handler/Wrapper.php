@@ -1,15 +1,15 @@
 <?php
 
-namespace Swissup\Marketplace\Job;
+namespace Swissup\Marketplace\Model\Handler;
 
-use Swissup\Marketplace\Api\JobInterface;
+use Swissup\Marketplace\Api\HandlerInterface;
 
-class Wrapper extends AbstractJob implements JobInterface
+class Wrapper extends AbstractHandler implements HandlerInterface
 {
     /**
      * @var array
      */
-    private $jobs = [];
+    private $tasks = [];
 
     /**
      * @param \Swissup\Marketplace\Service\JobDispatcher $dispatcher
@@ -21,12 +21,12 @@ class Wrapper extends AbstractJob implements JobInterface
     }
 
     /**
-     * @param array $jobs
+     * @param array $tasks
      */
-    public function addJobs(array $jobs = [])
+    public function addTasks(array $tasks = [])
     {
-        foreach ($jobs as $job) {
-            $this->jobs[$job] = $job;
+        foreach ($tasks as $job) {
+            $this->tasks[$job] = $job;
         }
     }
 
@@ -34,8 +34,8 @@ class Wrapper extends AbstractJob implements JobInterface
     {
         $output = [];
 
-        foreach ($this->jobs as $job) {
-            $output[] = $this->dispatcher->dispatchNow($job);
+        foreach ($this->tasks as $task) {
+            $output[] = $this->dispatcher->dispatchNow($task);
         }
 
         return implode("\n\n", array_filter($output));

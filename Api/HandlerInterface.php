@@ -2,7 +2,7 @@
 
 namespace Swissup\Marketplace\Api;
 
-interface JobInterface
+interface HandlerInterface
 {
     public function execute();
 

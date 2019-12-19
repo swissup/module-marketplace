@@ -1,10 +1,10 @@
 <?php
 
-namespace Swissup\Marketplace\Job;
+namespace Swissup\Marketplace\Model\Handler;
 
-use Swissup\Marketplace\Api\JobInterface;
+use Swissup\Marketplace\Api\HandlerInterface;
 
-class MaintenanceEnable extends AbstractJob implements JobInterface
+class MaintenanceEnable extends AbstractHandler implements HandlerInterface
 {
     protected $status = true;
 

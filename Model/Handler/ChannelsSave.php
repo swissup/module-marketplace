@@ -1,11 +1,11 @@
 <?php
 
-namespace Swissup\Marketplace\Job;
+namespace Swissup\Marketplace\Model\Handler;
 
-use Swissup\Marketplace\Api\JobInterface;
+use Swissup\Marketplace\Api\HandlerInterface;
 use Swissup\Marketplace\Model\ChannelRepository;
 
-class ChannelsSave extends AbstractJob implements JobInterface
+class ChannelsSave extends AbstractHandler implements HandlerInterface
 {
     /**
      * @var array

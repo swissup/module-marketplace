@@ -5,8 +5,8 @@ namespace Swissup\Marketplace\Controller\Adminhtml\Settings;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
-use Swissup\Marketplace\Job\ChannelsSave;
-use Swissup\Marketplace\Model\Job as AsyncJob;
+use Swissup\Marketplace\Model\Handler\ChannelsSave;
+use Swissup\Marketplace\Model\Job;
 use Swissup\Marketplace\Service\JobDispatcher;
 
 class Save extends \Magento\Backend\App\Action
@@ -48,7 +48,7 @@ class Save extends \Magento\Backend\App\Action
                     'data' => $channels
                 ]);
 
-                if ($job instanceof AsyncJob) {
+                if ($job instanceof Job) {
                     $response->addData([
                         'message' => __('Please wait a minute until the changes will take place.'),
                         'id' => $job->getId(),

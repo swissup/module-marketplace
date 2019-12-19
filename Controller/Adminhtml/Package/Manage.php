@@ -3,12 +3,12 @@
 namespace Swissup\Marketplace\Controller\Adminhtml\Package;
 
 use Magento\Framework\Controller\ResultFactory;
-use Swissup\Marketplace\Job\PackageInstall;
-use Swissup\Marketplace\Job\PackageUninstall;
-use Swissup\Marketplace\Job\PackageUpdate;
-use Swissup\Marketplace\Job\PackageEnable;
-use Swissup\Marketplace\Job\PackageDisable;
-use Swissup\Marketplace\Model\Job as AsyncJob;
+use Swissup\Marketplace\Model\Handler\PackageInstall;
+use Swissup\Marketplace\Model\Handler\PackageUninstall;
+use Swissup\Marketplace\Model\Handler\PackageUpdate;
+use Swissup\Marketplace\Model\Handler\PackageEnable;
+use Swissup\Marketplace\Model\Handler\PackageDisable;
+use Swissup\Marketplace\Model\Job;
 use Swissup\Marketplace\Service\JobDispatcher;
 
 class Manage extends \Magento\Backend\App\Action
@@ -18,7 +18,7 @@ class Manage extends \Magento\Backend\App\Action
     /**
      * @var array
      */
-    protected $jobs = [
+    protected $handlers = [
         'install' => PackageInstall::class,
         'uninstall' => PackageUninstall::class,
         'update' => PackageUpdate::class,
@@ -56,11 +56,11 @@ class Manage extends \Magento\Backend\App\Action
         $response = new \Magento\Framework\DataObject();
 
         try {
-            $job = $this->dispatcher->dispatch($this->getJobClassName($job), [
+            $job = $this->dispatcher->dispatch($this->getHandlerClass($job), [
                 'packageName' => $package
             ]);
 
-            if ($job instanceof AsyncJob) {
+            if ($job instanceof Job) {
                 $response->addData([
                     'id' => $job->getId(),
                     'created_at' => $job->getCreatedAt(),
@@ -81,12 +81,12 @@ class Manage extends \Magento\Backend\App\Action
      * @return string
      * @throws \Exception
      */
-    protected function getJobClassName($jobCode)
+    protected function getHandlerClass($key)
     {
-        if (isset($this->jobs[$jobCode])) {
-            return $this->jobs[$jobCode];
+        if (isset($this->handlers[$key])) {
+            return $this->handlers[$key];
         }
 
-        throw new \Exception(__('Operation "%1" is not permitted.', $jobCode));
+        throw new \Exception(__('Operation "%1" is not permitted.', $key));
     }
 }

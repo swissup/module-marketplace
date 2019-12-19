@@ -1,10 +1,10 @@
 <?php
 
-namespace Swissup\Marketplace\Job;
+namespace Swissup\Marketplace\Model\Handler;
 
-use Swissup\Marketplace\Api\JobInterface;
+use Swissup\Marketplace\Api\HandlerInterface;
 
-class PackageUninstall extends PackageAbstractJob implements JobInterface
+class PackageUninstall extends PackageAbstractHandler implements HandlerInterface
 {
     public function execute()
     {

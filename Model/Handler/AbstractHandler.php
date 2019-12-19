@@ -1,8 +1,8 @@
 <?php
 
-namespace Swissup\Marketplace\Job;
+namespace Swissup\Marketplace\Model\Handler;
 
-class AbstractJob
+class AbstractHandler
 {
     public function beforeQueue()
     {

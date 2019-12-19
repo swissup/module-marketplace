@@ -1,11 +1,11 @@
 <?php
 
-namespace Swissup\Marketplace\Job;
+namespace Swissup\Marketplace\Model\Handler;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Swissup\Marketplace\Api\JobInterface;
+use Swissup\Marketplace\Api\HandlerInterface;
 
-class CleanGeneratedFiles extends AbstractJob implements JobInterface
+class CleanGeneratedFiles extends AbstractHandler implements HandlerInterface
 {
     /**
      * @var \Magento\Framework\App\Cache\Manager

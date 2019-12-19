@@ -1,10 +1,10 @@
 <?php
 
-namespace Swissup\Marketplace\Job;
+namespace Swissup\Marketplace\Model\Handler;
 
-use Swissup\Marketplace\Api\JobInterface;
+use Swissup\Marketplace\Api\HandlerInterface;
 
-class SetupUpgrade extends AbstractJob implements JobInterface
+class SetupUpgrade extends AbstractHandler implements HandlerInterface
 {
     /**
      * \Magento\Framework\Console\Cli

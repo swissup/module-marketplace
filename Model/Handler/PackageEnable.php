@@ -1,14 +1,14 @@
 <?php
 
-namespace Swissup\Marketplace\Job;
+namespace Swissup\Marketplace\Model\Handler;
 
-use Swissup\Marketplace\Api\JobInterface;
+use Swissup\Marketplace\Api\HandlerInterface;
 
-class PackageDisable extends PackageAbstractJob implements JobInterface
+class PackageEnable extends PackageAbstractHandler implements HandlerInterface
 {
     public function execute()
     {
-        return $this->packageManager->disable($this->packageName);
+        return $this->packageManager->enable($this->packageName);
     }
 
     /**

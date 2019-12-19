@@ -1,8 +1,8 @@
 <?php
 
-namespace Swissup\Marketplace\Job;
+namespace Swissup\Marketplace\Model\Handler;
 
-class PackageAbstractJob extends AbstractJob
+class PackageAbstractHandler extends AbstractHandler
 {
     /**
      * @var string
