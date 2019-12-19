@@ -19,7 +19,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     protected $data = [];
 
     /**
-     * @var \Magento\Framework\App\CacheInterface
+     * @var \Swissup\Marketplace\Model\Cache
      */
     protected $cache;
 
@@ -54,7 +54,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
      * @param string $identifier
      * @param string $hostname
      * @param \Swissup\Marketplace\Model\ChannelManager $channelManager
-     * @param \Magento\Framework\App\CacheInterface $cache
+     * @param \Swissup\Marketplace\Model\Cache $cache
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      * @param \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory
@@ -66,7 +66,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
         $identifier,
         $hostname,
         \Swissup\Marketplace\Model\ChannelManager $channelManager,
-        \Magento\Framework\App\CacheInterface $cache,
+        \Swissup\Marketplace\Model\Cache $cache,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory,
@@ -464,12 +464,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
         }
 
         if ($cached = $this->serialize($data)) {
-            $this->cache->save(
-                $cached,
-                $this->getCacheKey(),
-                [],
-                60 * 10
-            );
+            $this->cache->save($cached, $this->getCacheKey());
         }
     }
 
