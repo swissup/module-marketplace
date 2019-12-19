@@ -70,6 +70,7 @@ class Cache
     /**
      * @param string $id
      * @return string|false
+     * @throws FileSystemException
      * @throws ValidatorException
      */
     public function load($id)
@@ -84,10 +85,17 @@ class Cache
         $file = $dir->openFile($path);
 
         try {
+            if (!$this->validate($file)) {
+                $this->remove($id);
+                return false;
+            }
+
             return $file->readAll();
         } catch (FileSystemException $e) {
-            return false;
+            //
         }
+
+        return false;
     }
 
     /**
@@ -99,6 +107,24 @@ class Cache
     public function remove($id)
     {
         return $this->getDirectory()->delete($this->folder . '/' . $id);
+    }
+
+    /**
+     * @param \Magento\Framework\Filesystem\File\ReadInterface $file
+     * @return boolean
+     * @throws FileSystemException
+     */
+    private function validate($file)
+    {
+        $stat = $file->stat();
+
+        if (isset($stat['mtime']) &&
+            time() - $stat['mtime'] > $this->lifetime
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
