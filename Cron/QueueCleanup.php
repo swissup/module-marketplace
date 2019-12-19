@@ -4,7 +4,7 @@ namespace Swissup\Marketplace\Cron;
 
 use Magento\Framework\Stdlib\DateTime;
 
-class CleanupQueue
+class QueueCleanup
 {
     /**
      * @var \Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory

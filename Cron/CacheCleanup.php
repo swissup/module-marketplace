@@ -2,9 +2,7 @@
 
 namespace Swissup\Marketplace\Cron;
 
-use Magento\Framework\Stdlib\DateTime;
-
-class CleanupCache
+class CacheCleanup
 {
     /**
      * @var \Swissup\Marketplace\Model\Cache

@@ -5,7 +5,7 @@ namespace Swissup\Marketplace\Cron;
 use Magento\Framework\Stdlib\DateTime;
 use Swissup\Marketplace\Model\Job;
 
-class ProcessQueue
+class QueueProcess
 {
     /**
      * @var \Magento\Framework\App\MaintenanceMode
