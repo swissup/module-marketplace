@@ -8,11 +8,6 @@ use Swissup\Marketplace\Model\Job;
 class JobDispatcher
 {
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
-
-    /**
      * @var \Magento\Framework\Serialize\Serializer\Json
      */
     private $jsonSerializer;
@@ -23,25 +18,30 @@ class JobDispatcher
     private $helper;
 
     /**
+     * @var \Swissup\Marketplace\Model\HandlerFactory
+     */
+    private $handlerFactory;
+
+    /**
      * @var \Swissup\Marketplace\Model\JobFactory
      */
     private $jobFactory;
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      * @param \Swissup\Marketplace\Helper\Data $helper
+     * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
      * @param \Swissup\Marketplace\Model\JobFactory $jobFactory
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Swissup\Marketplace\Helper\Data $helper,
+        \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
         \Swissup\Marketplace\Model\JobFactory $jobFactory
     ) {
-        $this->objectManager = $objectManager;
         $this->jsonSerializer = $jsonSerializer;
         $this->helper = $helper;
+        $this->handlerFactory = $handlerFactory;
         $this->jobFactory = $jobFactory;
     }
 
@@ -66,7 +66,7 @@ class JobDispatcher
      */
     public function dispatchNow($class, array $arguments = [])
     {
-        return $this->objectManager->create($class, $arguments)->execute();
+        return $this->handlerFactory->create($class, $arguments)->execute();
     }
 
     /**

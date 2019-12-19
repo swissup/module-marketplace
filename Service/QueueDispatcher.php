@@ -10,17 +10,32 @@ use Swissup\Marketplace\Model\ResourceModel\Job\Collection;
 class QueueDispatcher
 {
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @var \Magento\Framework\Serialize\Serializer\Json
+     */
+    private $jsonSerializer;
+
+    /**
+     * @var \Swissup\Marketplace\Model\HandlerFactory
+     */
+    private $handlerFactory;
+
+    /**
+     * @var \Swissup\Marketplace\Model\JobFactory
+     */
+    private $jobFactory;
+
+    /**
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
+     * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
      * @param \Swissup\Marketplace\Model\JobFactory $jobFactory
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
+        \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
         \Swissup\Marketplace\Model\JobFactory $jobFactory
     ) {
-        $this->objectManager = $objectManager;
         $this->jsonSerializer = $jsonSerializer;
+        $this->handlerFactory = $handlerFactory;
         $this->jobFactory = $jobFactory;
     }
 
@@ -37,13 +52,19 @@ class QueueDispatcher
         $queue = $this->prepareQueue($collection);
 
         foreach ($queue as $job) {
+            if ($job->getStatus() !== JOB::STATUS_QUEUED) {
+                 continue;
+            }
+
             try {
                 $job->setStatus(Job::STATUS_RUNNING)
                     ->setStartedAt($this->getCurrentDate())
                     ->setAttempts($job->getAttempts() + 1)
                     ->save();
 
-                $output = $job->getHandler()->execute();
+                if ($job->getHandler()) {
+                    $output = $job->getHandler()->execute();
+                }
 
                 $job->setStatus(Job::STATUS_SUCCESS)
                     ->setOutput((string) $output);
@@ -80,9 +101,11 @@ class QueueDispatcher
 
         foreach ($queue as $job) {
             $handler = $this->createHandler($job);
+            if (!$handler) {
+                continue;
+            }
 
             $job->setHandler($handler);
-
             $preProcess->getHandler()->addTasks($handler->beforeQueue());
             $postProcess->getHandler()->addTasks($handler->afterQueue());
         }
@@ -121,7 +144,15 @@ class QueueDispatcher
     {
         $arguments = $job->getArgumentsSerialized();
         $arguments = $arguments ? $this->jsonSerializer->unserialize($arguments) : [];
-        return $this->objectManager->create($job->getClass(), $arguments);
+
+        try {
+            return $this->handlerFactory->create($job->getClass(), $arguments);
+        } catch (\Exception $e) {
+            $job->setStatus(JOB::STATUS_ERRORED)
+                ->setOutput($e->getMessage())
+                ->setFinishedAt($this->getCurrentDate())
+                ->save();
+        }
     }
 
     /**
