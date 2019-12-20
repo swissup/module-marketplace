@@ -98,7 +98,7 @@ define([
 
                 if (watcher.deferred) {
                     if (status.is('errored', item)) {
-                        watcher.deferred.fail(item);
+                        watcher.deferred.reject(item);
                     } else {
                         watcher.deferred.resolve(item);
                     }
