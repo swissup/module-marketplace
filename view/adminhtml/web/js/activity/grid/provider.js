@@ -1,8 +1,9 @@
 define([
     'jquery',
     'underscore',
+    'Swissup_Marketplace/js/activity/status',
     'Magento_Ui/js/grid/provider'
-], function ($, _, Provider) {
+], function ($, _, status, Provider) {
     'use strict';
 
     return Provider.extend({
@@ -96,7 +97,11 @@ define([
                 }
 
                 if (watcher.deferred) {
-                    watcher.deferred.resolve();
+                    if (status.is('errored', item)) {
+                        watcher.deferred.fail(item);
+                    } else {
+                        watcher.deferred.resolve(item);
+                    }
                 }
 
                 if (watcher.target) {

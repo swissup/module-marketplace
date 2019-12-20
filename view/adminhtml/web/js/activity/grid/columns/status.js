@@ -1,9 +1,10 @@
 define([
     'jquery',
+    'Swissup_Marketplace/js/activity/status',
     'Magento_Ui/js/grid/columns/select',
     'mage/translate',
     'Magento_Ui/js/modal/modal'
-], function ($, Column, $t) {
+], function ($, status, Column, $t) {
     'use strict';
 
     return Column.extend({
@@ -18,19 +19,10 @@ define([
          * @returns {String}
          */
         getClass: function (row) {
-            var status = {
-                    '0': 'pending',
-                    '1': 'queued',
-                    '2': 'running',
-                    '3': 'success',
-                    '4': 'skipped',
-                    '5': 'errored',
-                    '6': 'canceled'
-                },
-                classes = [
+            var classes = [
                     'grid-severity-notice',
                     'marketplace-job-status',
-                    'marketplace-job-status-' + status[row.status],
+                    'marketplace-job-status-' + status.getCode(row.status),
                     row.output ? 'marketplace-job-with-output' : ''
                 ];
 

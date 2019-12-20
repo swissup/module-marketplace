@@ -121,7 +121,7 @@ define([
                     }
 
                     if (response.id) {
-                        watcher.watch(response.id).done(function () {
+                        watcher.watch(response.id).always(function () {
                             this.updateRowData(this.rows[action.rowIndex]);
                         }.bind(this));
                     }
