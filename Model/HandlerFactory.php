@@ -2,6 +2,9 @@
 
 namespace Swissup\Marketplace\Model;
 
+use Swissup\Marketplace\Api\HandlerInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
+
 class HandlerFactory
 {
     /**
@@ -10,41 +13,56 @@ class HandlerFactory
     private $objectManager;
 
     /**
+     * @var \Magento\Framework\Serialize\Serializer\Json
+     */
+    private $jsonSerializer;
+
+    /**
      * @var array
      */
     private $handlers;
 
     /**
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      * @param array $handlers
      */
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager,
-        array $handlers = []
+        \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
+        array $handlers
     ) {
         $this->objectManager = $objectManager;
+        $this->jsonSerializer = $jsonSerializer;
         $this->handlers = $handlers;
     }
 
+    /**
+     * @param string|Job $class
+     * @param array $arguments
+     * @return HandlerInterface
+     */
     public function create($class, array $arguments = [])
     {
-        if (!in_array($class, $this->handlers)) {
-            throw new \InvalidArgumentException(
-                sprintf('Invalid handler type "%s"', $class)
-            );
+        if ($class instanceof Job) {
+            $arguments = $class->getArgumentsSerialized();
+            $arguments = $this->jsonSerializer->unserialize($arguments);
+            $class = $class->getClass();
         }
 
-        $handler = $this->objectManager->create($class, $arguments);
+        if (!in_array($class, $this->handlers)) {
+            throw new NoSuchEntityException(__('Handler "%1" does not exist.', $class));
+        }
 
-        if (!$handler instanceof \Swissup\Marketplace\Api\HandlerInterface) {
+        if (!in_array(HandlerInterface::class, class_implements($class))) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    'Handler class "%s" must implement \Swissup\Marketplace\Api\HandlerInterface.',
-                    get_class($handler)
+                    'Handler "%s" must implement \Swissup\Marketplace\Api\HandlerInterface.',
+                    $id
                 )
             );
         }
 
-        return $handler;
+        return $this->objectManager->create($class, $arguments);
     }
 }

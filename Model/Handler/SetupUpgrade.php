@@ -36,6 +36,11 @@ class SetupUpgrade extends AbstractHandler implements HandlerInterface
         $this->outputFactory = $outputFactory;
     }
 
+    public function getTitle()
+    {
+        return __('bin/magento setup:upgrade');
+    }
+
     /**
      * @return string
      */

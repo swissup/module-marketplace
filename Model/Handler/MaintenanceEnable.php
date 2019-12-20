@@ -14,6 +14,11 @@ class MaintenanceEnable extends AbstractHandler implements HandlerInterface
         $this->maintenanceMode = $maintenanceMode;
     }
 
+    public function getTitle()
+    {
+        return __('Enable Maintenance Mode');
+    }
+
     public function execute()
     {
         $this->maintenanceMode->set($this->status);

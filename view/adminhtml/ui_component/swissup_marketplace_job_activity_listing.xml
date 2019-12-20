@@ -36,7 +36,7 @@
                 </item>
             </item>
         </argument>
-        <column name="class">
+        <column name="title">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="label" xsi:type="string" translate="true">Task</item>

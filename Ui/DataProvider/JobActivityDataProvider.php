@@ -3,31 +3,15 @@
 namespace Swissup\Marketplace\Ui\DataProvider;
 
 use Magento\Framework\Stdlib\DateTime;
-use Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory;
 
-class JobActivityDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
+class JobActivityDataProvider extends JobDataProvider
 {
     /**
-     * Construct
-     *
-     * @param string $name
-     * @param string $primaryFieldName
-     * @param string $requestFieldName
-     * @param CollectionFactory $collection
-     * @param array $meta
-     * @param array $data
+     * @return Swissup\Marketplace\Model\ResourceModel\Job\Collection
      */
-    public function __construct(
-        $name,
-        $primaryFieldName,
-        $requestFieldName,
-        CollectionFactory $collection,
-        array $meta = [],
-        array $data = []
-    ) {
-        parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
-
-        $this->collection = $collection->create()
+    public function getCollection()
+    {
+        $this->collection
             ->addFieldToFilter('created_at', [
                 'date' => true,
                 'from' => (new \DateTime('-3 hours'))->format(DateTime::DATETIME_PHP_FORMAT),
@@ -45,6 +29,8 @@ class JobActivityDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvi
             ])
             ->setOrder('created_at', 'DESC')
             ->setOrder('job_id', 'DESC');
+
+        return parent::getCollection();
     }
 
     /**
@@ -56,7 +42,7 @@ class JobActivityDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvi
     {
         $date = new \DateTime();
 
-        return array_merge($this->getCollection()->toArray(), [
+        return array_merge(parent::getData(), [
             'secondsToNextQueue' => 60 - $date->format('s'),
             'time' => $date->format(DateTime::DATETIME_PHP_FORMAT),
         ]);

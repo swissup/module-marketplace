@@ -37,6 +37,11 @@ class CleanGeneratedFiles extends AbstractHandler implements HandlerInterface
         $this->write = $writeFactory->create(BP);
     }
 
+    public function getTitle()
+    {
+        return __('Cleanup Generated Files');
+    }
+
     /**
      * Don't use GeneratedFiles::requestRegeneration 'cos is has a
      * race condition bug that leads to disabled cache.

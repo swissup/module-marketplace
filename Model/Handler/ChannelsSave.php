@@ -29,6 +29,11 @@ class ChannelsSave extends AbstractHandler implements HandlerInterface
         $this->channelRepository = $channelRepository;
     }
 
+    public function getTitle()
+    {
+        return __('Save Channel Data');
+    }
+
     public function execute()
     {
         foreach ($this->channelRepository->getList() as $channel) {

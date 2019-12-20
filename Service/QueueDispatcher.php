@@ -49,11 +49,26 @@ class QueueDispatcher
             return;
         }
 
-        $queue = $this->prepareQueue($collection);
+        try {
+            $queue = $this->prepareQueue($collection);
+        } catch (\Exception $e) {
+            foreach ($collection as $job) {
+                if ($job->getStatus() !== JOB::STATUS_QUEUED) {
+                    continue;
+                }
+
+                $job->setStatus(Job::STATUS_CANCELED)
+                    ->setFinishedAt($this->getCurrentDate())
+                    ->save();
+            }
+
+            return;
+        }
 
         foreach ($queue as $job) {
             if ($job->getStatus() !== JOB::STATUS_QUEUED) {
-                 continue;
+                // some tasks may be declined during preparation
+                continue;
             }
 
             try {
@@ -62,6 +77,7 @@ class QueueDispatcher
                     ->setAttempts($job->getAttempts() + 1)
                     ->save();
 
+                $output = '';
                 if ($job->getHandler()) {
                     $output = $job->getHandler()->execute();
                 }
@@ -81,37 +97,58 @@ class QueueDispatcher
     /**
      * @param Collection $collection
      * @return array
+     * @throws \Exception
      */
     private function prepareQueue(Collection $collection)
     {
         $queue = $collection->getItems();
-
         foreach ($queue as $job) {
             $job->reset()->setStatus(Job::STATUS_QUEUED)->save();
         }
 
-        $createdAt = $collection->getFirstItem()->getCreatedAt();
-        $createdAt = (new \DateTime($createdAt))->modify('-1 second');
-        $preProcess = $this->createJob([
-            'class' => Wrapper::class,
-            'created_at' => $createdAt->format(DateTime::DATETIME_PHP_FORMAT),
-        ]);
-
-        $postProcess = $this->createJob(Wrapper::class);
-
+        $beforeQueue = [];
+        $afterQueue = [];
         foreach ($queue as $job) {
-            $handler = $this->createHandler($job);
-            if (!$handler) {
+            try {
+                $handler = $this->createHandler($job);
+            } catch (\Exception $e) {
                 continue;
             }
 
+            $beforeQueue += $handler->beforeQueue();
+            $afterQueue += $handler->afterQueue();
+
             $job->setHandler($handler);
-            $preProcess->getHandler()->addTasks($handler->beforeQueue());
-            $postProcess->getHandler()->addTasks($handler->afterQueue());
         }
 
-        array_unshift($queue, $preProcess);
-        array_push($queue, $postProcess);
+        if ($beforeQueue) {
+            $createdAt = $collection->getFirstItem()->getCreatedAt();
+            $createdAt = (new \DateTime($createdAt))->modify('-1 second');
+            $createdAt = $createdAt->format(DateTime::DATETIME_PHP_FORMAT);
+
+            $preProcess = $this->createJob([
+                    'class' => Wrapper::class,
+                    'created_at' => $createdAt,
+                    'arguments_serialized' => $this->jsonSerializer->serialize([
+                        'tasks' => $beforeQueue,
+                    ]),
+                ])
+                ->save();
+
+            array_unshift($queue, $preProcess);
+        }
+
+        if ($afterQueue) {
+            $postProcess = $this->createJob([
+                    'class' => Wrapper::class,
+                    'arguments_serialized' => $this->jsonSerializer->serialize([
+                        'tasks' => $afterQueue,
+                    ]),
+                ])
+                ->save();
+
+            array_push($queue, $postProcess);
+        }
 
         return $queue;
     }
@@ -128,9 +165,9 @@ class QueueDispatcher
             $data = ['class' => $data];
         }
 
-        $data = array_merge($defaults, $data);
+        $job = $this->jobFactory->create()
+            ->addData(array_merge($defaults, $data));
 
-        $job = $this->jobFactory->create()->addData($data)->save();
         $job->setHandler($this->createHandler($job));
 
         return $job;
@@ -142,16 +179,14 @@ class QueueDispatcher
      */
     private function createHandler(Job $job)
     {
-        $arguments = $job->getArgumentsSerialized();
-        $arguments = $arguments ? $this->jsonSerializer->unserialize($arguments) : [];
-
         try {
-            return $this->handlerFactory->create($job->getClass(), $arguments);
+            return $this->handlerFactory->create($job);
         } catch (\Exception $e) {
             $job->setStatus(JOB::STATUS_ERRORED)
                 ->setOutput($e->getMessage())
                 ->setFinishedAt($this->getCurrentDate())
                 ->save();
+            throw $e;
         }
     }
 

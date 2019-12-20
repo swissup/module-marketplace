@@ -26,6 +26,24 @@
         </arguments>
     </type>
 
+    <type name="Swissup\Marketplace\Model\HandlerFactory">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="ChannelsSave" xsi:type="string">Swissup\Marketplace\Model\Handler\ChannelsSave</item>
+                <item name="CleanGeneratedFiles" xsi:type="string">Swissup\Marketplace\Model\Handler\CleanGeneratedFiles</item>
+                <item name="MaintenanceDisable" xsi:type="string">Swissup\Marketplace\Model\Handler\MaintenanceDisable</item>
+                <item name="MaintenanceEnable" xsi:type="string">Swissup\Marketplace\Model\Handler\MaintenanceEnable</item>
+                <item name="PackageDisable" xsi:type="string">Swissup\Marketplace\Model\Handler\PackageDisable</item>
+                <item name="PackageEnable" xsi:type="string">Swissup\Marketplace\Model\Handler\PackageEnable</item>
+                <item name="PackageInstall" xsi:type="string">Swissup\Marketplace\Model\Handler\PackageInstall</item>
+                <item name="PackageUninstall" xsi:type="string">Swissup\Marketplace\Model\Handler\PackageUninstall</item>
+                <item name="PackageUpdate" xsi:type="string">Swissup\Marketplace\Model\Handler\PackageUpdate</item>
+                <item name="SetupUpgrade" xsi:type="string">Swissup\Marketplace\Model\Handler\SetupUpgrade</item>
+                <item name="Wrapper" xsi:type="string">Swissup\Marketplace\Model\Handler\Wrapper</item>
+            </argument>
+        </arguments>
+    </type>
+
     <!-- Magento Marketplace Channel -->
     <virtualType name="Swissup\Marketplace\Model\Channel\Magento"
                  type="Swissup\Marketplace\Model\Channel\Composer">

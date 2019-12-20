@@ -9,25 +9,41 @@ class Wrapper extends AbstractHandler implements HandlerInterface
     /**
      * @var array
      */
-    private $tasks = [];
+    private $tasks;
 
     /**
-     * @param \Swissup\Marketplace\Service\JobDispatcher $dispatcher
+     * @var \Swissup\Marketplace\Service\JobDispatcher $dispatcher
      */
-    public function __construct(
-        \Swissup\Marketplace\Service\JobDispatcher $dispatcher
-    ) {
-        $this->dispatcher = $dispatcher;
-    }
+    private $dispatcher;
 
     /**
      * @param array $tasks
+     * @param \Swissup\Marketplace\Service\JobDispatcher $dispatcher
+     * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
      */
-    public function addTasks(array $tasks = [])
+    public function __construct(
+        array $tasks,
+        \Swissup\Marketplace\Service\JobDispatcher $dispatcher,
+        \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
+    ) {
+        $this->tasks = $tasks;
+        $this->dispatcher = $dispatcher;
+        $this->handlerFactory = $handlerFactory;
+    }
+
+    public function getTitle()
     {
-        foreach ($tasks as $job) {
-            $this->tasks[$job] = $job;
+        $titles = [];
+
+        foreach ($this->tasks as $task) {
+            try {
+                $titles[] = $this->handlerFactory->create($task)->getTitle();
+            } catch (\Exception $e) {
+                $titles[] = $e->getMessage();
+            }
         }
+
+        return implode(', ', $titles);
     }
 
     public function execute()
@@ -35,7 +51,11 @@ class Wrapper extends AbstractHandler implements HandlerInterface
         $output = [];
 
         foreach ($this->tasks as $task) {
-            $output[] = $this->dispatcher->dispatchNow($task);
+            try {
+                $output[] = $this->dispatcher->dispatchNow($task);
+            } catch (\Exception $e) {
+                $output[] = $e->getMessage();
+            }
         }
 
         return implode("\n\n", array_filter($output));
