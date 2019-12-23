@@ -45,6 +45,10 @@ define([
         request: function (settings) {
             return $.ajax(settings)
                 .done(function (response) {
+                    if (response.reload === true) {
+                        return window.location.reload();
+                    }
+
                     if (response.error && response.message) {
                         uiAlert({
                             content: response.message

@@ -48,7 +48,7 @@ class Manage extends \Magento\Backend\App\Action
      */
     public function execute()
     {
-        $package = $this->getRequest()->getPost('package');
+        $packages = $this->getRequest()->getPost('packages');
         $job = $this->getRequest()->getParam('job');
 
         /** @var \Magento\Framework\Controller\Result\Json $resultJson */
@@ -57,7 +57,7 @@ class Manage extends \Magento\Backend\App\Action
 
         try {
             $job = $this->dispatcher->dispatch($this->getHandlerClass($job), [
-                'packages' => [$package]
+                'packages' => $packages
             ]);
 
             if ($job instanceof Job) {
@@ -66,7 +66,7 @@ class Manage extends \Magento\Backend\App\Action
                     'created_at' => $job->getCreatedAt(),
                 ]);
             } else {
-                $this->messageManager->addSuccess(__('Package successfully updated.'));
+                $this->messageManager->addSuccess(__('Task successfully completed.'));
                 $response->addData(['reload' => true]);
             }
         } catch (\Exception $e) {

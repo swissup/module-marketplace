@@ -100,54 +100,78 @@ define([
          * @param {Object} action - Action's data.
          */
         defaultCallback: function (actionIndex, recordId, action) {
-            var data;
-
             if (!action.isAjax) {
                 return this._super();
             }
 
-            data = this.rows[action.rowIndex];
+            this.submit([this.rows[action.rowIndex].id], action);
+        },
 
-            this.rows[action.rowIndex].busy = true;
+        /**
+         * @param {Array} packages
+         * @param {Object} action
+         */
+        submit: function (packages, action) {
+            var indexes = [];
+
+            // mark modules as 'busy'
+            _.every(this.rows, function (row) {
+                if (row.name.indexOf(packages) !== -1) {
+                    this.rows[row._rowIndex].busy = true;
+                    indexes.push(row._rowIndex);
+                }
+
+                return indexes.length < packages.length;
+            }, this);
+
             this.rows.splice(0, 0); // trigger grid re-render
 
             request.post(action.href, {
-                    package: data.id,
-                    channel: data.remote.channel
+                    packages: packages
                 })
                 .done(function (response) {
-                    if (response.reload === true) {
-                        return window.location.reload();
-                    }
-
                     if (response.id) {
                         watcher.watch(response.id).always(function () {
-                            this.updateRowData(this.rows[action.rowIndex]);
+                            this.updateRowsData(packages);
                         }.bind(this));
                     }
                 }.bind(this))
                 .fail(function () {
-                    this.rows[action.rowIndex].busy = false;
+                    _.each(indexes, function (index) {
+                        this.rows[index].busy = false;
+                    }, this);
                     this.rows.splice(0, 0); // trigger grid re-render
                 }.bind(this));
         },
 
         /**
-         * @param {Object} row
+         * @param {Array} packages
          */
-        updateRowData: function (row) {
+        updateRowsData: function (packages) {
             this.source().softReload().done(function (response) {
-                var data = _.find(response.items, function (item) {
-                    return item.id === row.id;
-                });
+                var processed = 0;
 
-                this.rows[row._rowIndex] = $.extend(
-                    this.rows[row._rowIndex],
-                    {
-                        busy: false
-                    },
-                    data
-                );
+                _.every(this.rows, function (row) {
+                    var data;
+
+                    if (row.name.indexOf(packages) !== -1) {
+                        data = _.find(response.items, function (item) {
+                            return item.name === row.name;
+                        });
+
+                        this.rows[row._rowIndex] = $.extend(
+                            this.rows[row._rowIndex],
+                            {
+                                busy: false
+                            },
+                            data || {}
+                        );
+
+                        processed++;
+                    }
+
+                    return processed < packages.length;
+                }, this);
 
                 this.rows.splice(0, 0); // trigger grid re-render
             }.bind(this));
