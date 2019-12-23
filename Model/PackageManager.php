@@ -52,11 +52,11 @@ class PackageManager
         $this->composer = $composer;
     }
 
-    public function install($packageName)
+    public function install($packages)
     {
         return $this->composer->run([
             'command' => 'require',
-            'packages' => [$packageName],
+            'packages' => $packages,
             '--no-progress' => true,
             '--no-interaction' => true,
             '--update-with-all-dependencies' => true,
@@ -64,24 +64,24 @@ class PackageManager
         ]);
     }
 
-    public function uninstall($packageName)
+    public function uninstall($packages)
     {
-        $this->disable($packageName);
+        $this->disable($packages);
 
         return $this->composer->run([
             'command' => 'remove',
-            'packages' => [$packageName],
+            'packages' => $packages,
             '--no-progress' => true,
             '--no-interaction' => true,
             '--update-no-dev' => true,
         ]);
     }
 
-    public function update($packageName)
+    public function update($packages)
     {
         return $this->composer->run([
             'command' => 'update',
-            'packages' => [$packageName],
+            'packages' => $packages,
             '--no-progress' => true,
             '--no-interaction' => true,
             '--with-all-dependencies' => true,
@@ -89,21 +89,25 @@ class PackageManager
         ]);
     }
 
-    public function disable($packageName)
+    public function disable($packages)
     {
-        $this->changeStatus($packageName, false);
+        $this->changeStatus($packages, false);
     }
 
-    public function enable($packageName)
+    public function enable($packages)
     {
-        $this->changeStatus($packageName, true);
+        $this->changeStatus($packages, true);
     }
 
-    protected function changeStatus($packageName, $flag)
+    protected function changeStatus($packages, $flag)
     {
-        $module = $this->getModuleName($packageName);
+        $modules = [];
 
-        $constraints = $this->moduleStatus->checkConstraints($flag, [$module]);
+        foreach ($packages as $packageName) {
+            $modules[] = $this->getModuleName($packageName);
+        }
+
+        $constraints = $this->moduleStatus->checkConstraints($flag, $modules);
         if ($constraints) {
             throw new \Exception(sprintf(
                 "Unable to change status of module because of the following constraints: \n%s",
@@ -112,7 +116,10 @@ class PackageManager
         }
 
         $config = $this->configReader->load(ConfigFilePool::APP_CONFIG);
-        $config['modules'][$module] = (int) $flag;
+
+        foreach ($modules as $module) {
+            $config['modules'][$module] = (int) $flag;
+        }
 
         $this->configWriter->saveConfig(
             [ConfigFilePool::APP_CONFIG => $config],

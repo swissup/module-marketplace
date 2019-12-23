@@ -8,12 +8,12 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
 {
     public function execute()
     {
-        return $this->packageManager->uninstall($this->packageName);
+        return $this->packageManager->uninstall($this->packages);
     }
 
     public function getTitle()
     {
-        return __('Uninstall %1', $this->packageName);
+        return __('Uninstall %1', implode(', ', $this->packages));
     }
 
     /**

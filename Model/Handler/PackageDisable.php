@@ -8,12 +8,12 @@ class PackageDisable extends PackageAbstractHandler implements HandlerInterface
 {
     public function execute()
     {
-        return $this->packageManager->disable($this->packageName);
+        return $this->packageManager->disable($this->packages);
     }
 
     public function getTitle()
     {
-        return __('Disable %1', $this->packageName);
+        return __('Disable %1', implode(', ', $this->packages));
     }
 
     /**

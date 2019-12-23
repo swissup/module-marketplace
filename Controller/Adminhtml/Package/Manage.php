@@ -57,7 +57,7 @@ class Manage extends \Magento\Backend\App\Action
 
         try {
             $job = $this->dispatcher->dispatch($this->getHandlerClass($job), [
-                'packageName' => $package
+                'packages' => [$package]
             ]);
 
             if ($job instanceof Job) {

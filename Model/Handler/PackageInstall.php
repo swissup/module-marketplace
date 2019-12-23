@@ -8,12 +8,12 @@ class PackageInstall extends PackageAbstractHandler implements HandlerInterface
 {
     public function execute()
     {
-        return $this->packageManager->install($this->packageName);
+        return $this->packageManager->install($this->packages);
     }
 
     public function getTitle()
     {
-        return __('Install %1', $this->packageName);
+        return __('Install %1', implode(', ', $this->packages));
     }
 
     /**

@@ -8,12 +8,12 @@ class PackageEnable extends PackageAbstractHandler implements HandlerInterface
 {
     public function execute()
     {
-        return $this->packageManager->enable($this->packageName);
+        return $this->packageManager->enable($this->packages);
     }
 
     public function getTitle()
     {
-        return __('Enable %1', $this->packageName);
+        return __('Enable %1', implode(', ', $this->packages));
     }
 
     /**

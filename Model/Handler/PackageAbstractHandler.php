@@ -5,9 +5,9 @@ namespace Swissup\Marketplace\Model\Handler;
 class PackageAbstractHandler extends AbstractHandler
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $packageName;
+    protected $packages;
 
     /**
      * @var \Swissup\Marketplace\Model\PackageManager
@@ -15,14 +15,14 @@ class PackageAbstractHandler extends AbstractHandler
     protected $packageManager;
 
     /**
-     * @param string $packageName
+     * @param array $packages
      * @param \Swissup\Marketplace\Model\PackageManager $packageManager
      */
     public function __construct(
-        $packageName,
+        $packages,
         \Swissup\Marketplace\Model\PackageManager $packageManager
     ) {
-        $this->packageName = $packageName;
+        $this->packages = $packages;
         $this->packageManager = $packageManager;
     }
 }
