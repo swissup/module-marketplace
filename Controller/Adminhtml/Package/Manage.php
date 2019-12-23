@@ -66,7 +66,7 @@ class Manage extends \Magento\Backend\App\Action
                     'created_at' => $job->getCreatedAt(),
                 ]);
             } else {
-                $this->messageManager->addSuccess(__('Settings successfully updated.'));
+                $this->messageManager->addSuccess(__('Package successfully updated.'));
                 $response->addData(['reload' => true]);
             }
         } catch (\Exception $e) {
