@@ -92,7 +92,7 @@ define([
                     return job.job_id === watcher.id;
                 });
 
-                if (!item || !item.finished_at) {
+                if (item && !item.finished_at) {
                     return;
                 }
 
