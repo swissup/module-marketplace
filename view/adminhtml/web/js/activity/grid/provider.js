@@ -10,8 +10,8 @@ define([
         defaults: {
             interval: {
                 normal: 5000,
-                slow: 10000,
-                fast: 1500
+                slow: 15000,
+                fast: 3000
             },
             busyClass: 'busy'
         },
