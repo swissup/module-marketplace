@@ -37,7 +37,7 @@ class PackageEnable extends PackageAbstractHandler implements HandlerInterface
     public function afterQueue()
     {
         return [
-            CleanGeneratedFiles::class,
+            SetupUpgrade::class,
             MaintenanceDisable::class,
         ];
     }

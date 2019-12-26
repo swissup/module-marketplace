@@ -72,7 +72,7 @@ class PackageManager
 
     public function install($packages)
     {
-        $output = $this->composer->run([
+        return $this->composer->run([
             'command' => 'require',
             'packages' => $packages,
             '--no-progress' => true,
@@ -80,16 +80,10 @@ class PackageManager
             '--update-with-all-dependencies' => true,
             '--update-no-dev' => true,
         ]);
-
-        $this->enable($packages);
-
-        return $output;
     }
 
     public function uninstall($packages)
     {
-        $this->disable($packages);
-
         return $this->composer->run([
             'command' => 'remove',
             'packages' => $packages,
