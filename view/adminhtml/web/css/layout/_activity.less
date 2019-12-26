@@ -117,6 +117,21 @@
             .data-grid-wrapper {
                 max-height: 350px;
                 overflow: auto;
+
+                -webkit-overflow-scrolling: touch;
+
+                &::-webkit-scrollbar {
+                    width: 4px;
+                    height: 4px;
+                }
+                &::-webkit-scrollbar-track {
+                    background-color: #fafafa;
+                    border-radius: 8px;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background-color: #e4e4e4;
+                    border-radius: 8px;
+                }
             }
 
             thead {
