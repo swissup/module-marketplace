@@ -3,7 +3,20 @@
         max-width: 900px;
     }
     pre {
+        margin: 0;
         white-space: pre-wrap;
         word-wrap: break-word;
+
+        error,
+        warning {
+            display: inline-block;
+            margin: 5px 0;
+        }
+        error {
+            background: #fff0f0;
+        }
+        warning {
+            background: #ffffc9;
+        }
     }
 }
