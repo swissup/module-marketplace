@@ -49,10 +49,12 @@ class JobDispatcher
      * @param string $class
      * @param array $arguments
      * @return mixed
+     * @throws \Magento\Framework\Exception\ValidatorException
      */
     public function dispatch($class, array $arguments = [])
     {
         if ($this->helper->canUseAsyncMode()) {
+            $this->createHandler($class, $arguments)->validate();
             return $this->dispatchToQueue($class, $arguments);
         } else {
             return $this->dispatchNow($class, $arguments);
@@ -66,7 +68,11 @@ class JobDispatcher
      */
     public function dispatchNow($class, array $arguments = [])
     {
-        return $this->handlerFactory->create($class, $arguments)->execute();
+        $handler = $this->createHandler($class, $arguments);
+
+        $handler->validate();
+
+        return $handler->execute();
     }
 
     /**
@@ -84,5 +90,10 @@ class JobDispatcher
                 'status' => Job::STATUS_PENDING,
             ])
             ->save();
+    }
+
+    protected function createHandler($class, array $arguments = [])
+    {
+        return $this->handlerFactory->create($class, $arguments);
     }
 }

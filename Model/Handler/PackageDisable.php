@@ -6,6 +6,11 @@ use Swissup\Marketplace\Api\HandlerInterface;
 
 class PackageDisable extends PackageAbstractHandler implements HandlerInterface
 {
+    public function validate()
+    {
+        return $this->validateWhenDisable();
+    }
+
     public function execute()
     {
         return $this->packageManager->disable($this->packages);

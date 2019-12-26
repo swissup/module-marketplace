@@ -8,6 +8,8 @@ interface HandlerInterface
 
     public function execute();
 
+    public function validate();
+
     public function beforeQueue();
 
     public function afterQueue();

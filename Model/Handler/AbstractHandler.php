@@ -9,6 +9,11 @@ class AbstractHandler
         return get_class($this);
     }
 
+    public function validate()
+    {
+        return true;
+    }
+
     public function beforeQueue()
     {
         return [];

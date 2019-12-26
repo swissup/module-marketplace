@@ -9,6 +9,7 @@ use Swissup\Marketplace\Model\Handler\PackageUpdate;
 use Swissup\Marketplace\Model\Handler\PackageEnable;
 use Swissup\Marketplace\Model\Handler\PackageDisable;
 use Swissup\Marketplace\Model\Job;
+use Swissup\Marketplace\Model\HandlerValidationException;
 use Swissup\Marketplace\Service\JobDispatcher;
 
 class Manage extends \Magento\Backend\App\Action
@@ -69,6 +70,9 @@ class Manage extends \Magento\Backend\App\Action
                 $this->messageManager->addSuccess(__('Task successfully completed.'));
                 $response->addData(['reload' => true]);
             }
+        } catch (HandlerValidationException $e) {
+            $response->setError(1);
+            $response->addData($e->getData());
         } catch (\Exception $e) {
             $response->setMessage($e->getMessage());
             $response->setError(1);

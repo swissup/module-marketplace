@@ -12,9 +12,14 @@ class Wrapper extends AbstractHandler implements HandlerInterface
     private $tasks;
 
     /**
-     * @var \Swissup\Marketplace\Service\JobDispatcher $dispatcher
+     * @var \Swissup\Marketplace\Service\JobDispatcher
      */
     private $dispatcher;
+
+    /**
+     * @var \Swissup\Marketplace\Model\HandlerFactory
+     */
+    private $handlerFactory;
 
     /**
      * @param array $tasks

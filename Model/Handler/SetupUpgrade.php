@@ -7,9 +7,9 @@ use Swissup\Marketplace\Api\HandlerInterface;
 class SetupUpgrade extends AbstractHandler implements HandlerInterface
 {
     /**
-     * \Magento\Framework\Console\Cli
+     * \Magento\Framework\Console\CliFactory
      */
-    private $cli;
+    private $cliFactory;
 
     /**
      * \Symfony\Component\Console\Input\ArrayInputFactory
@@ -22,16 +22,16 @@ class SetupUpgrade extends AbstractHandler implements HandlerInterface
     private $outputFactory;
 
     /**
-     * @param \Magento\Framework\Console\Cli $cli
+     * @param \Magento\Framework\Console\CliFactory $cliFactory
      * @param \Symfony\Component\Console\Input\ArrayInputFactory $inputFactory
      * @param \Symfony\Component\Console\Output\BufferedOutputFactory $outputFactory
      */
     public function __construct(
-        \Magento\Framework\Console\Cli $cli,
+        \Magento\Framework\Console\CliFactory $cliFactory,
         \Symfony\Component\Console\Input\ArrayInputFactory $inputFactory,
         \Symfony\Component\Console\Output\BufferedOutputFactory $outputFactory
     ) {
-        $this->cli = $cli;
+        $this->cliFactory = $cliFactory;
         $this->inputFactory = $inputFactory;
         $this->outputFactory = $outputFactory;
     }
@@ -52,7 +52,7 @@ class SetupUpgrade extends AbstractHandler implements HandlerInterface
 
         $output = $this->outputFactory->create();
 
-        $this->cli->find('setup:upgrade')->run($input, $output);
+        $this->cliFactory->create()->find('setup:upgrade')->run($input, $output);
 
         return $output->fetch();
     }
