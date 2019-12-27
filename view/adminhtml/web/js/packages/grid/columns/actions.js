@@ -140,7 +140,7 @@ define([
                 .done(function (response) {
                     if (response.id) {
                         watcher.watch(response.id).always(function () {
-                            this.updateRowsData(packages);
+                            this.updateRowsData();
                         }.bind(this));
 
                         return;
@@ -240,32 +240,32 @@ define([
         },
 
         /**
-         * @param {Array} packages
+         * Update outdated packages data
          */
-        updateRowsData: function (packages) {
+        updateRowsData: function () {
+            var keys = [
+                'version',
+                'time',
+                'installed',
+                'enabled',
+                'accessible'
+            ];
+
             this.source().softReload().done(function (response) {
-                var processed = 0;
-
-                _.every(this.rows, function (row) {
-                    var data;
-
-                    if (packages.indexOf(row.name) !== -1) {
-                        data = _.find(response.items, function (item) {
+                _.each(this.rows, function (row) {
+                    var data = _.find(response.items, function (item) {
                             return item.name === row.name;
-                        });
+                        }),
+                        values = _.pick(data, keys);
 
+                    this.rows[row._rowIndex].busy = false;
+
+                    if (!_.isMatch(row, values)) {
                         this.rows[row._rowIndex] = $.extend(
                             this.rows[row._rowIndex],
-                            {
-                                busy: false
-                            },
                             data || {}
                         );
-
-                        processed++;
                     }
-
-                    return processed < packages.length;
                 }, this);
 
                 this.rows.splice(0, 0); // trigger grid re-render
