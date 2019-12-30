@@ -3,37 +3,22 @@
 namespace Swissup\Marketplace\Model\Handler;
 
 use Swissup\Marketplace\Api\HandlerInterface;
+use Symfony\Component\Process\Process;
 
 class SetupUpgrade extends AbstractHandler implements HandlerInterface
 {
     /**
-     * \Magento\Framework\Console\CliFactory
+     * \Symfony\Component\Process\PhpExecutableFinder
      */
-    private $cliFactory;
+    private $phpExecutableFinder;
 
     /**
-     * \Symfony\Component\Console\Input\ArrayInputFactory
-     */
-    private $inputFactory;
-
-    /**
-     * \Symfony\Component\Console\Output\BufferedOutputFactory
-     */
-    private $outputFactory;
-
-    /**
-     * @param \Magento\Framework\Console\CliFactory $cliFactory
-     * @param \Symfony\Component\Console\Input\ArrayInputFactory $inputFactory
-     * @param \Symfony\Component\Console\Output\BufferedOutputFactory $outputFactory
+     * @param \Magento\Framework\Process\PhpExecutableFinderFactory $phpExecutableFinderFactory
      */
     public function __construct(
-        \Magento\Framework\Console\CliFactory $cliFactory,
-        \Symfony\Component\Console\Input\ArrayInputFactory $inputFactory,
-        \Symfony\Component\Console\Output\BufferedOutputFactory $outputFactory
+        \Magento\Framework\Process\PhpExecutableFinderFactory $phpExecutableFinderFactory
     ) {
-        $this->cliFactory = $cliFactory;
-        $this->inputFactory = $inputFactory;
-        $this->outputFactory = $outputFactory;
+        $this->phpExecutableFinder = $phpExecutableFinderFactory->create();
     }
 
     public function getTitle()
@@ -46,14 +31,16 @@ class SetupUpgrade extends AbstractHandler implements HandlerInterface
      */
     public function execute()
     {
-        $input = $this->inputFactory->create([
-            'parameters' => ['command' => 'setup:upgrade']
-        ]);
+        $phpPath = $this->phpExecutableFinder->find() ?: 'php';
 
-        $output = $this->outputFactory->create();
+        $process = (new Process([$phpPath, 'bin/magento', 'setup:upgrade']))
+            ->setWorkingDirectory(BP)
+            ->setTimeout(600);
 
-        $this->cliFactory->create()->find('setup:upgrade')->run($input, $output);
-
-        return $output->fetch();
+        try {
+            return $process->mustRun()->getOutput();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 }
