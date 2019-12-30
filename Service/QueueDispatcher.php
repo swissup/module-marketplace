@@ -10,6 +10,11 @@ use Swissup\Marketplace\Model\ResourceModel\Job\Collection;
 class QueueDispatcher
 {
     /**
+     * @var \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory
+     */
+    private $cronCollectionFactory;
+
+    /**
      * @var \Magento\Framework\Serialize\Serializer\Json
      */
     private $jsonSerializer;
@@ -25,15 +30,18 @@ class QueueDispatcher
     private $jobFactory;
 
     /**
+     * @param \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
      * @param \Swissup\Marketplace\Model\JobFactory $jobFactory
      */
     public function __construct(
+        \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
         \Swissup\Marketplace\Model\JobFactory $jobFactory
     ) {
+        $this->cronCollectionFactory = $cronCollectionFactory;
         $this->jsonSerializer = $jsonSerializer;
         $this->handlerFactory = $handlerFactory;
         $this->jobFactory = $jobFactory;
@@ -101,9 +109,17 @@ class QueueDispatcher
      */
     private function prepareQueue(Collection $collection)
     {
+        $cron = $this->cronCollectionFactory->create()
+            ->addFieldToFilter('job_code', 'swissup_marketplace_job_run')
+            ->addFieldToFilter('status', \Magento\Cron\Model\Schedule::STATUS_RUNNING)
+            ->getFirstItem();
+
         $queue = $collection->getItems();
         foreach ($queue as $job) {
-            $job->reset()->setStatus(Job::STATUS_QUEUED)->save();
+            $job->reset()
+                ->setStatus(Job::STATUS_QUEUED)
+                ->setCronScheduleId($cron->getId())
+                ->save();
         }
 
         $beforeQueue = [];
@@ -133,6 +149,7 @@ class QueueDispatcher
                         'tasks' => $beforeQueue,
                     ]),
                 ])
+                ->setCronScheduleId($cron->getId())
                 ->save();
 
             array_unshift($queue, $preProcess);
@@ -145,6 +162,7 @@ class QueueDispatcher
                         'tasks' => $afterQueue,
                     ]),
                 ])
+                ->setCronScheduleId($cron->getId())
                 ->save();
 
             array_push($queue, $postProcess);

@@ -45,6 +45,16 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'ID'
             )
             ->addColumn(
+                'cron_schedule_id',
+                Table::TYPE_INTEGER,
+                null,
+                [
+                    'nullable' => true,
+                    'unsigned' => true,
+                ],
+                'Cron Schedule ID'
+            )
+            ->addColumn(
                 'class',
                 Table::TYPE_TEXT,
                 255,

@@ -2,10 +2,12 @@
 
 namespace Swissup\Marketplace\Controller\Adminhtml\Job;
 
-use Magento\Framework\Controller\ResultFactory;
 use Magento\Backend\App\Action\Context;
+use Magento\Cron\Model\Schedule;
+use Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory as CronCollectionFactory;
+use Magento\Framework\Controller\ResultFactory;
 use Magento\Ui\Component\MassAction\Filter;
-use Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory;
+use Swissup\Marketplace\Model\ResourceModel\Job\CollectionFactory as JobCollectionFactory;
 
 class MassCancel extends \Magento\Backend\App\Action
 {
@@ -19,22 +21,30 @@ class MassCancel extends \Magento\Backend\App\Action
     protected $filter;
 
     /**
-     * @var CollectionFactory
+     * @var CronCollectionFactory
      */
-    protected $collectionFactory;
+    protected $cronCollectionFactory;
+
+    /**
+     * @var JobCollectionFactory
+     */
+    protected $jobCollectionFactory;
 
     /**
      * @param Context $context
      * @param Filter $filter
-     * @param CollectionFactory $collectionFactory
+     * @param CronCollectionFactory $cronCollectionFactory
+     * @param JobCollectionFactory $jobCollectionFactory
      */
     public function __construct(
         Context $context,
         Filter $filter,
-        CollectionFactory $collectionFactory
+        CronCollectionFactory $cronCollectionFactory,
+        JobCollectionFactory $jobCollectionFactory
     ) {
         $this->filter = $filter;
-        $this->collectionFactory = $collectionFactory;
+        $this->cronCollectionFactory = $cronCollectionFactory;
+        $this->jobCollectionFactory = $jobCollectionFactory;
         parent::__construct($context);
     }
 
@@ -44,14 +54,27 @@ class MassCancel extends \Magento\Backend\App\Action
      */
     public function execute()
     {
-        $collection = $this->filter->getCollection($this->collectionFactory->create());
+        $jobs = $this->filter->getCollection($this->jobCollectionFactory->create());
+        $scheduleIds = $jobs->getColumnValues('cron_schedule_id');
 
-        foreach ($collection as $item) {
+        if ($scheduleIds) {
+            $cron = $this->cronCollectionFactory->create()
+                ->addFieldToFilter('job_code', 'swissup_marketplace_job_run')
+                ->addFieldToFilter('schedule_id', $scheduleIds);
+        }
+
+        foreach ($jobs as $item) {
             $item->cancel();
+
+            if ($id = $item->getCronScheduleId()) {
+                $cron->getItemById($id)
+                    ->setStatus(Schedule::STATUS_SUCCESS)
+                    ->save();
+            }
         }
 
         $this->messageManager->addSuccess(
-            __('A total of %1 record(s) have been updated.', $collection->getSize())
+            __('A total of %1 record(s) have been updated.', $jobs->getSize())
         );
 
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
