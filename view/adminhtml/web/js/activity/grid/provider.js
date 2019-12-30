@@ -56,6 +56,10 @@ define([
          * @param {Object} data - Retrieved data object.
          */
         onReload: function (data) {
+            if (!data.items) {
+                return;
+            }
+
             this.updateWatchers(data);
 
             this._super(data);
