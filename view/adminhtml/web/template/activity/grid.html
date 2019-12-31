@@ -31,7 +31,7 @@
             </table>
         </div>
         <div class="toolbar" if="hasData()">
-            <div class="cleanup" click="hideCompleted" translate="'Hide completed items'"/>
+            <div class="cleanup" if="canHideCompleted()" click="hideCompleted" translate="'Hide completed items'"/>
             <div class="timer" text="secondsToNextQueuePhrase()"/>
         </div>
     </div>

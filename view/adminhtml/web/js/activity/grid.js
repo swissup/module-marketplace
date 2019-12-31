@@ -66,6 +66,15 @@ define([
         },
 
         /**
+         * @return {Boolean}
+         */
+        canHideCompleted: function () {
+            this.secondsToNextQueue();
+
+            return this.source.hasCompletedJobs();
+        },
+
+        /**
          * Mark completed items as hidden
          */
         hideCompleted: function () {

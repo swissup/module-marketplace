@@ -155,6 +155,17 @@ define([
         },
 
         /**
+         * @return {Boolean}
+         */
+        hasCompletedJobs: function () {
+            return _.find(this.data.items, function (job) {
+                //jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+                return job.finished_at;
+                //jscs:enable requireCamelCaseOrUpperCaseIdentifiers
+            }) !== undefined;
+        },
+
+        /**
          * Mark completed items as invisible in activity grid
          */
         hideCompleted: function () {
