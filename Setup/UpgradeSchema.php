@@ -79,6 +79,16 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'Job Status'
             )
             ->addColumn(
+                'visibility',
+                Table::TYPE_SMALLINT,
+                null,
+                [
+                    'nullable' => false,
+                    'default'  => 1
+                ],
+                'Job Visibility'
+            )
+            ->addColumn(
                 'created_at',
                 Table::TYPE_TIMESTAMP,
                 null,

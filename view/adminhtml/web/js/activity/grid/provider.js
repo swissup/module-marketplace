@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'Swissup_Marketplace/js/activity/status',
+    'Swissup_Marketplace/js/utils/request',
     'Magento_Ui/js/grid/provider'
-], function ($, _, status, Provider) {
+], function ($, _, status, request, Provider) {
     'use strict';
 
     return Provider.extend({
@@ -56,6 +57,8 @@ define([
          * @param {Object} data - Retrieved data object.
          */
         onReload: function (data) {
+            $('body').trigger('processStop');
+
             if (!data.items) {
                 return;
             }
@@ -149,6 +152,28 @@ define([
                 return !job.finished_at;
                 //jscs:enable requireCamelCaseOrUpperCaseIdentifiers
             }) !== undefined;
+        },
+
+        /**
+         * Mark completed items as invisible in activity grid
+         */
+        hideCompleted: function () {
+            var completed = _.filter(this.data.items, function (job) {
+                //jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+                return job.finished_at;
+                //jscs:enable requireCamelCaseOrUpperCaseIdentifiers
+            });
+
+            $('body').trigger('processStart');
+
+            request
+                .post(this.hideCompletedUrl, {
+                    ids: _.pluck(completed, 'job_id')
+                })
+                .always(function () {
+                    this.reload();
+
+                }.bind(this));
         }
     });
 });

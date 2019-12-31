@@ -14,6 +14,10 @@ class Job extends \Magento\Framework\Model\AbstractModel
     const STATUS_ERRORED = 5;
     const STATUS_CANCELED = 6;
 
+    const VISIBILITY_VISIBLE = 1;
+    const VISIBILITY_INVISIBLE = 2;
+    const VISIBILITY_INVISIBLE_IN_ACTIVITY = 3;
+
     /**
      * Initialize resource model
      *

@@ -63,6 +63,13 @@ define([
          */
         isRunning: function () {
             return this.secondsToNextQueue() <= 0 && this.source.hasUnfinishedJobs();
+        },
+
+        /**
+         * Mark completed items as hidden
+         */
+        hideCompleted: function () {
+            this.source.hideCompleted();
         }
     });
 });

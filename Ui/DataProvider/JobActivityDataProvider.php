@@ -3,6 +3,7 @@
 namespace Swissup\Marketplace\Ui\DataProvider;
 
 use Magento\Framework\Stdlib\DateTime;
+use Swissup\Marketplace\Model\Job;
 
 class JobActivityDataProvider extends JobDataProvider
 {
@@ -12,6 +13,7 @@ class JobActivityDataProvider extends JobDataProvider
     public function getCollection()
     {
         $this->collection
+            ->addFieldToFilter('visibility', Job::VISIBILITY_VISIBLE)
             ->addFieldToFilter('created_at', [
                 'date' => true,
                 'from' => (new \DateTime('-3 hours'))->format(DateTime::DATETIME_PHP_FORMAT),

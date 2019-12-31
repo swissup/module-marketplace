@@ -18,6 +18,7 @@
                 <item name="config" xsi:type="array">
                     <item name="component" xsi:type="string">Swissup_Marketplace/js/activity/grid/provider</item>
                     <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                    <item name="hideCompletedUrl" xsi:type="url" path="swissup_marketplace/job/hideCompleted"/>
                     <item name="storageConfig" xsi:type="array">
                         <item name="indexField" xsi:type="string">job_id</item>
                         <item name="cacheRequests" xsi:type="boolean">false</item>
