@@ -37,10 +37,6 @@ class SetupUpgrade extends AbstractHandler implements HandlerInterface
             ->setWorkingDirectory(BP)
             ->setTimeout(600);
 
-        try {
-            return $process->mustRun()->getOutput();
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
+        return $process->mustRun()->getOutput();
     }
 }

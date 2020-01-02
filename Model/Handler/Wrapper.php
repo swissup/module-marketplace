@@ -53,6 +53,7 @@ class Wrapper extends AbstractHandler implements HandlerInterface
 
     public function execute()
     {
+        $failed = false;
         $output = [];
 
         foreach ($this->tasks as $task) {
@@ -60,9 +61,16 @@ class Wrapper extends AbstractHandler implements HandlerInterface
                 $output[] = $this->dispatcher->dispatchNow($task);
             } catch (\Exception $e) {
                 $output[] = $e->getMessage();
+                $failed = true;
             }
         }
 
-        return implode("\n\n", array_filter($output));
+        $result = implode("\n\n", array_filter($output));
+
+        if ($failed) {
+            throw new \Exception($result);
+        }
+
+        return $result;
     }
 }
