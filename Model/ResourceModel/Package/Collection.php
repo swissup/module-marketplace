@@ -74,6 +74,15 @@ class Collection extends \Magento\Framework\Data\Collection
 
             if (!$this->data[$id]['version']) {
                 $code = 'na';
+            } elseif ($this->data[$id]['version'] === 'dev-master') {
+                $code = 'updated';
+
+                if (!empty($remoteData['time']) &&
+                    !empty($localPackages[$id]['time'])
+                ) {
+                    $code = $localPackages[$id]['time'] >= $remoteData['time']
+                        ? 'updated' : 'outdated';
+                }
             } else {
                 $updated = version_compare(
                     $this->data[$id]['version'],
