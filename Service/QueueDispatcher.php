@@ -137,6 +137,9 @@ class QueueDispatcher
             $job->setHandler($handler);
         }
 
+        $beforeQueue = array_keys(array_filter($beforeQueue));
+        $afterQueue = array_keys(array_filter($afterQueue));
+
         if ($beforeQueue) {
             $createdAt = $collection->getFirstItem()->getCreatedAt();
             $createdAt = (new \DateTime($createdAt))->modify('-1 second');

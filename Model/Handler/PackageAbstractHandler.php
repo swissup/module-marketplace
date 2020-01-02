@@ -2,6 +2,7 @@
 
 namespace Swissup\Marketplace\Model\Handler;
 
+use Magento\Framework\App\State;
 use Swissup\Marketplace\Model\HandlerValidationException;
 
 class PackageAbstractHandler extends AbstractHandler
@@ -10,6 +11,11 @@ class PackageAbstractHandler extends AbstractHandler
      * @var array
      */
     protected $packages;
+
+    /**
+     * State
+     */
+    protected $state;
 
     /**
      * \Magento\Framework\Module\ConflictChecker
@@ -28,20 +34,28 @@ class PackageAbstractHandler extends AbstractHandler
 
     /**
      * @param array $packages
+     * @param State $state
      * @param \Magento\Framework\Module\ConflictChecker $conflictChecker
      * @param \Magento\Framework\Module\DependencyChecker $dependencyChecker
      * @param \Swissup\Marketplace\Model\PackageManager $packageManager
      */
     public function __construct(
         $packages,
+        State $state,
         \Magento\Framework\Module\ConflictChecker $conflictChecker,
         \Magento\Framework\Module\DependencyChecker $dependencyChecker,
         \Swissup\Marketplace\Model\PackageManager $packageManager
     ) {
         $this->packages = $packages;
+        $this->state = $state;
         $this->conflictChecker = $conflictChecker;
         $this->dependencyChecker = $dependencyChecker;
         $this->packageManager = $packageManager;
+    }
+
+    protected function isProduction()
+    {
+        return $this->state->getMode() === State::MODE_PRODUCTION;
     }
 
     protected function validateWhenEnable()

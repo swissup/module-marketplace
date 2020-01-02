@@ -27,7 +27,8 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
     public function beforeQueue()
     {
         return [
-            MaintenanceEnable::class,
+            MaintenanceEnable::class => true,
+            ProductionDisable::class => $this->isProduction(),
         ];
     }
 
@@ -37,9 +38,10 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
     public function afterQueue()
     {
         return [
-            CleanGeneratedFiles::class,
-            SetupUpgrade::class,
-            MaintenanceDisable::class,
+            CleanGeneratedFiles::class => true,
+            SetupUpgrade::class => true,
+            ProductionEnable::class => $this->isProduction(),
+            MaintenanceDisable::class => true,
         ];
     }
 }

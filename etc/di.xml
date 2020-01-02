@@ -38,6 +38,8 @@
                 <item name="PackageInstall" xsi:type="string">Swissup\Marketplace\Model\Handler\PackageInstall</item>
                 <item name="PackageUninstall" xsi:type="string">Swissup\Marketplace\Model\Handler\PackageUninstall</item>
                 <item name="PackageUpdate" xsi:type="string">Swissup\Marketplace\Model\Handler\PackageUpdate</item>
+                <item name="ProductionDisable" xsi:type="string">Swissup\Marketplace\Model\Handler\ProductionDisable</item>
+                <item name="ProductionEnable" xsi:type="string">Swissup\Marketplace\Model\Handler\ProductionEnable</item>
                 <item name="SetupUpgrade" xsi:type="string">Swissup\Marketplace\Model\Handler\SetupUpgrade</item>
                 <item name="Wrapper" xsi:type="string">Swissup\Marketplace\Model\Handler\Wrapper</item>
             </argument>
