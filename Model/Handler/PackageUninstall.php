@@ -38,7 +38,7 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
     public function afterQueue()
     {
         return [
-            CleanGeneratedFiles::class => true,
+            CleanupFilesystem::class => true,
             SetupUpgrade::class => true,
             ProductionEnable::class => $this->isProduction(),
             MaintenanceDisable::class => true,

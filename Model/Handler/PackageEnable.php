@@ -38,6 +38,7 @@ class PackageEnable extends PackageAbstractHandler implements HandlerInterface
     public function afterQueue()
     {
         return [
+            CleanupFilesystem::class => true,
             SetupUpgrade::class => true,
             ProductionEnable::class => $this->isProduction(),
             MaintenanceDisable::class => true,

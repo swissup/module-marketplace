@@ -38,7 +38,7 @@ class PackageDisable extends PackageAbstractHandler implements HandlerInterface
     public function afterQueue()
     {
         return [
-            CleanGeneratedFiles::class => true,
+            CleanupFilesystem::class => true,
             ProductionEnable::class => $this->isProduction(),
             MaintenanceDisable::class => true,
         ];
