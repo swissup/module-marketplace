@@ -3,22 +3,21 @@
 namespace Swissup\Marketplace\Model\Handler;
 
 use Swissup\Marketplace\Api\HandlerInterface;
-use Symfony\Component\Process\Process;
 
 class ProductionDisable extends AbstractHandler implements HandlerInterface
 {
     /**
-     * \Symfony\Component\Process\PhpExecutableFinder
+     * \Swissup\Marketplace\Model\Process
      */
-    private $phpExecutableFinder;
+    private $process;
 
     /**
-     * @param \Magento\Framework\Process\PhpExecutableFinderFactory $phpExecutableFinderFactory
+     * @param \Swissup\Marketplace\Model\Process $process
      */
     public function __construct(
-        \Magento\Framework\Process\PhpExecutableFinderFactory $phpExecutableFinderFactory
+        \Swissup\Marketplace\Model\Process $process
     ) {
-        $this->phpExecutableFinder = $phpExecutableFinderFactory->create();
+        $this->process = $process;
     }
 
     public function getTitle()
@@ -31,12 +30,6 @@ class ProductionDisable extends AbstractHandler implements HandlerInterface
      */
     public function execute()
     {
-        $phpPath = $this->phpExecutableFinder->find() ?: 'php';
-
-        $process = (new Process([$phpPath, 'bin/magento', 'deploy:mode:set', 'developer']))
-            ->setWorkingDirectory(BP)
-            ->setTimeout(600);
-
-        return $process->mustRun()->getOutput();
+        return $this->process->run('bin/magento deploy:mode:set developer');
     }
 }
