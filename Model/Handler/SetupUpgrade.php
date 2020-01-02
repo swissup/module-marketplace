@@ -30,6 +30,6 @@ class SetupUpgrade extends AbstractHandler implements HandlerInterface
      */
     public function execute()
     {
-        $this->process->run('bin/magento setup:upgrade');
+        return $this->process->run('bin/magento setup:upgrade');
     }
 }
