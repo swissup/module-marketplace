@@ -8,11 +8,6 @@ use Swissup\Marketplace\Api\HandlerInterface;
 class CleanGeneratedFiles extends AbstractHandler implements HandlerInterface
 {
     /**
-     * @var \Magento\Framework\App\Cache\Manager
-     */
-    private $cacheManager;
-
-    /**
      * @var \Magento\Framework\App\Filesystem\DirectoryList
      */
     private $directoryList;
@@ -23,16 +18,13 @@ class CleanGeneratedFiles extends AbstractHandler implements HandlerInterface
     private $write;
 
     /**
-     * @param \Magento\Framework\App\Cache\Manager $cacheManager
      * @param \Magento\Framework\App\Filesystem\DirectoryList $directoryList
      * @param \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory
      */
     public function __construct(
-        \Magento\Framework\App\Cache\Manager $cacheManager,
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory
     ) {
-        $this->cacheManager = $cacheManager;
         $this->directoryList = $directoryList;
         $this->write = $writeFactory->create(BP);
     }
@@ -50,14 +42,6 @@ class CleanGeneratedFiles extends AbstractHandler implements HandlerInterface
      */
     public function execute()
     {
-        $cacheTypes = [];
-        foreach ($this->cacheManager->getStatus() as $type => $status) {
-            if (!$status) {
-                continue;
-            }
-            $cacheTypes[] = $type;
-        }
-
         $paths = [
             $this->write->getRelativePath($this->directoryList->getPath(DirectoryList::CACHE)),
             $this->write->getRelativePath($this->directoryList->getPath(DirectoryList::GENERATED_CODE)),
@@ -72,10 +56,6 @@ class CleanGeneratedFiles extends AbstractHandler implements HandlerInterface
                     //
                 }
             }
-        }
-
-        if ($cacheTypes) {
-            $this->cacheManager->setEnabled($cacheTypes, true);
         }
     }
 }
