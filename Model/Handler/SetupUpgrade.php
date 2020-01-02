@@ -23,7 +23,7 @@ class SetupUpgrade extends AbstractHandler implements HandlerInterface
 
     public function getTitle()
     {
-        return __('bin/magento setup:upgrade');
+        return __('Run setup:upgrade');
     }
 
     /**
