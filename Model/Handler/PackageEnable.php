@@ -6,14 +6,14 @@ use Swissup\Marketplace\Api\HandlerInterface;
 
 class PackageEnable extends PackageAbstractHandler implements HandlerInterface
 {
-    public function validate()
-    {
-        return $this->validateWhenEnable();
-    }
-
     public function execute()
     {
         return $this->packageManager->enable($this->packages);
+    }
+
+    public function validate()
+    {
+        return $this->validateWhenEnable();
     }
 
     public function getTitle()

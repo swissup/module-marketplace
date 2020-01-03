@@ -30,6 +30,6 @@ class ProductionDisable extends AbstractHandler implements HandlerInterface
      */
     public function execute()
     {
-        return $this->process->run('bin/magento deploy:mode:set developer');
+        return $this->process->run('bin/magento deploy:mode:set developer', $this->getLogger());
     }
 }

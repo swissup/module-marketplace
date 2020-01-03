@@ -12,27 +12,19 @@ class Wrapper extends AbstractHandler implements HandlerInterface
     private $tasks;
 
     /**
-     * @var \Swissup\Marketplace\Service\JobDispatcher
-     */
-    private $dispatcher;
-
-    /**
      * @var \Swissup\Marketplace\Model\HandlerFactory
      */
     private $handlerFactory;
 
     /**
      * @param array $tasks
-     * @param \Swissup\Marketplace\Service\JobDispatcher $dispatcher
      * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
      */
     public function __construct(
         array $tasks,
-        \Swissup\Marketplace\Service\JobDispatcher $dispatcher,
         \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
     ) {
         $this->tasks = $tasks;
-        $this->dispatcher = $dispatcher;
         $this->handlerFactory = $handlerFactory;
     }
 
@@ -42,13 +34,18 @@ class Wrapper extends AbstractHandler implements HandlerInterface
 
         foreach ($this->tasks as $task) {
             try {
-                $titles[] = $this->handlerFactory->create($task)->getTitle();
+                $titles[] = $this->createTask($task)->getTitle();
             } catch (\Exception $e) {
                 $titles[] = $e->getMessage();
             }
         }
 
         return implode(', ', $titles);
+    }
+
+    public function handle()
+    {
+        return $this->execute();
     }
 
     public function execute()
@@ -58,19 +55,26 @@ class Wrapper extends AbstractHandler implements HandlerInterface
 
         foreach ($this->tasks as $task) {
             try {
-                $output[] = $this->dispatcher->dispatchNow($task);
+                $handler = $this->createTask($task);
+                $handler->validate();
+                $output[] = $handler->handle();
             } catch (\Exception $e) {
                 $output[] = $e->getMessage();
                 $failed = true;
             }
         }
 
-        $result = implode("\n\n", array_filter($output));
+        $result = implode("\n", array_filter($output));
 
         if ($failed) {
             throw new \Exception($result);
         }
 
         return $result;
+    }
+
+    private function createTask($class)
+    {
+        return $this->handlerFactory->create($class)->setLogger($this->getLogger());
     }
 }

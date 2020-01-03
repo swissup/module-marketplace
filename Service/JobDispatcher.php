@@ -72,7 +72,7 @@ class JobDispatcher
 
         $handler->validate();
 
-        return $handler->execute();
+        return $handler->handle();
     }
 
     /**

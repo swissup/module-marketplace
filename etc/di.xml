@@ -46,6 +46,19 @@
         </arguments>
     </type>
 
+    <virtualType name="Swissup\Marketplace\Model\Logger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Swissup\Marketplace\Model\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Swissup\Marketplace\Service\QueueDispatcher">
+        <arguments>
+            <argument name="logger" xsi:type="object">Swissup\Marketplace\Model\Logger</argument>
+        </arguments>
+    </type>
+
     <!-- Magento Marketplace Channel -->
     <virtualType name="Swissup\Marketplace\Model\Channel\Magento"
                  type="Swissup\Marketplace\Model\Channel\Composer">

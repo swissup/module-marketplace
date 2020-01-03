@@ -6,7 +6,11 @@ interface HandlerInterface
 {
     public function getTitle();
 
-    public function execute();
+    public function handle();
+
+    public function setLogger(\Psr\Log\LoggerInterface $logger = null);
+
+    public function getLogger();
 
     public function validate();
 

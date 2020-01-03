@@ -30,6 +30,6 @@ class ProductionEnable extends AbstractHandler implements HandlerInterface
      */
     public function execute()
     {
-        return $this->process->run('bin/magento deploy:mode:set production');
+        return $this->process->run('bin/magento deploy:mode:set production', $this->getLogger());
     }
 }

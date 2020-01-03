@@ -6,14 +6,14 @@ use Swissup\Marketplace\Api\HandlerInterface;
 
 class PackageUninstall extends PackageAbstractHandler implements HandlerInterface
 {
-    public function validate()
-    {
-        return $this->validateWhenDisable();
-    }
-
     public function execute()
     {
         return $this->packageManager->uninstall($this->packages);
+    }
+
+    public function validate()
+    {
+        return $this->validateWhenDisable();
     }
 
     public function getTitle()

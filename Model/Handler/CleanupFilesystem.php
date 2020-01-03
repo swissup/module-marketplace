@@ -31,7 +31,7 @@ class CleanupFilesystem extends AbstractHandler implements HandlerInterface
 
     public function getTitle()
     {
-        return __('Cleanup Filesystem');
+        return __('Filesystem Cleanup');
     }
 
     /**
@@ -39,25 +39,11 @@ class CleanupFilesystem extends AbstractHandler implements HandlerInterface
      */
     public function execute()
     {
-        $failed = false;
-        $result = [$this->getTitle()];
-
         try {
-            foreach ($this->cleanupFiles->clearCodeGeneratedFiles() as $path) {
-                $result[] = $path;
-            }
+            $this->cleanupFiles->clearCodeGeneratedFiles();
             $this->filesystem->cleanupFilesystem([DirectoryList::CACHE]);
         } catch (\Exception $e) {
-            $failed = true;
-            $result[] = $e->getMessage();
+            return $e->getMessage();
         }
-
-        $result = implode("\n", array_filter($result));
-
-        if ($failed) {
-            throw new \Exception($result);
-        }
-
-        return $result;
     }
 }

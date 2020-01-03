@@ -20,6 +20,11 @@ class QueueDispatcher
     private $jsonSerializer;
 
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @var \Swissup\Marketplace\Model\HandlerFactory
      */
     private $handlerFactory;
@@ -32,17 +37,20 @@ class QueueDispatcher
     /**
      * @param \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
+     * @param \Psr\Log\LoggerInterface $logger
      * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
      * @param \Swissup\Marketplace\Model\JobFactory $jobFactory
      */
     public function __construct(
         \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
+        \Psr\Log\LoggerInterface $logger,
         \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
         \Swissup\Marketplace\Model\JobFactory $jobFactory
     ) {
         $this->cronCollectionFactory = $cronCollectionFactory;
         $this->jsonSerializer = $jsonSerializer;
+        $this->logger = $logger;
         $this->handlerFactory = $handlerFactory;
         $this->jobFactory = $jobFactory;
     }
@@ -60,6 +68,7 @@ class QueueDispatcher
         try {
             $queue = $this->prepareQueue($collection);
         } catch (\Exception $e) {
+            // cancel all jobs if some are not prepared
             foreach ($collection as $job) {
                 if ($job->getStatus() !== JOB::STATUS_QUEUED) {
                     continue;
@@ -86,13 +95,14 @@ class QueueDispatcher
                     ->save();
 
                 $output = '';
-                if ($job->getHandler()) {
-                    $output = $job->getHandler()->execute();
+                if ($handler = $job->getHandler()) {
+                    $output = $handler->handle();
                 }
 
                 $job->setStatus(Job::STATUS_SUCCESS)
                     ->setOutput((string) $output);
             } catch (\Exception $e) {
+                $this->logger->error($e->getMessage());
                 $job->setStatus(Job::STATUS_ERRORED)
                     ->setOutput($e->getMessage());
             } finally {
@@ -100,6 +110,8 @@ class QueueDispatcher
                     ->save();
             }
         }
+
+        $this->logger->info('Done');
     }
 
     /**
@@ -201,7 +213,7 @@ class QueueDispatcher
     private function createHandler(Job $job)
     {
         try {
-            return $this->handlerFactory->create($job);
+            return $this->handlerFactory->create($job)->setLogger($this->logger);
         } catch (\Exception $e) {
             $job->setStatus(JOB::STATUS_ERRORED)
                 ->setOutput($e->getMessage())
