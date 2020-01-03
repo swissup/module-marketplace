@@ -22,7 +22,7 @@ class JobActivityDataProvider extends JobDataProvider
                 'or' => [
                     [
                         'date' => true,
-                        'from' => (new \DateTime('-3 minutes'))->format(DateTime::DATETIME_PHP_FORMAT)
+                        'from' => (new \DateTime('-10 minutes'))->format(DateTime::DATETIME_PHP_FORMAT)
                     ],
                     [
                         'is' => new \Zend_Db_Expr('null')
