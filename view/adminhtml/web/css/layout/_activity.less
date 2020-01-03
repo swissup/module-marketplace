@@ -19,6 +19,7 @@
     label[for="marketplace-activity-checkbox"] {
         cursor: pointer;
         position: absolute;
+        z-index: 1000;
         right: 0;
         bottom: 0;
         padding: 0;
@@ -75,7 +76,7 @@
 
 .admin__data-grid-outer-wrap {
     &[data-bind*="swissup_marketplace_job_activity_listing"] {
-        z-index: 400; /* move above page spinner */
+        z-index: 700; /* move above page navigation */
         position: fixed;
         bottom: 40px;
         right: 40px;
@@ -106,6 +107,7 @@
             position: absolute;
             right: 0;
             bottom: 90px;
+            z-index: 1000;
 
             background: #fff;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
