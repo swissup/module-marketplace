@@ -1,8 +1,9 @@
 <?php
 
-namespace Swissup\Marketplace\Model\Handler;
+namespace Swissup\Marketplace\Model\Handler\Additional;
 
 use Swissup\Marketplace\Api\HandlerInterface;
+use Swissup\Marketplace\Model\Handler\AbstractHandler;
 
 class Wrapper extends AbstractHandler implements HandlerInterface
 {
@@ -19,13 +20,16 @@ class Wrapper extends AbstractHandler implements HandlerInterface
     /**
      * @param array $tasks
      * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
+     * @param array $data
      */
     public function __construct(
         array $tasks,
-        \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
+        \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
+        array $data = []
     ) {
         $this->tasks = $tasks;
         $this->handlerFactory = $handlerFactory;
+        parent::__construct($data);
     }
 
     public function getTitle()
@@ -75,6 +79,8 @@ class Wrapper extends AbstractHandler implements HandlerInterface
 
     private function createTask($class)
     {
-        return $this->handlerFactory->create($class)->setLogger($this->getLogger());
+        return $this->handlerFactory
+            ->create($class, ['data' => $this->getData()])
+            ->setLogger($this->getLogger());
     }
 }

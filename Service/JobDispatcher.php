@@ -8,6 +8,11 @@ use Swissup\Marketplace\Model\Job;
 class JobDispatcher
 {
     /**
+     * @var \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress
+     */
+    private $remoteAddress;
+
+    /**
      * @var \Magento\Framework\Serialize\Serializer\Json
      */
     private $jsonSerializer;
@@ -28,17 +33,20 @@ class JobDispatcher
     private $jobFactory;
 
     /**
+     * @param \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      * @param \Swissup\Marketplace\Helper\Data $helper
      * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
      * @param \Swissup\Marketplace\Model\JobFactory $jobFactory
      */
     public function __construct(
+        \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Swissup\Marketplace\Helper\Data $helper,
         \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
         \Swissup\Marketplace\Model\JobFactory $jobFactory
     ) {
+        $this->remoteAddress = $remoteAddress;
         $this->jsonSerializer = $jsonSerializer;
         $this->helper = $helper;
         $this->handlerFactory = $handlerFactory;
@@ -53,6 +61,10 @@ class JobDispatcher
      */
     public function dispatch($class, array $arguments = [])
     {
+        if (!isset($arguments['data']['ip'])) {
+            $arguments['data']['ip'] = $this->remoteAddress->getRemoteAddress();
+        }
+
         if ($this->helper->canUseAsyncMode()) {
             $this->createHandler($class, $arguments)->validate();
             return $this->dispatchToQueue($class, $arguments);

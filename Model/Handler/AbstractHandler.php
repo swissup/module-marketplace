@@ -2,7 +2,7 @@
 
 namespace Swissup\Marketplace\Model\Handler;
 
-class AbstractHandler
+class AbstractHandler extends \Magento\Framework\DataObject
 {
     private $logger;
 

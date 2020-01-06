@@ -51,7 +51,7 @@ class HandlerFactory
         }
 
         if (!in_array($class, $this->handlers)) {
-            throw new NoSuchEntityException(__('Handler "%1" does not exist.', $class));
+            throw new NoSuchEntityException(__('Handler "%1" is not registered.', $class));
         }
 
         if (!in_array(HandlerInterface::class, class_implements($class))) {

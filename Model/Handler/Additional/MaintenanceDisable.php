@@ -1,6 +1,6 @@
 <?php
 
-namespace Swissup\Marketplace\Model\Handler;
+namespace Swissup\Marketplace\Model\Handler\Additional;
 
 class MaintenanceDisable extends MaintenanceEnable
 {

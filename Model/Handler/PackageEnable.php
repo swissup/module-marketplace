@@ -27,8 +27,8 @@ class PackageEnable extends PackageAbstractHandler implements HandlerInterface
     public function beforeQueue()
     {
         return [
-            MaintenanceEnable::class => true,
-            ProductionDisable::class => $this->isProduction(),
+            Additional\MaintenanceEnable::class => true,
+            Additional\ProductionDisable::class => $this->isProduction(),
         ];
     }
 
@@ -38,10 +38,10 @@ class PackageEnable extends PackageAbstractHandler implements HandlerInterface
     public function afterQueue()
     {
         return [
-            CleanupFilesystem::class => true,
-            SetupUpgrade::class => true,
-            ProductionEnable::class => $this->isProduction(),
-            MaintenanceDisable::class => true,
+            Additional\CleanupFilesystem::class => true,
+            Additional\SetupUpgrade::class => true,
+            Additional\ProductionEnable::class => $this->isProduction(),
+            Additional\MaintenanceDisable::class => true,
         ];
     }
 }

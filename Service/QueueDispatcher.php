@@ -3,7 +3,7 @@
 namespace Swissup\Marketplace\Service;
 
 use Magento\Framework\Stdlib\DateTime;
-use Swissup\Marketplace\Model\Handler\Wrapper;
+use Swissup\Marketplace\Model\Handler\Additional\Wrapper;
 use Swissup\Marketplace\Model\Job;
 use Swissup\Marketplace\Model\ResourceModel\Job\Collection;
 
@@ -82,6 +82,8 @@ class QueueDispatcher
             return;
         }
 
+        $this->logger->info(sprintf('Processing %s tasks', count($queue)));
+
         foreach ($queue as $job) {
             if ($job->getStatus() !== JOB::STATUS_QUEUED) {
                 // some tasks may be declined during preparation
@@ -111,7 +113,7 @@ class QueueDispatcher
             }
         }
 
-        $this->logger->info('Done');
+        $this->logger->info("Done\n");
     }
 
     /**
@@ -136,6 +138,7 @@ class QueueDispatcher
 
         $beforeQueue = [];
         $afterQueue = [];
+        $ip = [];
         foreach ($queue as $job) {
             try {
                 $handler = $this->createHandler($job);
@@ -145,12 +148,14 @@ class QueueDispatcher
 
             $beforeQueue += $handler->beforeQueue();
             $afterQueue += $handler->afterQueue();
+            $ip[] = $handler->getIp();
 
             $job->setHandler($handler);
         }
 
         $beforeQueue = array_keys(array_filter($beforeQueue));
         $afterQueue = array_keys(array_filter($afterQueue));
+        $ip = implode(',', array_filter(array_unique($ip)));
 
         if ($beforeQueue) {
             $createdAt = $collection->getFirstItem()->getCreatedAt();
@@ -162,6 +167,9 @@ class QueueDispatcher
                     'created_at' => $createdAt,
                     'arguments_serialized' => $this->jsonSerializer->serialize([
                         'tasks' => $beforeQueue,
+                        'data' => [
+                            'ip' => $ip,
+                        ],
                     ]),
                 ])
                 ->setCronScheduleId($cron->getId())
@@ -175,6 +183,9 @@ class QueueDispatcher
                     'class' => Wrapper::class,
                     'arguments_serialized' => $this->jsonSerializer->serialize([
                         'tasks' => $afterQueue,
+                        'data' => [
+                            'ip' => $ip,
+                        ],
                     ]),
                 ])
                 ->setCronScheduleId($cron->getId())

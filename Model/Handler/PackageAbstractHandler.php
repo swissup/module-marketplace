@@ -38,19 +38,22 @@ class PackageAbstractHandler extends AbstractHandler
      * @param \Magento\Framework\Module\ConflictChecker $conflictChecker
      * @param \Magento\Framework\Module\DependencyChecker $dependencyChecker
      * @param \Swissup\Marketplace\Model\PackageManager $packageManager
+     * @param array $data
      */
     public function __construct(
         $packages,
         State $state,
         \Magento\Framework\Module\ConflictChecker $conflictChecker,
         \Magento\Framework\Module\DependencyChecker $dependencyChecker,
-        \Swissup\Marketplace\Model\PackageManager $packageManager
+        \Swissup\Marketplace\Model\PackageManager $packageManager,
+        array $data = []
     ) {
         $this->packages = $packages;
         $this->state = $state;
         $this->conflictChecker = $conflictChecker;
         $this->dependencyChecker = $dependencyChecker;
         $this->packageManager = $packageManager;
+        parent::__construct($data);
     }
 
     protected function isProduction()

@@ -10,7 +10,7 @@ class ChannelsSave extends AbstractHandler implements HandlerInterface
     /**
      * @var array
      */
-    private $data;
+    private $channels;
 
     /**
      * @var ChannelRepository
@@ -18,15 +18,18 @@ class ChannelsSave extends AbstractHandler implements HandlerInterface
     private $channelRepository;
 
     /**
-     * @param array $data
+     * @param array $channels
      * @param ChannelRepository $channelRepository
+     * @param array $data
      */
     public function __construct(
-        array $data,
-        ChannelRepository $channelRepository
+        array $channels,
+        ChannelRepository $channelRepository,
+        array $data = []
     ) {
-        $this->data = $data;
+        $this->channels = $channels;
         $this->channelRepository = $channelRepository;
+        parent::__construct($data);
     }
 
     public function getTitle()
@@ -37,7 +40,7 @@ class ChannelsSave extends AbstractHandler implements HandlerInterface
     public function execute()
     {
         foreach ($this->channelRepository->getList() as $channel) {
-            $data = $this->data[$channel->getIdentifier()] ?? false;
+            $data = $this->channels[$channel->getIdentifier()] ?? false;
 
             if (!$data) {
                 continue;

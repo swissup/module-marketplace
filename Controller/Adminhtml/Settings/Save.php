@@ -45,7 +45,7 @@ class Save extends \Magento\Backend\App\Action
         if ($channels) {
             try {
                 $job = $this->dispatcher->dispatch(ChannelsSave::class, [
-                    'data' => $channels
+                    'channels' => $channels
                 ]);
 
                 if ($job instanceof Job) {
