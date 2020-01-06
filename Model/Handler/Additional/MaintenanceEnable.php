@@ -28,7 +28,7 @@ class MaintenanceEnable extends AbstractHandler implements HandlerInterface
     {
         try {
             $this->maintenanceMode->set($this->status);
-            $this->maintenanceMode->setAddresses($this->getIp());
+            $this->maintenanceMode->setAddresses('');
         } catch (\Exception $e) {
             throw new \Exception("Error when enabling maintenance mode: " . $e->getMessage());
         }
