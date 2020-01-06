@@ -2,6 +2,7 @@
 
 namespace Swissup\Marketplace\Ui\DataProvider;
 
+use Magento\Framework\App\MaintenanceMode;
 use Magento\Ui\DataProvider\AddFieldToCollectionInterface;
 use Swissup\Marketplace\Model\HandlerFactory;
 use Swissup\Marketplace\Model\ResourceModel\Job\Collection;
@@ -11,7 +12,12 @@ class JobDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
     /**
      * @var HandlerFactory
      */
-    private $handlerFactory;
+    protected $handlerFactory;
+
+    /**
+     * @var MaintenanceMode
+     */
+    protected $maintenanceMode;
 
     /**
      * @param string $name
@@ -28,12 +34,14 @@ class JobDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         $requestFieldName,
         Collection $collection,
         HandlerFactory $handlerFactory,
+        MaintenanceMode $maintenanceMode,
         array $meta = [],
         array $data = []
     ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
         $this->collection = $collection;
         $this->handlerFactory = $handlerFactory;
+        $this->maintenanceMode = $maintenanceMode;
     }
 
     /**

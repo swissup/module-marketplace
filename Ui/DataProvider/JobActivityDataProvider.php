@@ -44,8 +44,14 @@ class JobActivityDataProvider extends JobDataProvider
     {
         $date = new \DateTime();
 
+        if ($this->maintenanceMode->isOn()) {
+            $secondsToNextQueue = 0;
+        } else {
+            $secondsToNextQueue = 60 - $date->format('s');
+        }
+
         return array_merge(parent::getData(), [
-            'secondsToNextQueue' => 60 - $date->format('s'),
+            'secondsToNextQueue' => $secondsToNextQueue,
             'time' => $date->format(DateTime::DATETIME_PHP_FORMAT),
         ]);
     }
