@@ -78,6 +78,16 @@ class QueueProcess
             ->setOrder('scheduled_at', 'ASC')
             ->setOrder('created_at', 'ASC');
 
+        $latest = $jobs->getLastItem();
+        if ($latest->getId()) {
+            $createdAt = new \DateTime($latest->getCreatedAt());
+            $compareWith = new \DateTime('-7 seconds');
+
+            if ($createdAt > $compareWith) {
+                return;
+            }
+        }
+
         $this->dispatcher->dispatch($jobs);
     }
 
