@@ -95,20 +95,19 @@ class Collection extends \Magento\Framework\Data\Collection
             $this->data[$id]['state'] = $code;
         }
 
+        $this->_renderFilters();
         $this->_totalRecords = count($this->data);
 
-        $this->_renderFilters();
         $this->_renderOrders();
         $this->_renderLimit();
 
         foreach ($this->data as $values) {
             $item = $this->getNewEmptyItem();
             $item->setData($values);
-            $item->setId($values['name']);
+            $item->setId($values['uniqid']);
 
             $this->addItem($item);
         }
-
 
         return $this;
     }

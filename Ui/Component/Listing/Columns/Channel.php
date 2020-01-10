@@ -27,7 +27,12 @@ class Channel implements OptionSourceInterface
      */
     public function toOptionArray()
     {
-        $result = [];
+        $result = [
+            [
+                'label' => $this->escaper->escapeHtml(__('All Channels')),
+                'value' => '',
+            ]
+        ];
 
         foreach ($this->channelRepository->getList(true) as $channel) {
             $result[] = [

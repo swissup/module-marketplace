@@ -52,27 +52,43 @@ class Remote extends AbstractList
             return $this->data;
         }
 
-        try {
-            $channel = $this->channelRepository->getFirstEnabled($this->getChannelId());
+        $channels = [];
 
-            foreach ($channel->getPackages() as $id => $packageData) {
-                $versions = array_keys($packageData);
-                $latestVersion = array_reduce($versions, function ($carry, $item) {
-                    if (version_compare($carry, $item) === -1) {
-                        $carry = $item;
-                    }
-                    return $carry;
-                });
-
-                $this->data[$id] = $this->extractPackageData($packageData[$latestVersion]);
-                $this->data[$id]['channel'] = $channel->getIdentifier();
-                $this->data[$id]['uniqid'] = sha1($channel->getIdentifier() . $id);
-                foreach ($packageData as $version => $data) {
-                    $this->data[$id]['versions'][$version] = $this->extractPackageData($data);
-                }
+        if ($this->getChannelId()) {
+            try {
+                $channels = [$this->channelRepository->getById($this->getChannelId())];
+            } catch (\Exception $e) {
+                //
             }
-        } catch (\Exception $e) {
-            $this->data = [];
+        }
+
+        if (!$channels) {
+            $channels = $this->channelRepository->getList(true);
+        }
+
+        foreach ($channels as $channel) {
+            try {
+                foreach ($channel->getPackages() as $id => $packageData) {
+                    // @todo: add channel counter, show latest version from all channels
+
+                    $versions = array_keys($packageData);
+                    $latestVersion = array_reduce($versions, function ($carry, $item) {
+                        if (version_compare($carry, $item) === -1) {
+                            $carry = $item;
+                        }
+                        return $carry;
+                    });
+
+                    $this->data[$id] = $this->extractPackageData($packageData[$latestVersion]);
+                    $this->data[$id]['channel'] = $channel->getIdentifier();
+                    $this->data[$id]['uniqid'] = $channel->getIdentifier() . ':' . $id;
+                    foreach ($packageData as $version => $data) {
+                        $this->data[$id]['versions'][$version] = $this->extractPackageData($data);
+                    }
+                }
+            } catch (\Exception $e) {
+                //
+            }
         }
 
         $this->isLoaded(true);
