@@ -5,11 +5,6 @@ namespace Swissup\Marketplace\Model\PackagesList;
 class Remote extends AbstractList
 {
     /**
-     * @var \Magento\Framework\App\RequestInterface
-     */
-    private $request;
-
-    /**
      * @var \Swissup\Marketplace\Model\ChannelRepository
      */
     private $channelRepository;
@@ -20,14 +15,11 @@ class Remote extends AbstractList
     private $channelId;
 
     /**
-     * @param \Magento\Framework\App\RequestInterface $request
      * @param \Swissup\Marketplace\Model\ChannelRepository $channelRepository
      */
     public function __construct(
-        \Magento\Framework\App\RequestInterface $request,
         \Swissup\Marketplace\Model\ChannelRepository $channelRepository
     ) {
-        $this->request = $request;
         $this->channelRepository = $channelRepository;
     }
 
