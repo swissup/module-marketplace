@@ -122,29 +122,21 @@ class Collection extends \Magento\Framework\Data\Collection
             return $this;
         }
 
+        $filter = $this->getFilter('type');
+        if (!$filter) {
+            $this->addFilter('type', 'metapackage');
+        }
+
         $this->data = array_filter($this->data, function ($item) {
-            $type = $item['type'] ?? '';
-            $keywords = implode(' ', $item['keywords']);
-            $require = '';
-
-            if (!empty($item['remote']['require'])) {
-                $require = implode(' ', array_keys($item['remote']['require']));
-            }
-
             foreach ($this->_filters as $filter) {
-                $value = $filter->getValue();
+                $method = 'filterBy' . ucfirst($filter->getField());
 
-                if ($filter->getField() === 'fulltext') {
-                    if (strpos($item['name'], $value) === false &&
-                        strpos($item['description'], $value) === false &&
-                        strpos($keywords, $value) === false
-                    ) {
-                        if ($type === 'metapackage' && strpos($require, $value) !== false) {
-                            continue;
-                        }
+                if (!method_exists($this, $method)) {
+                    continue;
+                }
 
-                        return false;
-                    }
+                if ($this->{$method}($filter, $item) === false) {
+                    return false;
                 }
             }
 
@@ -230,5 +222,56 @@ class Collection extends \Magento\Framework\Data\Collection
     public function addOrder($field, $direction)
     {
         return $this->setOrder($field, $direction);
+    }
+
+    /**
+     * @param \Magento\Framework\DataObject $filter
+     * @param array $item
+     * @return boolean
+     */
+    protected function filterByFulltext($filter, $item)
+    {
+        $value = $filter->getValue();
+
+        $type = $item['type'] ?? '';
+        $keywords = implode(' ', $item['keywords']);
+        $require = '';
+
+        if (!empty($item['remote']['require'])) {
+            $require = implode(' ', array_keys($item['remote']['require']));
+        }
+
+        if (strpos($item['name'], $value) === false &&
+            strpos($item['description'], $value) === false &&
+            strpos($keywords, $value) === false
+        ) {
+            if ($type === 'metapackage' && strpos($require, $value) !== false) {
+                return true;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param \Magento\Framework\DataObject $filter
+     * @param array $item
+     * @return boolean
+     */
+    protected function filterByType($filter, $item)
+    {
+        $value = $filter->getValue();
+        if (!$value) {
+            $value = 'metapackage';
+        }
+
+        if (strpos($value, '!') === 0) {
+            $value = substr($value, 1);
+            return $item['type'] !== $value;
+        }
+
+        return $item['type'] === $value;
     }
 }

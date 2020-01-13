@@ -87,6 +87,13 @@
                     <dataScope>channel</dataScope>
                 </settings>
             </filterSelect>
+            <filterSelect name="type" provider="${ $.parentName }">
+                <settings>
+                    <options class="Swissup\Marketplace\Ui\Component\Listing\Columns\PackageDisplayMode"/>
+                    <label translate="true">Package Type</label>
+                    <dataScope>type</dataScope>
+                </settings>
+            </filterSelect>
         </filters>
         <paging name="listing_paging"/>
     </listingToolbar>
