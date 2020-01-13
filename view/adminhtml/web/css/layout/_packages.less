@@ -3,15 +3,16 @@
         overflow: auto !important; // prevent grid jumping when show small popups (constraints)
     }
     .main-col {
-        .admin__data-grid-action-bookmarks/*,
-        .data-grid-filters-actions-wrap,
-        .admin__data-grid-filters-current*/ {
+        .admin__data-grid-action-bookmarks {
             display: none;
         }
     }
 }
 
 .channel-switcher {
+    .dropdown.active {
+        z-index: 281; // move above expanded filters
+    }
     .action-menu {
         li .action-menu-item {
             padding: .9rem 1.3rem;
