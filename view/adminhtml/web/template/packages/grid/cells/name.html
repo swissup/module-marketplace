@@ -1,0 +1,9 @@
+<div class="data-grid-cell-content"
+    attr="'data-index': index, title: label"
+    css="$data.additionalClasses"
+>
+    <!-- ko text: $col.getLabel($row()) --><!-- /ko -->
+    <span if="$row().channels.length > 1"
+        text="'(' + $row().channels.length + ')'"
+        attr="class: 'channels-count', title: $t('Channels') + ': ' + $row().channels.join(', ')"/>
+</div>

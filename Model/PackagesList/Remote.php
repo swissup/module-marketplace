@@ -69,18 +69,25 @@ class Remote extends AbstractList
         foreach ($channels as $channel) {
             try {
                 foreach ($channel->getPackages() as $id => $packageData) {
-                    // @todo: add channel counter, show latest version from all channels
+                    if (!isset($this->data[$id]['channels'])) {
+                        $this->data[$id]['channels'] = [];
+                    }
+                    $this->data[$id]['channels'][] = $channel->getIdentifier();
 
-                    $versions = array_keys($packageData);
-                    $latestVersion = array_reduce($versions, function ($carry, $item) {
-                        if (version_compare($carry, $item) === -1) {
-                            $carry = $item;
-                        }
-                        return $carry;
-                    });
+                    $latestVersion = $this->getLatestVersion($packageData);
 
-                    $this->data[$id] = $this->extractPackageData($packageData[$latestVersion]);
-                    $this->data[$id]['channel'] = $channel->getIdentifier();
+                    if (isset($this->data[$id]['version']) &&
+                        version_compare($this->data[$id]['version'], $latestVersion, '>=')
+                    ) {
+                        // this channel has older version in the list - skip it
+                        continue;
+                    }
+
+                    $this->data[$id] = array_replace(
+                        $this->data[$id],
+                        $this->extractPackageData($packageData[$latestVersion])
+                    );
+
                     $this->data[$id]['uniqid'] = $channel->getIdentifier() . ':' . $id;
                     foreach ($packageData as $version => $data) {
                         $this->data[$id]['versions'][$version] = $this->extractPackageData($data);
@@ -94,5 +101,19 @@ class Remote extends AbstractList
         $this->isLoaded(true);
 
         return $this->data;
+    }
+
+    /**
+     * @param array $data
+     * @return string
+     */
+    private function getLatestVersion($data)
+    {
+        return array_reduce(array_keys($data), function ($carry, $item) {
+            if (version_compare($carry, $item) === -1) {
+                $carry = $item;
+            }
+            return $carry;
+        });
     }
 }

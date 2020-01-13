@@ -69,6 +69,7 @@ class Collection extends \Magento\Framework\Data\Collection
                 'remote' => $remoteData,
                 'local' => $localPackages[$id] ?? false,
                 'uniqid' => $remoteData['uniqid'] ?? $id,
+                'channels' => $remoteData['channels'] ?? [],
                 'accessible' => !isset($remoteData['accessible']) || $remoteData['accessible'],
             ];
 

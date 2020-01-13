@@ -132,7 +132,7 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="label" xsi:type="string" translate="true">Package Name</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/packages/grid/cells/text</item>
+                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/packages/grid/cells/name</item>
                 </item>
             </argument>
         </column>
