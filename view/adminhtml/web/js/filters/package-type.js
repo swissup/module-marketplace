@@ -1,7 +1,8 @@
 define([
     'Magento_Ui/js/lib/view/utils/async',
-    'underscore'
-], function ($, _) {
+    'underscore',
+    'uiRegistry'
+], function ($, _, registry) {
     'use strict';
 
     return function (data, el) {
@@ -13,12 +14,30 @@ define([
          * Add onclick observers
          */
         function addObservers() {
-            var items = $('.action-menu-item', wrapper);
+            var items = $('.action-menu-item', wrapper),
+                filters = registry.get([
+                    'swissup_marketplace_package_listing',
+                    'swissup_marketplace_package_listing',
+                    'listing_top',
+                    'listing_filters'
+                ].join('.')),
+                filter = registry.get([
+                    'swissup_marketplace_package_listing',
+                    'swissup_marketplace_package_listing',
+                    'listing_top',
+                    'listing_filters',
+                    'type'
+                ].join('.'));
+
+            filter.value.subscribe(function () {
+                $(button).text(
+                    $(sourceEl).children('option').filter(':selected').text()
+                );
+            });
 
             items.click(function () {
-                $(sourceEl).val($(this).data('channel')).change();
-                $(button).text($(this).text());
-                $('[data-action="grid-filter-apply"]').click();
+                filter.value($(this).data('type'));
+                filters.apply();
                 $('[data-toggle=dropdown].active', wrapper).trigger('close.dropdown');
             });
         }
@@ -26,12 +45,12 @@ define([
         /**
          * Copy channels into switcher values.
          */
-        function copyChannels(source) {
+        function copyPackageTypes(source) {
             var dropdown = $('.dropdown-menu', wrapper),
                 selected = false,
                 template = _.template(
                     '<li class="<%= css %>">' +
-                        '<a class="action-menu-item" data-channel="<%= channel %>" href="#">' +
+                        '<a class="action-menu-item" data-type="<%= value %>" href="#">' +
                             '<%= title %>' +
                         '</a>' +
                     '</li>'
@@ -49,7 +68,7 @@ define([
                 dropdown.append(template({
                     css: $(option).is(':selected') ? 'current' : '',
                     title: $(option).text(),
-                    channel: $(option).attr('value')
+                    value: $(option).attr('value')
                 }));
             });
 
@@ -60,8 +79,8 @@ define([
             }
         }
 
-        $.async('.admin__data-grid-filters [name="channel"]', function (select) {
-            _.delay(copyChannels, 100, select);
+        $.async('.admin__data-grid-filters [name="type"]', function (select) {
+            _.delay(copyPackageTypes, 100, select);
         });
     };
 });

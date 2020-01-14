@@ -6,7 +6,7 @@
     </head>
     <body>
         <referenceContainer name="page.main.actions">
-            <block class="Magento\Framework\View\Element\Template" name="marketplace.channel.switcher" template="Swissup_Marketplace::channel/switcher.phtml"/>
+            <block class="Magento\Framework\View\Element\Template" name="marketplace.filters" template="Swissup_Marketplace::filters.phtml"/>
         </referenceContainer>
         <referenceContainer name="content">
             <uiComponent name="swissup_marketplace_package_listing"/>
