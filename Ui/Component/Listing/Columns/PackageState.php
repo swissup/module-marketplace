@@ -25,16 +25,28 @@ class PackageState implements OptionSourceInterface
     {
         return [
             [
-                'label' => $this->escaper->escapeHtml(__('All')),
+                'label' => $this->escaper->escapeHtml(__('Any')),
                 'value' => '',
             ],
             [
-                'label' => $this->escaper->escapeHtml(__('Outdated')),
-                'value' => 'outdated',
+                'label' => $this->escaper->escapeHtml(__('Enabled')),
+                'value' => 'enabled',
+            ],
+            [
+                'label' => $this->escaper->escapeHtml(__('Disabled')),
+                'value' => 'disabled',
+            ],
+            [
+                'label' => $this->escaper->escapeHtml(__('Installed')),
+                'value' => '!na',
             ],
             [
                 'label' => $this->escaper->escapeHtml(__('Not Installed')),
                 'value' => 'na',
+            ],
+            [
+                'label' => $this->escaper->escapeHtml(__('Outdated')),
+                'value' => 'outdated',
             ],
         ];
     }

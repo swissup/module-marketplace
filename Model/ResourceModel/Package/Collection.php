@@ -271,6 +271,31 @@ class Collection extends \Magento\Framework\Data\Collection
     }
 
     /**
+     * @param string $value
+     * @param array $item
+     * @return boolean
+     */
+    protected function filterByState($value, $item)
+    {
+        $field = 'state';
+
+        if ($value === 'disabled') {
+            // must be installed (not 'na')
+            if (!$this->filterByField($field, '!na', $item)) {
+                return false;
+            }
+
+            $field = 'enabled';
+            $value = false;
+        } elseif ($value === 'enabled') {
+            $field = 'enabled';
+            $value = true;
+        }
+
+        return $this->filterByField($field, $value, $item);
+    }
+
+    /**
      * @param string $field
      * @param string $value
      * @param array $item
