@@ -68,6 +68,7 @@
                 <item name="config" xsi:type="array">
                     <item name="aclResource" xsi:type="string">Swissup_Marketplace::package_index</item>
                     <item name="component" xsi:type="string">Swissup_Marketplace/js/packages/grid/provider</item>
+                    <item name="rowsProvider" xsi:type="string">${ $.ns }.${ $.ns }.swissup_marketplace_package_columns</item>
                     <item name="update_url" xsi:type="url" path="mui/index/render"/>
                     <item name="storageConfig" xsi:type="array">
                         <item name="indexField" xsi:type="string">uniqid</item>
@@ -102,6 +103,66 @@
                 </settings>
             </filterSelect>
         </filters>
+        <massaction name="listing_massaction">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Swissup_Marketplace/js/packages/grid/massactions</item>
+                </item>
+            </argument>
+            <action name="install">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">install</item>
+                        <item name="label" xsi:type="string" translate="true">Install</item>
+                        <item name="url" xsi:type="url" path="*/*/manage/job/install"/>
+                    </item>
+                </argument>
+            </action>
+            <action name="update">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">update</item>
+                        <item name="label" xsi:type="string" translate="true">Update</item>
+                        <item name="url" xsi:type="url" path="*/*/manage/job/update"/>
+                    </item>
+                </argument>
+            </action>
+            <action name="enable">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">enable</item>
+                        <item name="label" xsi:type="string" translate="true">Enable</item>
+                        <item name="url" xsi:type="url" path="*/*/manage/job/enable"/>
+                    </item>
+                </argument>
+            </action>
+            <action name="disable">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">disable</item>
+                        <item name="label" xsi:type="string" translate="true">Disable</item>
+                        <item name="url" xsi:type="url" path="*/*/manage/job/disable"/>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" xsi:type="string" translate="true">Disable packages?</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure you want to disable selected packages?</item>
+                        </item>
+                    </item>
+                </argument>
+            </action>
+            <action name="uninstall">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">uninstall</item>
+                        <item name="label" xsi:type="string" translate="true">Uninstall</item>
+                        <item name="url" xsi:type="url" path="*/*/manage/job/uninstall"/>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" xsi:type="string" translate="true">Uninstall packages?</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure you want to uninstall selected packages?</item>
+                        </item>
+                    </item>
+                </argument>
+            </action>
+        </massaction>
         <paging name="listing_paging"/>
     </listingToolbar>
     <columns name="swissup_marketplace_package_columns">
@@ -113,6 +174,13 @@
                 </item>
             </item>
         </argument>
+        <selectionsColumn name="ids">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="indexField" xsi:type="string">name</item>
+                </item>
+            </argument>
+        </selectionsColumn>
         <column name="image">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">

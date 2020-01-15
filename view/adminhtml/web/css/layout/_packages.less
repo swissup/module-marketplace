@@ -7,6 +7,29 @@
             display: none;
         }
     }
+    .data-grid-checkbox-cell-inner {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 10;
+        padding: 1.5rem;
+
+        &::before {
+            height: auto;
+        }
+
+        label {
+            opacity: 0;
+        }
+        input:checked ~ label {
+            opacity: 1;
+        }
+    }
+    .grid-item:hover {
+        label {
+            opacity: 1;
+        }
+    }
 }
 
 .channel-switcher {
