@@ -129,13 +129,17 @@ class Collection extends \Magento\Framework\Data\Collection
 
         $this->data = array_filter($this->data, function ($item) {
             foreach ($this->_filters as $filter) {
-                $method = 'filterBy' . ucfirst($filter->getField());
+                $field = $filter->getField();
+                $value = $filter->getValue();
+                $method = 'filterBy' . ucfirst($field);
 
-                if (!method_exists($this, $method)) {
-                    continue;
+                if (method_exists($this, $method)) {
+                    $result = $this->{$method}($value, $item);
+                } else {
+                    $result = $this->filterByField($field, $value, $item);
                 }
 
-                if ($this->{$method}($filter, $item) === false) {
+                if ($result === false) {
                     return false;
                 }
             }
@@ -225,14 +229,12 @@ class Collection extends \Magento\Framework\Data\Collection
     }
 
     /**
-     * @param \Magento\Framework\DataObject $filter
+     * @param string $value
      * @param array $item
      * @return boolean
      */
-    protected function filterByFulltext($filter, $item)
+    protected function filterByFulltext($value, $item)
     {
-        $value = $filter->getValue();
-
         $type = $item['type'] ?? '';
         $keywords = implode(' ', $item['keywords']);
         $require = '';
@@ -256,22 +258,35 @@ class Collection extends \Magento\Framework\Data\Collection
     }
 
     /**
-     * @param \Magento\Framework\DataObject $filter
+     * @param string $value
      * @param array $item
      * @return boolean
      */
-    protected function filterByType($filter, $item)
+    protected function filterByType($value, $item)
     {
-        $value = $filter->getValue();
         if (!$value) {
             $value = 'metapackage';
+        }
+        return $this->filterByField('type', $value, $item);
+    }
+
+    /**
+     * @param string $field
+     * @param string $value
+     * @param array $item
+     * @return boolean
+     */
+    protected function filterByField($field, $value, $item)
+    {
+        if (!isset($item[$field])) {
+            return true;
         }
 
         if (strpos($value, '!') === 0) {
             $value = substr($value, 1);
-            return $item['type'] !== $value;
+            return $item[$field] !== $value;
         }
 
-        return $item['type'] === $value;
+        return $item[$field] === $value;
     }
 }

@@ -94,6 +94,13 @@
                     <dataScope>type</dataScope>
                 </settings>
             </filterSelect>
+            <filterSelect name="state" provider="${ $.parentName }">
+                <settings>
+                    <options class="Swissup\Marketplace\Ui\Component\Listing\Columns\PackageState"/>
+                    <label translate="true">State</label>
+                    <dataScope>state</dataScope>
+                </settings>
+            </filterSelect>
         </filters>
         <paging name="listing_paging"/>
     </listingToolbar>
