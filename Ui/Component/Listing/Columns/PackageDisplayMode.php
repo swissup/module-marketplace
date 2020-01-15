@@ -4,7 +4,6 @@ namespace Swissup\Marketplace\Ui\Component\Listing\Columns;
 
 use Magento\Framework\Escaper;
 use Magento\Framework\Data\OptionSourceInterface;
-use Swissup\Marketplace\Model\ChannelRepository;
 
 class PackageDisplayMode implements OptionSourceInterface
 {
