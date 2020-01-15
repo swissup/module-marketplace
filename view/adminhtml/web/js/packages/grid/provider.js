@@ -189,13 +189,16 @@ define([
             this.softReload().done(function (response) {
                 _.each(this.rows, function (row) {
                     var data = _.find(response.items, function (item) {
-                            return item.name === row.name;
-                        }),
-                        values = _.pick(data, keys);
+                        return item.name === row.name;
+                    });
 
                     this.rows[row._rowIndex].busy = false;
+                    this.rows[row._rowIndex].hidden = false;
 
-                    if (!_.isMatch(row, values)) {
+                    if (!data) {
+                        // item was filtered out by the server
+                        this.rows[row._rowIndex].hidden = true;
+                    } else if (!_.isMatch(row, _.pick(data, keys))) {
                         this.rows[row._rowIndex] = $.extend(
                             this.rows[row._rowIndex],
                             data || {}

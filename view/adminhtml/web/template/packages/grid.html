@@ -2,6 +2,7 @@
     <li class="grid-item" repeat="foreach: rows, item: '$row'" data-bind="
         css: {
             busy: $row().busy,
+            hidden: $row().hidden,
             noimage: !$row().image_src
         }
     ">
