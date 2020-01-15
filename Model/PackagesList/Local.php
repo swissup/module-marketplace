@@ -70,9 +70,11 @@ class Local extends AbstractList
 
         foreach ($data['packages'] as $config) {
             $this->data[$config['name']] = $this->extractPackageData($config);
-            $this->data[$config['name']]['enabled'] =
-                $config['type'] === ComposerInformation::THEME_PACKAGE_TYPE || // themes are always enabled
-                !empty($enabledModules[$config['name']]);
+            $this->data[$config['name']]['enabled'] = true;
+
+            if ($config['type'] === ComposerInformation::MODULE_PACKAGE_TYPE) {
+                $this->data[$config['name']]['enabled'] = !empty($enabledModules[$config['name']]);
+            }
         }
 
         return $this->data;
