@@ -70,6 +70,10 @@ class PackageManager
         $this->composer = $composer;
     }
 
+    /**
+     * @param array $packages
+     * @return string
+     */
     public function install($packages)
     {
         return $this->composer->run([
@@ -82,6 +86,10 @@ class PackageManager
         ]);
     }
 
+    /**
+     * @param array $packages
+     * @return string
+     */
     public function uninstall($packages)
     {
         return $this->composer->run([
@@ -93,6 +101,10 @@ class PackageManager
         ]);
     }
 
+    /**
+     * @param array $packages
+     * @return string
+     */
     public function update($packages)
     {
         return $this->composer->run([
@@ -105,11 +117,19 @@ class PackageManager
         ]);
     }
 
+    /**
+     * @param array $packages
+     * @return void
+     */
     public function disable($packages)
     {
         $this->changeStatus($packages, false);
     }
 
+    /**
+     * @param array $packages
+     * @return void
+     */
     public function enable($packages)
     {
         $this->changeStatus($packages, true);
