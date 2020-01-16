@@ -8,13 +8,6 @@
         </item>
         <item name="spinner" xsi:type="string">swissup_marketplace_package_columns</item>
         <item name="buttons" xsi:type="array">
-            <item name="update" xsi:type="array">
-                <item name="name" xsi:type="string">update</item>
-                <item name="label" xsi:type="string" translate="true">Update All</item>
-                <item name="component" xsi:type="string">Magento_Ui/js/form/components/button</item>
-                <item name="aclResource" xsi:type="string">Swissup_Marketplace::package_manage</item>
-                <item name="url" xsi:type="string">*/*/update</item>
-            </item>
             <item name="jobs" xsi:type="array">
                 <item name="name" xsi:type="string">jobs</item>
                 <item name="label" xsi:type="string" translate="true">Tasks History</item>
