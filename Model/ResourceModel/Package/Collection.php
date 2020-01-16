@@ -66,6 +66,7 @@ class Collection extends \Magento\Framework\Data\Collection
                 'time' => $remoteData['versions'][$localVersion]['time'] ?? false,
                 'installed' => isset($localPackages[$id]),
                 'enabled' => $localPackages[$id]['enabled'] ?? false,
+                'composer' => $localPackages[$id]['composer'] ?? false, // required in composer.json?
                 'remote' => $remoteData,
                 'local' => $localPackages[$id] ?? false,
                 'uniqid' => $remoteData['uniqid'] ?? $id,

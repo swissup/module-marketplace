@@ -65,12 +65,17 @@ class Local extends AbstractList
         }
 
         $directory = $this->filesystem->getDirectoryRead(DirectoryList::ROOT);
+
+        $json = $directory->readFile('composer.json');
+        $json = $this->jsonSerializer->unserialize($json);
+
         $data = $directory->readFile('composer.lock');
         $data = $this->jsonSerializer->unserialize($data);
 
         foreach ($data['packages'] as $config) {
             $this->data[$config['name']] = $this->extractPackageData($config);
             $this->data[$config['name']]['enabled'] = true;
+            $this->data[$config['name']]['composer'] = isset($json['require'][$config['name']]);
 
             if ($config['type'] === ComposerInformation::MODULE_PACKAGE_TYPE) {
                 $this->data[$config['name']]['enabled'] = !empty($enabledModules[$config['name']]);

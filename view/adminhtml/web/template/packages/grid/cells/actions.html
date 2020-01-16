@@ -10,7 +10,8 @@
     <div class="action-select-wrap" if="$col.isMultiple($row()._rowIndex)" collapsible>
         <button class="action-select" translate="'Select'" toggleCollapsible/>
         <ul class="action-menu" css="_active: $collapsible.opened">
-            <li repeat="foreach: $col.getVisibleActions($row()._rowIndex), item: '$action'">
+            <li repeat="foreach: $col.getVisibleActions($row()._rowIndex), item: '$action'"
+                data-bind="css: $col.getActionCss($action())">
                 <a class="action-menu-item" click="$col.getActionHandler($action())" text="$action().label" attr="target: $col.getTarget($action()), href: $action().href, 'data-action': 'item-' + $action().index"/>
             </li>
         </ul>

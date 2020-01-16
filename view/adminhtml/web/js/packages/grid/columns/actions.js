@@ -9,6 +9,18 @@ define([
         },
 
         /**
+         * @param {Object} action
+         * @return {String}
+         */
+        getActionCss: function (action) {
+            if (action.index === 'separator') {
+                return 'action-menu-item-separator';
+            }
+
+            return '';
+        },
+
+        /**
          * Checks if action should be displayed.
          *
          * @param {Object} action - Action object.
@@ -30,7 +42,7 @@ define([
                     return !this.rows[action.rowIndex].enabled && this.rows[action.rowIndex].installed;
 
                 case 'uninstall':
-                    return this.rows[action.rowIndex].installed;
+                    return this.rows[action.rowIndex].composer && this.rows[action.rowIndex].installed;
 
                 case 'install':
                     return !this.rows[action.rowIndex].installed;
