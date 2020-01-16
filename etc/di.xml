@@ -22,6 +22,8 @@
                 <item name="channelAuthSetCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthSetCommand</item>
                 <item name="channelAuthShowCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthShowCommand</item>
                 <item name="channelAuthCheckCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthCheckCommand</item>
+                <item name="marketplacePackageInstallCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageInstallCommand</item>
+                <item name="marketplacePackageUninstallCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageUninstallCommand</item>
             </argument>
         </arguments>
     </type>
