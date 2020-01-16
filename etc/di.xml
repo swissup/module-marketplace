@@ -14,14 +14,14 @@
     <type name="Magento\Framework\Console\CommandListInterface">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="channelListCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelListCommand</item>
-                <item name="channelEnableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelEnableCommand</item>
-                <item name="channelDisableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelDisableCommand</item>
-                <item name="channelAuthKeyAddCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthKeyAddCommand</item>
-                <item name="channelAuthKeyRemoveCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthKeyRemoveCommand</item>
-                <item name="channelAuthSetCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthSetCommand</item>
-                <item name="channelAuthShowCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthShowCommand</item>
-                <item name="channelAuthCheckCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthCheckCommand</item>
+                <item name="marketplaceChannelListCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelListCommand</item>
+                <item name="marketplaceChannelEnableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelEnableCommand</item>
+                <item name="marketplaceChannelDisableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelDisableCommand</item>
+                <item name="marketplaceChannelAuthKeyAddCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthKeyAddCommand</item>
+                <item name="marketplaceChannelAuthKeyRemoveCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthKeyRemoveCommand</item>
+                <item name="marketplaceChannelAuthSetCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthSetCommand</item>
+                <item name="marketplaceChannelAuthShowCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthShowCommand</item>
+                <item name="marketplaceChannelAuthCheckCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthCheckCommand</item>
                 <item name="marketplacePackageInstallCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageInstallCommand</item>
                 <item name="marketplacePackageUninstallCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageUninstallCommand</item>
             </argument>
