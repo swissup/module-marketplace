@@ -1,6 +1,6 @@
 # Marketplace
 
-Marketplace &mdash; is an extendable one-click modules and themes installer.
+Marketplace — is an extendable one-click modules and themes installer.
 It allows to add unlimited number of custom software update channels and install
 modules and themes from any third-party vendor including official Magento
 Marketplace.
