@@ -68,7 +68,8 @@ class Remote extends AbstractList
 
         foreach ($channels as $channel) {
             try {
-                foreach ($channel->getPackages() as $id => $packageData) {
+                $packages = $channel->getPackages();
+                foreach ($packages as $id => $packageData) {
                     if (!isset($this->data[$id]['channels'])) {
                         $this->data[$id]['channels'] = [];
                     }
@@ -87,6 +88,17 @@ class Remote extends AbstractList
                         $this->data[$id],
                         $this->extractPackageData($packageData[$latestVersion])
                     );
+
+                    // try to read marketplace data from 'module-' prefixed package
+                    if (empty($this->data[$id]['marketplace']) &&
+                        strpos($id, 'module-') === false
+                    ) {
+                        $moduleName = str_replace('/', '/module-', $id);
+                        if (isset($packages[$moduleName]['dev-master']['extra'])) {
+                            $data = $this->extractPackageData($packages[$moduleName]['dev-master']);
+                            $this->data[$id]['marketplace'] = $data['marketplace'];
+                        }
+                    }
 
                     $this->data[$id]['uniqid'] = $channel->getIdentifier() . ':' . $id;
                     foreach ($packageData as $version => $data) {
