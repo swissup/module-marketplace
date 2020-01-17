@@ -12,29 +12,6 @@
             display: none;
         }
     }
-    .data-grid-checkbox-cell-inner {
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: 10;
-        padding: 1.5rem;
-
-        &::before {
-            height: auto;
-        }
-
-        label {
-            opacity: 0;
-        }
-        input:checked ~ label {
-            opacity: 1;
-        }
-    }
-    .grid-item:hover {
-        label {
-            opacity: 1;
-        }
-    }
 }
 
 .channel-switcher {
@@ -99,6 +76,32 @@
             box-shadow: 0 0 3px rgba(0, 0, 0, 0.05),
                         0 20px 50px -12px rgba(0, 0, 0, 0.2);
             box-shadow: 0 0 1px rgba(0, 0, 0, 0.6);
+        }
+
+        .data-grid-checkbox-cell-inner {
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 10;
+            padding: 1.5rem;
+
+            &::before {
+                height: auto;
+            }
+
+            label {
+                opacity: 0;
+            }
+            input:checked ~ label {
+                opacity: 1;
+            }
+        }
+        &:hover {
+            .data-grid-checkbox-cell-inner {
+                label {
+                    opacity: 1;
+                }
+            }
         }
 
         > div {
