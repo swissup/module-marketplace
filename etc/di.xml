@@ -49,11 +49,11 @@
         </arguments>
     </type>
 
-    <virtualType name="Swissup\Marketplace\Model\Logger\Handler" type="Magento\Framework\Logger\Handler\Base">
+    <type name="Swissup\Marketplace\Model\Logger\Handler">
         <arguments>
-            <argument name="fileName" xsi:type="string">/var/log/marketplace.log</argument>
+            <argument name="fileName" xsi:type="string">/var/log/install.log</argument>
         </arguments>
-    </virtualType>
+    </type>
     <virtualType name="Swissup\Marketplace\Model\Logger" type="Magento\Framework\Logger\Monolog">
         <arguments>
             <argument name="handlers" xsi:type="array">

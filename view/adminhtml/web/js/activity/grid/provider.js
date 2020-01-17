@@ -18,6 +18,20 @@ define([
         },
         watchers: [],
         timer: null,
+        isWebSetupAccessible: null,
+
+        /**
+         * Initializes provider component.
+         *
+         * @returns {Provider} Chainable.
+         */
+        initialize: function () {
+            this._super();
+
+            this.initWebSetup();
+
+            return this;
+        },
 
         /**
          * @param {Number} id
@@ -185,6 +199,67 @@ define([
                     this.reload();
 
                 }.bind(this));
+        },
+
+        /**
+         * Init web setup panel access
+         */
+        initWebSetup: function () {
+            var url = window.BASE_URL;
+
+            url = url.substr(0, url.indexOf('/swissup_marketplace/'));
+            url = url.substr(0, url.lastIndexOf('/'));
+
+            this.fetchLogUrl = url + '/' + this.fetchLogUrl;
+            this.prolongUrl = url + '/' + this.prolongUrl;
+
+            request.get(this.initWebSetupUrl, {}, {
+                    dataType: 'html'
+                })
+                .done(function () {
+                    this.isWebSetupAccessible = true;
+                    setTimeout(function () {
+                        this.prolongWebSetupPanel();
+                    }.bind(this), this.interval.slow);
+                }.bind(this))
+                .fail(function () {
+                    this.isWebSetupAccessible = false;
+                }.bind(this));
+        },
+
+        /**
+         * @return {$.Deferred}
+         */
+        prolongWebSetupPanel: function () {
+            return request.get(this.prolongUrl, {}, {
+                    dataType: 'text'
+                })
+                .done(function () {
+                    setTimeout(function () {
+                        this.prolongWebSetupPanel();
+                    }.bind(this), this.interval.slow);
+                }.bind(this));
+        },
+
+        /**
+         * @return {$.Deferred}
+         */
+        fetchLog: function () {
+            var deferred = $.Deferred();
+
+            if (this.isWebSetupAccessible) {
+                request.get(this.fetchLogUrl)
+                    .done(function (response) {
+                        deferred.resolve(response);
+                    })
+                    .fail(function (response) {
+                        deferred.reject(response);
+                    });
+            } else {
+                deferred.reject();
+            }
+
+            return deferred;
         }
     });
 });

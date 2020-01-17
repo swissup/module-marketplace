@@ -33,24 +33,32 @@ class JobDispatcher
     private $jobFactory;
 
     /**
+     * @var \Swissup\Marketplace\Model\Logger\Handler
+     */
+    private $logHandler;
+
+    /**
      * @param \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      * @param \Swissup\Marketplace\Helper\Data $helper
      * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
      * @param \Swissup\Marketplace\Model\JobFactory $jobFactory
+     * @param \Swissup\Marketplace\Model\Logger\Handler $logHandler
      */
     public function __construct(
         \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Swissup\Marketplace\Helper\Data $helper,
         \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
-        \Swissup\Marketplace\Model\JobFactory $jobFactory
+        \Swissup\Marketplace\Model\JobFactory $jobFactory,
+        \Swissup\Marketplace\Model\Logger\Handler $logHandler
     ) {
         $this->remoteAddress = $remoteAddress;
         $this->jsonSerializer = $jsonSerializer;
         $this->helper = $helper;
         $this->handlerFactory = $handlerFactory;
         $this->jobFactory = $jobFactory;
+        $this->logHandler = $logHandler;
     }
 
     /**
@@ -64,6 +72,8 @@ class JobDispatcher
         if (!isset($arguments['data']['ip'])) {
             $arguments['data']['ip'] = $this->remoteAddress->getRemoteAddress();
         }
+
+        $this->logHandler->cleanup();
 
         if ($this->helper->canUseAsyncMode()) {
             $this->createHandler($class, $arguments)->validate();

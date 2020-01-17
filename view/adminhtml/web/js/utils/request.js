@@ -14,10 +14,11 @@ define([
         /**
          * @param {String} url
          * @param {Object} data
+         * @param {Object} settings
          * @return {$.Deferred}
          */
-        get: function (url, data) {
-            return this.request($.extend({}, defaultSettings, {
+        get: function (url, data, settings) {
+            return this.request($.extend({}, defaultSettings, settings || {}, {
                 url: url,
                 method: 'GET',
                 data: data || {}
@@ -27,10 +28,11 @@ define([
         /**
          * @param {String} url
          * @param {Object} data
+         * @param {Object} settings
          * @return {$.Deferred}
          */
-        post: function (url, data) {
-            return this.request($.extend({}, defaultSettings, {
+        post: function (url, data, settings) {
+            return this.request($.extend({}, defaultSettings, settings || {}, {
                 url: url,
                 data: $.extend(data || {}, {
                     'form_key': window.FORM_KEY
@@ -58,6 +60,10 @@ define([
                 .fail(function (response) {
                     var title = $t('Attention'),
                         content = $t('Sorry, there has been an error processing your request. Please try again later.');
+
+                    if (response.status === 200) {
+                        return;
+                    }
 
                     if (response.status === 403) {
                         title = $t(response.statusText);

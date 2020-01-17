@@ -140,7 +140,8 @@
             }
 
             .toolbar {
-                border-top: 1px solid #fafafa;
+                border: 1px solid #fafafa;
+                border-width: 1px 0;
                 padding: 15px 25px 13px 15px;
                 margin: 10px -15px -17px -10px;
                 text-transform: uppercase;
@@ -148,6 +149,9 @@
                 text-align: right;
                 display: flex;
                 align-items: center;
+                &:last-child {
+                    border-bottom: 0;
+                }
                 .timer {
                     margin-left: auto;
                 }
@@ -157,6 +161,19 @@
                     cursor: pointer;
                     &:hover {
                         background: #f4f4f4;
+                    }
+                }
+            }
+
+            .log {
+                margin: 10px 10px -10px;
+                padding: 10px 0 0;
+                pre {
+                    .tiny-scrollbar(@track-background-color: #fff);
+                    max-height: 100px;
+                    code {
+                        font-size: 11px;
+                        display: block;
                     }
                 }
             }
