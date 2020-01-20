@@ -45,6 +45,11 @@ interface ChannelInterface
     public function getAuthType();
 
     /**
+     * @return boolean
+     */
+    public function useKeysAsPassword();
+
+    /**
      * @return string
      */
     public function getType();

@@ -39,17 +39,13 @@ section.
  1. Activate update channel and enter access keys:
 
     ```bash
-    # Magento Marketplace customers
-    bin/magento marketplace:auth:set magento
-
-    # Swissuplabs, Firecheckout, and Argentotheme customers
-    bin/magento marketplace:auth:key:add swissuplabs
+    bin/magento marketplace:channel:enable
     ```
 
  2. Install the package(s) you need:
 
     ```bash
-    bin/magento marketplace:package:install swissup/firecheckout swissup/argento-m2
+    bin/magento marketplace:package:install <package/name>
     ```
 
  3. That's all. Check your store frontend now!

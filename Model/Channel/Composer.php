@@ -214,6 +214,14 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     /**
      * @return string
      */
+    public function useKeysAsPassword()
+    {
+        return !empty($this->data['authKeys']);
+    }
+
+    /**
+     * @return string
+     */
     public function getAuthNotice()
     {
         return $this->data['authNotice'];

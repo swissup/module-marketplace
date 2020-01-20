@@ -186,6 +186,30 @@ class ChannelAbstractCommand extends Command
     }
 
     /**
+     * @param ChannelInterface $channel
+     * @return void
+     */
+    protected function askAndAddAccessKey(ChannelInterface $channel)
+    {
+        if (!$channel->getAuthType()) {
+            return;
+        }
+
+        $password = $channel->getPassword();
+        $keys = explode(' ', $password);
+
+        $key = $this->ask('Please enter your key: ');
+        $channel->addData(['password' => $key]);
+        $this->checkCredentials($channel);
+
+        $keys[] = $key;
+        $keys = array_unique($keys);
+        $channel->addData(['password' => implode(' ', $keys)]);
+
+        $this->channelManager->saveCredentials($channel);
+    }
+
+    /**
      * @param string $question
      * @return string
      */

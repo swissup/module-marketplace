@@ -27,7 +27,12 @@ class ChannelAuthSetCommand extends ChannelAbstractCommand
             $channel = $this->getChannel();
 
             $this->enableChannel($channel);
-            $this->askAndSaveCredentials($channel, true);
+
+            if ($channel->useKeysAsPassword()) {
+                $this->askAndAddAccessKey($channel);
+            } else {
+                $this->askAndSaveCredentials($channel, true);
+            }
 
             $output->writeln('<info>The channel was saved</info>');
 

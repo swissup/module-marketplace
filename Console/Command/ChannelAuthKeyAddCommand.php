@@ -28,7 +28,7 @@ class ChannelAuthKeyAddCommand extends ChannelAbstractCommand
             $channel = $this->getChannel();
 
             $this->enableChannel($channel);
-            $this->addAccessKey($channel);
+            $this->askAndAddAccessKey($channel);
 
             $output->writeln('<info>The channel was saved</info>');
 
@@ -41,29 +41,5 @@ class ChannelAuthKeyAddCommand extends ChannelAbstractCommand
 
             return \Magento\Framework\Console\Cli::RETURN_FAILURE;
         }
-    }
-
-    /**
-     * @param ChannelInterface $channel
-     * @return void
-     */
-    protected function addAccessKey(ChannelInterface $channel)
-    {
-        if (!$channel->getAuthType()) {
-            return;
-        }
-
-        $password = $channel->getPassword();
-        $keys = explode(' ', $password);
-
-        $key = $this->ask('Please enter your key: ');
-        $channel->addData(['password' => $key]);
-        $this->checkCredentials($channel);
-
-        if (!in_array($key, $keys)) {
-            $channel->addData(['password' => $password . ' ' . $key]);
-        }
-
-        $this->channelManager->saveCredentials($channel);
     }
 }
