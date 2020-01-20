@@ -95,9 +95,7 @@ define([
          * @return {Boolean}
          */
         canHideCompleted: function () {
-            this.secondsToNextQueue();
-
-            return this.source.hasCompletedJobs();
+            return !this.isRunning() && this.source.hasCompletedJobs();
         },
 
         /**
