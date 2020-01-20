@@ -7,20 +7,19 @@ class DomainAsUsername extends HttpBasicAuth
     /**
      * Replace username field with read-only domain name.
      *
+     * @param array $config
      * @return array
      */
-    protected function getAuthFields()
+    protected function getUsernameField(array $config = [])
     {
-        $fields = parent::getAuthFields();
+        $field = parent::getUsernameField($config);
 
-        return array_replace_recursive($fields, [
+        return array_replace_recursive($field, [
             'username' => [
                 'arguments' => [
                     'data' => [
                         'config' => [
                             'label' => __('Domain'),
-                            'formElement' => 'input',
-                            'componentType' => 'field',
                             'elementTmpl' => 'ui/form/element/text',
                         ],
                     ],
