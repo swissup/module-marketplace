@@ -82,8 +82,6 @@ class QueueDispatcher
             return;
         }
 
-        $this->logger->info(sprintf('Processing %s tasks', count($queue)));
-
         foreach ($queue as $job) {
             if ($job->getStatus() !== JOB::STATUS_QUEUED) {
                 // some tasks may be declined during preparation
