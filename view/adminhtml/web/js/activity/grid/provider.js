@@ -197,7 +197,6 @@ define([
                 })
                 .always(function () {
                     this.reload();
-
                 }.bind(this));
         },
 
@@ -234,7 +233,7 @@ define([
             return request.get(this.prolongUrl, {}, {
                     dataType: 'text'
                 })
-                .done(function () {
+                .always(function () {
                     setTimeout(function () {
                         this.prolongWebSetupPanel();
                     }.bind(this), this.interval.slow);
