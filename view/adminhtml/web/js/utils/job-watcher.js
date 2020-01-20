@@ -10,12 +10,15 @@ define([
          * @return {$.Deferred}
          */
         watch: function (id, settings) {
-            return registry
-                .get([
-                    'swissup_marketplace_job_activity_listing',
-                    'swissup_marketplace_job_activity_listing_data_source'
-                ].join('.'))
-                .watch(id, settings);
+            var activity = registry.get([
+                'swissup_marketplace_job_activity_listing',
+                'swissup_marketplace_job_activity_listing',
+                'swissup_marketplace_job_activity_columns'
+            ].join('.'));
+
+            activity.log([]);
+
+            return activity.source.watch(id, settings);
         }
     };
 });
