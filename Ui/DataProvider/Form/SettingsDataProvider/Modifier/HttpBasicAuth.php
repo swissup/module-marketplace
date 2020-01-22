@@ -79,6 +79,11 @@ class HttpBasicAuth extends AbstractModifier
      */
     protected function getUsernameField(array $config = [])
     {
+        if ($this->channel->useDomainAsUsername()) {
+            $config['label'] = __('Domain');
+            $config['elementTmpl'] = 'ui/form/element/text';
+        }
+
         return [
             'username' => [
                 'arguments' => [

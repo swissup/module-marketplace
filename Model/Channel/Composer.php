@@ -212,7 +212,15 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     }
 
     /**
-     * @return string
+     * @return boolean
+     */
+    public function useDomainAsUsername()
+    {
+        return !empty($this->data['authDomain']);
+    }
+
+    /**
+     * @return boolean
      */
     public function useKeysAsPassword()
     {
@@ -248,6 +256,13 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
      */
     public function getUsername()
     {
+        if ($this->useDomainAsUsername()) {
+            return parse_url(
+                $this->scopeConfig->getValue('web/unsecure/base_url'),
+                PHP_URL_HOST
+            );
+        }
+
         if (isset($this->data['username'])) {
             return $this->data['username'];
         }

@@ -2,7 +2,7 @@
 
 namespace Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier;
 
-class DomainAndKeys extends DomainAsUsername
+class KeysAsPassword extends HttpBasicAuth
 {
     /**
      * Modify fields to hide password field and show access_key field.

@@ -107,7 +107,7 @@
 
     <!-- Swissup, Argento, and Firecheckout Channel -->
     <virtualType name="Swissup\Marketplace\Model\Channel\Swissup"
-                 type="Swissup\Marketplace\Model\Channel\DomainAsUsername">
+                 type="Swissup\Marketplace\Model\Channel\Composer">
         <arguments>
             <argument name="title" xsi:type="string">Swissup, Argento, and Firecheckout</argument>
             <argument name="url" xsi:type="string">https://ci.swissuplabs.com/api/packages.json</argument>
@@ -117,6 +117,7 @@
                 <!-- Public url is used to get latest versions and gallery -->
                 <item name="publicUrl" xsi:type="string">https://docs.swissuplabs.com/packages/</item>
                 <item name="authType" xsi:type="string">http-basic</item>
+                <item name="authDomain" xsi:type="boolean">true</item>
                 <item name="authKeys" xsi:type="boolean">true</item>
                 <item name="authNotice" xsi:type="string"><![CDATA[1. Navigate to your account ("Activation Information" section) on the site where you've made a purchase.<br/>2. Activate domain from the field above.<br/>3. Copy your access key and paste it here.]]></item>
             </argument>
@@ -130,7 +131,7 @@
         </arguments>
     </type>
     <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Swissup"
-                 type="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\DomainAndKeys">
+                 type="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\KeysAsPassword">
         <arguments>
             <argument name="channel" xsi:type="object">Swissup\Marketplace\Model\Channel\Swissup</argument>
         </arguments>
