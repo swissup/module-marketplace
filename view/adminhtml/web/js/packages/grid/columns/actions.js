@@ -36,16 +36,16 @@ define([
                     return this.rows[action.rowIndex].state === 'outdated';
 
                 case 'disable':
-                    return this.rows[action.rowIndex].enabled && this.rows[action.rowIndex].installed;
+                    return this.rows[action.rowIndex].enabled && this.rows[action.rowIndex].downloaded;
 
                 case 'enable':
-                    return !this.rows[action.rowIndex].enabled && this.rows[action.rowIndex].installed;
+                    return !this.rows[action.rowIndex].enabled && this.rows[action.rowIndex].downloaded;
 
                 case 'uninstall':
-                    return this.rows[action.rowIndex].composer && this.rows[action.rowIndex].installed;
+                    return this.rows[action.rowIndex].composer && this.rows[action.rowIndex].downloaded;
 
                 case 'install':
-                    return !this.rows[action.rowIndex].installed;
+                    return !this.rows[action.rowIndex].downloaded;
             }
 
             return this._super(action);

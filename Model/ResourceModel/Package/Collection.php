@@ -64,7 +64,7 @@ class Collection extends \Magento\Framework\Data\Collection
                 'keywords' => $remoteData['keywords'] ?? [],
                 'version' => $localVersion,
                 'time' => $remoteData['versions'][$localVersion]['time'] ?? false,
-                'installed' => isset($localPackages[$id]),
+                'downloaded' => isset($localPackages[$id]),
                 'enabled' => $localPackages[$id]['enabled'] ?? false,
                 'composer' => $localPackages[$id]['composer'] ?? false, // required in composer.json?
                 'remote' => $remoteData,
@@ -166,7 +166,7 @@ class Collection extends \Magento\Framework\Data\Collection
     protected function _renderOrders()
     {
         usort($this->data, function ($a, $b) {
-            if ($a['installed'] === $b['installed']) {
+            if ($a['downloaded'] === $b['downloaded']) {
                 if ($a['enabled'] === $b['enabled']) {
                     if ($a['state'] !== $b['state']) {
                         return $a['state'] === 'outdated' ? -1 : 1;
@@ -186,7 +186,7 @@ class Collection extends \Magento\Framework\Data\Collection
                 return $a['enabled'] > $b['enabled'] ? -1 : 1;
             }
 
-            return $a['installed'] > $b['installed'] ? -1 : 1;
+            return $a['downloaded'] > $b['downloaded'] ? -1 : 1;
         });
 
         return $this;
@@ -281,7 +281,7 @@ class Collection extends \Magento\Framework\Data\Collection
         $field = 'state';
 
         if ($value === 'disabled') {
-            // must be installed (not 'na')
+            // must be downloaded (not 'na')
             if (!$this->filterByField($field, '!na', $item)) {
                 return false;
             }

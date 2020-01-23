@@ -92,7 +92,7 @@ define([
                     break;
 
                 case 'na':
-                    title = $t('This module is not installed yet');
+                    title = $t('This module is not downloaded yet');
                     break;
             }
 
