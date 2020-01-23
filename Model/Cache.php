@@ -34,7 +34,7 @@ class Cache
      */
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
-        $folder = 'swissup/marketplace',
+        $folder = 'swissup/marketplace/cache',
         $lifetime = 1800
     ) {
         $this->filesystem = $filesystem;
