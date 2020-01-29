@@ -1,6 +1,7 @@
 .marketplace-grid-items {
     .grid-item [data-index="links"] {
         position: absolute;
+        z-index: 10;
         right: 0;
         top: 0;
 
@@ -63,6 +64,7 @@
                     margin: 7px 1em;
                     background: #f4f4f4;
                     pointer-events: none;
+                    &:first-child,
                     &:last-child {
                         display: none;
                     }
