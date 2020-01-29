@@ -45,6 +45,9 @@ section.
  2. Install the package(s) you need:
 
     ```bash
+    # Download and enable module:
+    bin/magento marketplace:package:require <package/name>
+    # Run one-click installer (if module provides it):
     bin/magento marketplace:package:install <package/name>
     ```
 

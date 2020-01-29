@@ -69,6 +69,11 @@ class PackageAbstractCommand extends Command
         parent::configure();
     }
 
+    protected function getPackages()
+    {
+        return $this->input->getArgument(self::INPUT_KEY_PACKAGE);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -76,7 +81,7 @@ class PackageAbstractCommand extends Command
     {
         $success = false;
         $handler = $this->createHandler($this->getHandlerClass(), [
-            'packages' => $this->input->getArgument(self::INPUT_KEY_PACKAGE)
+            'packages' => $this->getPackages(),
         ]);
 
         $before = array_keys(array_filter($handler->beforeQueue()));

@@ -1,0 +1,40 @@
+.marketplace-installer-popup {
+    .page-main-actions {
+        margin: 2rem 0 1rem;
+    }
+    .modal-inner-wrap {
+        max-width: 800px;
+        min-height: 600px;
+    }
+    .admin__action-multiselect-tree {
+        ._unclickable {
+            cursor: default;
+            .admin__control-checkbox {
+                display: none;
+            }
+            .admin__action-multiselect-label {
+                font-weight: normal;
+                opacity: 0.5;
+                padding-left: 0;
+                &:before {
+                    display: none;
+                }
+            }
+        }
+    }
+    .admin__action-multiselect {
+        .action-close {
+            padding: 0;
+            &,
+            &:active,
+            &:hover {
+                &:before {
+                    font-size: inherit;
+                }
+            }
+        }
+    }
+    .admin__control-select {
+        width: 100%;
+    }
+}

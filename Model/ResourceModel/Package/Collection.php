@@ -16,11 +16,18 @@ class Collection extends \Magento\Framework\Data\Collection
      */
     protected $data = [];
 
+    /**
+     * @var \Swissup\Marketplace\Model\Installer\Installer
+     */
+    protected $installer;
+
     public function __construct(
         EntityFactoryInterface $entityFactory,
+        \Swissup\Marketplace\Model\Installer\Installer $installer,
         \Swissup\Marketplace\Model\PackagesList\Local $localPackages,
         \Swissup\Marketplace\Model\PackagesList\Remote $remotePackages
     ) {
+        $this->installer = $installer;
         $this->localPackages = $localPackages;
         $this->remotePackages = $remotePackages;
 
@@ -107,6 +114,7 @@ class Collection extends \Magento\Framework\Data\Collection
             $item = $this->getNewEmptyItem();
             $item->setData($values);
             $item->setId($values['uniqid']);
+            $item->setInstaller($this->installer->hasInstaller($values['name']));
 
             $this->addItem($item);
         }

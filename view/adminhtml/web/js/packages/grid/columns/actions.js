@@ -1,6 +1,8 @@
 define([
-    'Magento_Ui/js/grid/columns/actions'
-], function (Column) {
+    'uiRegistry',
+    'Magento_Ui/js/grid/columns/actions',
+    'Swissup_Marketplace/js/installer/helper'
+], function (registry, Column, installer) {
     'use strict';
 
     return Column.extend({
@@ -45,7 +47,8 @@ define([
                     return this.rows[action.rowIndex].composer && this.rows[action.rowIndex].downloaded;
 
                 case 'install':
-                    return !this.rows[action.rowIndex].downloaded;
+                    return !this.rows[action.rowIndex].downloaded ||
+                        this.rows[action.rowIndex].enabled && this.rows[action.rowIndex].installer;
             }
 
             return this._super(action);
@@ -106,11 +109,17 @@ define([
          * @param {Object} action - Action's data.
          */
         defaultCallback: function (actionIndex, recordId, action) {
+            var data = this.rows[action.rowIndex];
+
             if (!action.isAjax) {
                 return this._super();
             }
 
-            this.source().submit(action, [this.rows[action.rowIndex].name]);
+            if (action.index === 'install' && data.downloaded) {
+                installer.render([data.name]);
+            } else {
+                this.source().submit(action, [data.name]);
+            }
         }
     });
 });
