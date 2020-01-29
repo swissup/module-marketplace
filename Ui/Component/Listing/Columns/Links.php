@@ -54,7 +54,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         foreach ($dataSource['data']['items'] as &$item) {
             $key = $this->getData('name');
             $item[$key] = [
-                'details' => $this->getDetailsLinkParams($item),
+                // 'details' => $this->getDetailsLinkParams($item),
             ];
 
             foreach ($this->getData('links') as $link) {
