@@ -123,10 +123,16 @@ class ChannelManager
      */
     public function getEnabledChannels()
     {
-        $channels = $this->composer->run([
-            'command' => 'config',
-            'setting-key' => 'repositories',
-        ]);
-        return $this->jsonSerializer->unserialize($channels);
+        try {
+            $channels = $this->composer->run([
+                'command' => 'config',
+                'setting-key' => 'repositories',
+            ]);
+            $channels = $this->jsonSerializer->unserialize($channels);
+        } catch (\Exception $e) {
+            $channels = [];
+        }
+
+        return $channels;
     }
 }
