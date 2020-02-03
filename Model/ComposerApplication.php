@@ -29,10 +29,6 @@ class ComposerApplication
      */
     public function run(array $command)
     {
-        $command = array_merge([
-            '-q' => true,
-        ], $command);
-
         return $this->getApp()->runComposerCommand($command);
     }
 

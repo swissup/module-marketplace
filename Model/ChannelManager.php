@@ -127,6 +127,7 @@ class ChannelManager
             $channels = $this->composer->run([
                 'command' => 'config',
                 'setting-key' => 'repositories',
+                '-q' => true,
             ]);
             $channels = $this->jsonSerializer->unserialize($channels);
         } catch (\Exception $e) {
