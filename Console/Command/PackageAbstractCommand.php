@@ -33,6 +33,11 @@ class PackageAbstractCommand extends Command
     protected $output;
 
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
      */
     public function __construct(
