@@ -5,9 +5,12 @@ namespace Swissup\Marketplace\Model\Installer\Commands;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 use Swissup\Marketplace\Model\Installer\Request;
+use Swissup\Marketplace\Model\Traits\Logger;
 
 class Config
 {
+    use Logger;
+
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
@@ -36,6 +39,8 @@ class Config
      */
     public function execute(Request $request)
     {
+        $this->logger->info('CONFIG: Update store parameters');
+
         foreach ($request->getStoreIds() as $storeId) {
             foreach ($request->getParams() as $path => $value) {
                 if (is_array($value)) {

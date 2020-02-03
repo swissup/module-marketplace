@@ -3,9 +3,12 @@
 namespace Swissup\Marketplace\Model\Installer\Commands;
 
 use Swissup\Marketplace\Model\Installer\Request;
+use Swissup\Marketplace\Model\Traits\Logger;
 
 class CmsPage
 {
+    use Logger;
+
     /**
      * @var \Magento\Cms\Model\PageFactory
      */
@@ -57,14 +60,37 @@ class CmsPage
             $request->getParams()
         );
 
+        $isSingleStoreMode = $this->storeManager->isSingleStoreMode();
         $collection = $this->collectionFactory->create()
             ->addStoreFilter($request->getStoreIds())
             ->addFieldToFilter('is_active', 1)
             ->addFieldToFilter('identifier', ['in' => $identifiers]);
 
-        $this->disable($collection, $request->getStoreIds());
+        $this->logger->info('CMS PAGES: Backup existing pages');
+        foreach ($collection as $page) {
+            $page->load($page->getId()); // load stores
 
-        // create new pages
+            $storesToLeave = array_diff($page->getStoreId(), $request->getStoreIds());
+
+            if (count($storesToLeave) && !$isSingleStoreMode) {
+                $page->setStores($storesToLeave);
+            } else {
+                // duplicate page, because original page will be used for new content
+                $page = $this->pageFactory->create()
+                    ->addData($page->getData())
+                    ->unsPageId()
+                    ->setIsActive(0)
+                    ->setIdentifier($this->getBackupIdentifier($page->getIdentifier()));
+            }
+
+            try {
+                $page->save();
+            } catch (\Exception $e) {
+                $this->logger->notice($e->getMessage());
+            }
+        }
+
+        $this->logger->info('CMS PAGES: Create new pages');
         foreach ($request->getParams() as $data) {
             $canUseExistingPage = false;
             $pages = $collection->getItemsByColumnValue(
@@ -100,45 +126,7 @@ class CmsPage
                     ->setStores($request->getStoreIds()) // see Magento\Cms\Model\ResourceModel\Page::_afterSave
                     ->save();
             } catch (\Exception $e) {
-                // @todo
-            }
-        }
-    }
-
-    /**
-     * Unlink pages from storeIds. Disable the page if not possible to unlink.
-     *
-     * @param \Magento\Cms\Model\ResourceModel\Page\Collection $collection
-     * @param array $storeIds
-     * @return void
-     */
-    private function disable(
-        \Magento\Cms\Model\ResourceModel\Page\Collection $collection,
-        $storeIds
-    ) {
-        $errors = [];
-        $isSingleStoreMode = $this->storeManager->isSingleStoreMode();
-
-        foreach ($collection as $page) {
-            $page->load($page->getId()); // load stores
-
-            $storesToLeave = array_diff($page->getStoreId(), $storeIds);
-
-            if (count($storesToLeave) && !$isSingleStoreMode) {
-                $page->setStores($storesToLeave);
-            } else {
-                // duplicate page, because original page will be used for new content
-                $page = $this->pageFactory->create()
-                    ->addData($page->getData())
-                    ->unsPageId()
-                    ->setIsActive(0)
-                    ->setIdentifier($this->getBackupIdentifier($page->getIdentifier()));
-            }
-
-            try {
-                $page->save();
-            } catch (\Exception $e) {
-                // @todo
+                $this->logger->warning($e->getMessage());
             }
         }
     }

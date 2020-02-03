@@ -3,9 +3,12 @@
 namespace Swissup\Marketplace\Model\Installer\Commands;
 
 use Swissup\Marketplace\Model\Installer\Request;
+use Swissup\Marketplace\Model\Traits\Logger;
 
 class ProductAttribute
 {
+    use Logger;
+
     /**
      * @var \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory
      */
@@ -50,6 +53,8 @@ class ProductAttribute
      */
     public function execute(Request $request)
     {
+        $this->logger->info('PRODUCT ATTRIBUTES: Update attributes');
+
         $entityTypeId = $this->eavEntityFactory->create()
             ->setType(\Magento\Catalog\Model\Product::ENTITY)
             ->getTypeId();
@@ -91,7 +96,7 @@ class ProductAttribute
                 try {
                     $model->save();
                 } catch (\Exception $e) {
-                    // todo
+                    $this->logger->warning($e->getMessage());
                 }
             }
 
@@ -99,7 +104,7 @@ class ProductAttribute
                 try {
                     $model->save();
                 } catch (\Exception $e) {
-                    // todo
+                    $this->logger->warning($e->getMessage());
                 }
             }
         }

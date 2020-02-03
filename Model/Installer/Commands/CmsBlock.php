@@ -3,9 +3,12 @@
 namespace Swissup\Marketplace\Model\Installer\Commands;
 
 use Swissup\Marketplace\Model\Installer\Request;
+use Swissup\Marketplace\Model\Traits\Logger;
 
 class CmsBlock
 {
+    use Logger;
+
     /**
      * @var \Magento\Cms\Model\BlockFactory
      */
@@ -50,10 +53,11 @@ class CmsBlock
      */
     public function execute(Request $request)
     {
+        $this->logger->info('CMS BLOCKS: Backup existing and create new blocks');
+
         $isSingleStoreMode = $this->storeManager->isSingleStoreMode();
 
         foreach ($request->getParams() as $data) {
-            // 1. backup existing blocks
             $collection = $this->collectionFactory->create()
                 ->addStoreFilter($request->getStoreIds())
                 ->addFieldToFilter('identifier', $data['identifier']);
@@ -73,7 +77,7 @@ class CmsBlock
                 try {
                     $block->save();
                 } catch (\Exception $e) {
-                    // todo
+                    $this->logger->warning($e->getMessage());
                 }
             }
 
@@ -81,14 +85,13 @@ class CmsBlock
                 'is_active' => 1,
             ], $data);
 
-            // 2. create new block
             try {
                 $this->blockFactory->create()
                     ->setData($data)
                     ->setStores($request->getStoreIds()) // see Magento\Cms\Model\ResourceModel\Block::_afterSave
                     ->save();
             } catch (\Exception $e) {
-                // todo
+                $this->logger->warning($e->getMessage());
             }
         }
     }

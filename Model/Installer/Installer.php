@@ -2,8 +2,12 @@
 
 namespace Swissup\Marketplace\Model\Installer;
 
+use Swissup\Marketplace\Model\Traits\Logger;
+
 class Installer
 {
+    use Logger;
+
     /**
      * @var array
      */
@@ -46,9 +50,13 @@ class Installer
 
             $request->setParams($params);
 
-            $this->objectManager
-                ->get($config['class'])
-                ->execute($request);
+            $command = $this->objectManager->get($config['class']);
+
+            if (method_exists($command, 'setLogger')) {
+                $command->setLogger($this->getLogger());
+            }
+
+            $command->execute($request);
         }
 
         $this->cache->clean([

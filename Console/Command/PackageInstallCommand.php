@@ -62,6 +62,17 @@ class PackageInstallCommand extends PackageAbstractCommand
     }
 
     /**
+     * Initializes the command after the input has been bound and before the input
+     * is validated.
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+
+        return parent::initialize($input, $output);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
@@ -105,10 +116,14 @@ class PackageInstallCommand extends PackageAbstractCommand
             $formData[$name] = $this->ask($config['title'], $config['options']);
         }
 
-        $this->installer->run($packages, array_merge($formData, [
-            'store_id' => $storeIds,
-            'packages' => $packages,
-        ]));
+        $this->installer
+            ->setLogger($this->logger)
+            ->run($packages, array_merge($formData, [
+                'store_id' => $storeIds,
+                'packages' => $packages,
+            ]));
+
+        $output->writeln('<info>Done.</info>');
 
         return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
     }
