@@ -89,16 +89,11 @@ class Remote extends AbstractList
                         $this->extractPackageData($packageData[$latestVersion])
                     );
 
-                    // try to read marketplace data from 'module-' prefixed package
-                    if (empty($this->data[$id]['marketplace']) &&
-                        strpos($id, 'module-') === false
-                    ) {
-                        $moduleName = str_replace('/', '/module-', $id);
-                        if (isset($packages[$moduleName]['dev-master']['extra'])) {
-                            $data = $this->extractPackageData($packages[$moduleName]['dev-master']);
-                            $this->data[$id]['marketplace'] = $data['marketplace'];
-                        }
-                    }
+                    $this->data[$id]['marketplace'] = $this->extractMarketplaceData(
+                        $id,
+                        $this->data[$id],
+                        $packages
+                    );
 
                     $this->data[$id]['uniqid'] = $channel->getIdentifier() . ':' . $id;
                     foreach ($packageData as $version => $data) {
@@ -113,6 +108,77 @@ class Remote extends AbstractList
         $this->isLoaded(true);
 
         return $this->data;
+    }
+
+    /**
+     * @param string $packageName
+     * @param array $packageData
+     * @param array $allPackages
+     * @return array
+     */
+    private function extractMarketplaceData($packageName, $packageData, $allPackages)
+    {
+        // ability to copy some other module's data.
+        if (isset($packageData['marketplace']['@extends'])) {
+            $parentPackage = $packageData['marketplace']['@extends'];
+
+            if (isset($allPackages[$parentPackage]['dev-master']['extra'])) {
+                $data = $this->extractPackageData($allPackages[$parentPackage]['dev-master']);
+                $data = $data['marketplace'];
+            }
+
+            $packageData['marketplace'] = array_merge(
+                $data['marketplace'],
+                $packageData['marketplace']
+            );
+            unset($packageData['marketplace']['@extends']);
+
+            return $packageData['marketplace'];
+        }
+
+        if (!empty($packageData['marketplace'])) {
+            return $packageData['marketplace'];
+        }
+
+        if (!isset($packageData['type']) || $packageData['type'] !== 'metapackage') {
+            return [];
+        }
+
+        // When processing metapackage named as "vendor/package" or "vendor/package-metapackage",
+        // try to get marketplace data from:
+        //  - vendor/package [optional]
+        //  - vendor/module-package
+        //  - vendor/theme-frontend-package
+        //  - vendor/theme-adminhtml-package
+
+        list($vendor, $name) = explode('/', $packageName);
+        $parentPackages = [];
+
+        if (strpos($name, '-metapackage') !== false) {
+            $name = str_replace('-metapackage', '', $name);
+            $parentPackages[] = $vendor . '/' . $name;
+        }
+
+        array_push(
+            $parentPackages,
+            $vendor . '/module-' . $name,
+            $vendor . '/theme-frontend-' . $name,
+            $vendor . '/theme-adminhtml-' . $name,
+        );
+
+        foreach ($parentPackages as $parentPackage) {
+            if (!isset($allPackages[$parentPackage]['dev-master']['extra'])) {
+                continue;
+            }
+
+            $data = $this->extractPackageData($allPackages[$parentPackage]['dev-master']);
+
+            if (isset($data['marketplace'])) {
+                return $data['marketplace'];
+            }
+        }
+
+        return [];
     }
 
     /**
