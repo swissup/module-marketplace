@@ -67,26 +67,43 @@ define([
          * @return {$.Deferred}
          */
         submit: function (action, packages) {
+            var result = $.Deferred();
+
             this.toggleLoader(packages, true);
 
-            return request.post(action.href, {
+            request.post(action.href, {
                     packages: packages
                 })
                 .done(function (response) {
                     if (response.id) {
-                        watcher.watch(response.id).always(function () {
-                            this.updateRowsData();
-                        }.bind(this));
+                        watcher.watch(response.id)
+                            .done(function () {
+                                result.resolve();
+                            })
+                            .fail(function () {
+                                result.reject();
+                            })
+                            .always(function () {
+                                this.updateRowsData();
+                            }.bind(this));
 
                         return;
                     }
 
                     this.toggleLoader(packages, false);
-                    this.validateResponse(response, packages, action);
+
+                    if (this.validateResponse(response, packages, action)) {
+                        result.resolve();
+                    } else {
+                        result.reject();
+                    }
                 }.bind(this))
                 .fail(function () {
                     this.toggleLoader(packages, false);
+                    result.reject();
                 }.bind(this));
+
+            return result;
         },
 
         /**
@@ -112,7 +129,7 @@ define([
                     })
                 });
 
-                return;
+                return false;
             }
 
             if (response.dependencies) {
@@ -152,7 +169,11 @@ define([
                         }
                     }]
                 });
+
+                return false;
             }
+
+            return true;
         },
 
         /**

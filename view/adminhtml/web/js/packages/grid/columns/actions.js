@@ -118,7 +118,13 @@ define([
             if (action.index === 'install' && data.downloaded) {
                 installer.render([data.name]);
             } else {
-                this.source().submit(action, [data.name]);
+                this.source()
+                    .submit(action, [data.name])
+                    .done(function () {
+                        if (actionIndex === 'install') {
+                            installer.render([data.name]);
+                        }
+                    });
             }
         }
     });

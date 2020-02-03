@@ -38,7 +38,10 @@ define([
                         if (action.index === 'install') {
                             installer.render(data.selected);
                         }
-                        this.selections().deselectAll();
+
+                        setTimeout(function () {
+                            this.selections().deselectAll();
+                        }.bind(this), 300);
                     }.bind(this));
             }
         }
