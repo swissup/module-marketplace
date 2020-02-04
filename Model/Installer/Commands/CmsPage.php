@@ -30,6 +30,11 @@ class CmsPage
     private $storeManager;
 
     /**
+     * @var \Magento\UrlRewrite\Model\ResourceModel\UrlRewriteCollectionFactory
+     */
+    private $urlRewriteCollectionFactory;
+
+    /**
      * @param \Magento\Cms\Model\PageFactory $pageFactory
      * @param \Magento\Cms\Model\ResourceModel\Page\CollectionFactory $collectionFactory
      * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
@@ -39,12 +44,14 @@ class CmsPage
         \Magento\Cms\Model\PageFactory $pageFactory,
         \Magento\Cms\Model\ResourceModel\Page\CollectionFactory $collectionFactory,
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\UrlRewrite\Model\ResourceModel\UrlRewriteCollectionFactory $urlRewriteCollectionFactory
     ) {
         $this->pageFactory = $pageFactory;
         $this->collectionFactory = $collectionFactory;
         $this->localeDate = $localeDate;
         $this->storeManager = $storeManager;
+        $this->urlRewriteCollectionFactory = $urlRewriteCollectionFactory;
     }
 
     /**
@@ -59,6 +66,8 @@ class CmsPage
             },
             $request->getParams()
         );
+
+        $this->cleanupUrlRewrites($identifiers, $request->getStoreIds());
 
         $isSingleStoreMode = $this->storeManager->isSingleStoreMode();
         $collection = $this->collectionFactory->create()
@@ -86,7 +95,9 @@ class CmsPage
             try {
                 $page->save();
             } catch (\Exception $e) {
-                $this->logger->notice($e->getMessage());
+                $this->logger->warning(
+                    sprintf('%s "%s"', $e->getMessage(), $data['identifier'])
+                );
             }
         }
 
@@ -126,7 +137,9 @@ class CmsPage
                     ->setStores($request->getStoreIds()) // see Magento\Cms\Model\ResourceModel\Page::_afterSave
                     ->save();
             } catch (\Exception $e) {
-                $this->logger->warning($e->getMessage());
+                $this->logger->warning(
+                    sprintf('%s "%s"', $e->getMessage(), $data['identifier'])
+                );
             }
         }
     }
@@ -142,5 +155,26 @@ class CmsPage
             . rand(10, 99)
             . '_'
             . $this->localeDate->date()->format('Y-m-d-H-i-s');
+    }
+
+    /**
+     * @param  array $identifiers
+     * @return void
+     */
+    private function cleanupUrlRewrites($identifiers, $storeIds)
+    {
+        $urls = $this->urlRewriteCollectionFactory->create()
+            ->addFieldToFilter('entity_type', 'cms-page')
+            ->addFieldToFilter('request_path', ['in' => $identifiers]);
+
+        if (in_array(0, $storeIds)) {
+            $storeIds = array_keys($this->storeManager->getStores(true));
+        }
+
+        $urls->addFieldToFilter('store_id', ['in' => $storeIds]);
+
+        foreach ($urls as $url) {
+            $url->delete();
+        }
     }
 }
