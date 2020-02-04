@@ -42,10 +42,18 @@ define([
          * @param {Object} response
          */
         report: function (response) {
+            var template = [
+                '<details open>',
+                    '<summary>%1</summary>',
+                    '<pre><code>%2</code></pre>',
+                '</details>'
+            ].join('');
+
             uiAlert({
+                modalClass: 'marketplace-installer-report-popup',
                 title: response.message,
-                content: '<strong>%1</strong><br/>%2'
-                    .replace('%1', $t('Installation Report'))
+                content: template
+                    .replace('%1', $t('View Log'))
                     .replace('%2', response.log.join('<br/>'))
             });
         }

@@ -11,7 +11,7 @@ class BufferLogger extends \Psr\Log\AbstractLogger
      */
     public function log($level, $message, array $context = [])
     {
-        $this->log[] = (string) $message;
+        $this->log[] = sprintf("[%s] %s", $level, $message);
     }
 
     public function getLog()
