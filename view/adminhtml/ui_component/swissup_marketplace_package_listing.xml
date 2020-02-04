@@ -257,7 +257,7 @@
         <container name="installer_form">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="component" xsi:type="string">Magento_Ui/js/form/components/insert-form</item>
+                    <item name="component" xsi:type="string">Swissup_Marketplace/js/installer/form</item>
                     <item name="update_url" xsi:type="url" path="mui/index/render"/>
                     <item name="render_url" xsi:type="url" path="mui/index/render_handle/handle/swissup_marketplace_package_install/buttons/1/id/main"/>
                     <item name="autoRender" xsi:type="boolean">false</item>

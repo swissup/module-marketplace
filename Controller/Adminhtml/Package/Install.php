@@ -14,9 +14,11 @@ class Install extends \Magento\Backend\App\Action
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Swissup\Marketplace\Model\Installer\Installer $installer
+        \Swissup\Marketplace\Model\Installer\Installer $installer,
+        \Swissup\Marketplace\Model\Logger\BufferLogger $logger
     ) {
         $this->installer = $installer;
+        $this->logger = $logger;
         parent::__construct($context);
     }
 
@@ -32,8 +34,12 @@ class Install extends \Magento\Backend\App\Action
         $response = new \Magento\Framework\DataObject();
 
         try {
-            $this->installer->run($packages, $this->getRequest()->getParams());
-            $this->messageManager->addSuccess(__('Package(s) successfully installed.'));
+            $this->installer
+                ->setLogger($this->logger)
+                ->run($packages, $this->getRequest()->getParams());
+
+            $response->setMessage(__('Package(s) successfully installed.'));
+            $response->setLog($this->logger->getLog());
         } catch (\Exception $e) {
             $response->setMessage($e->getMessage());
             $response->setError(1);
