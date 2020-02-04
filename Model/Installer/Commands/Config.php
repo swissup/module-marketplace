@@ -5,11 +5,11 @@ namespace Swissup\Marketplace\Model\Installer\Commands;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 use Swissup\Marketplace\Model\Installer\Request;
-use Swissup\Marketplace\Model\Traits\Logger;
+use Swissup\Marketplace\Model\Traits\LoggerAware;
 
 class Config
 {
-    use Logger;
+    use LoggerAware;
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface

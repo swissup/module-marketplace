@@ -5,7 +5,7 @@ namespace Swissup\Marketplace\Model\Traits;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-trait Logger
+trait LoggerAware
 {
     /**
      * @var LoggerInterface

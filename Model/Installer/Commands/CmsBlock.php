@@ -3,11 +3,11 @@
 namespace Swissup\Marketplace\Model\Installer\Commands;
 
 use Swissup\Marketplace\Model\Installer\Request;
-use Swissup\Marketplace\Model\Traits\Logger;
+use Swissup\Marketplace\Model\Traits\LoggerAware;
 
 class CmsBlock
 {
-    use Logger;
+    use LoggerAware;
 
     /**
      * @var \Magento\Cms\Model\BlockFactory

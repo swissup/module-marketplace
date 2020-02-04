@@ -3,11 +3,11 @@
 namespace Swissup\Marketplace\Model\Installer\Commands;
 
 use Swissup\Marketplace\Model\Installer\Request;
-use Swissup\Marketplace\Model\Traits\Logger;
+use Swissup\Marketplace\Model\Traits\LoggerAware;
 
 class ProductAttribute
 {
-    use Logger;
+    use LoggerAware;
 
     /**
      * @var \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory

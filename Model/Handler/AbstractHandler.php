@@ -2,9 +2,11 @@
 
 namespace Swissup\Marketplace\Model\Handler;
 
+use Swissup\Marketplace\Model\Traits\LoggerAware;
+
 class AbstractHandler extends \Magento\Framework\DataObject
 {
-    private $logger;
+    use LoggerAware;
 
     public function handle()
     {
@@ -21,21 +23,6 @@ class AbstractHandler extends \Magento\Framework\DataObject
     public function getTitle()
     {
         return get_class($this);
-    }
-
-    public function getLogger()
-    {
-        if (!$this->logger) {
-            $this->logger = new \Psr\Log\NullLogger();
-        }
-        return $this->logger;
-    }
-
-    public function setLogger(\Psr\Log\LoggerInterface $logger = null)
-    {
-        $this->logger = $logger;
-
-        return $this;
     }
 
     public function validate()

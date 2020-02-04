@@ -2,11 +2,11 @@
 
 namespace Swissup\Marketplace\Model\Installer;
 
-use Swissup\Marketplace\Model\Traits\Logger;
+use Swissup\Marketplace\Model\Traits\LoggerAware;
 
 class Installer
 {
-    use Logger;
+    use LoggerAware;
 
     /**
      * @var array
