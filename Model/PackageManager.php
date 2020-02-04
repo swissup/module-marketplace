@@ -73,6 +73,7 @@ class PackageManager
     /**
      * @param array $packages
      * @return string
+     * @throws \RuntimeException
      */
     public function install($packages)
     {
@@ -89,6 +90,7 @@ class PackageManager
     /**
      * @param array $packages
      * @return string
+     * @throws \RuntimeException
      */
     public function uninstall($packages)
     {
@@ -104,6 +106,7 @@ class PackageManager
     /**
      * @param array $packages
      * @return string
+     * @throws \RuntimeException
      */
     public function update($packages)
     {
