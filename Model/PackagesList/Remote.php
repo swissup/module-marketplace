@@ -163,7 +163,7 @@ class Remote extends AbstractList
             $parentPackages,
             $vendor . '/module-' . $name,
             $vendor . '/theme-frontend-' . $name,
-            $vendor . '/theme-adminhtml-' . $name,
+            $vendor . '/theme-adminhtml-' . $name
         );
 
         foreach ($parentPackages as $parentPackage) {
