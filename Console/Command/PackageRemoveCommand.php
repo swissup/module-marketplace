@@ -4,7 +4,7 @@ namespace Swissup\Marketplace\Console\Command;
 
 use Swissup\Marketplace\Model\Handler\PackageUninstall;
 
-class PackageUninstallCommand extends PackageAbstractCommand
+class PackageRemoveCommand extends PackageAbstractCommand
 {
     /**
      * @var string
@@ -16,8 +16,8 @@ class PackageUninstallCommand extends PackageAbstractCommand
      */
     protected function configure()
     {
-        $this->setName('marketplace:package:uninstall')
-            ->setDescription('Uninstall specified packages');
+        $this->setName('marketplace:package:remove')
+            ->setDescription('Remove specified packages');
 
         parent::configure();
     }

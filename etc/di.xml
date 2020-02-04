@@ -24,7 +24,7 @@
                 <item name="marketplaceChannelAuthCheckCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthCheckCommand</item>
                 <item name="marketplacePackageInstallCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageInstallCommand</item>
                 <item name="marketplacePackageRequireCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageRequireCommand</item>
-                <item name="marketplacePackageUninstallCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageUninstallCommand</item>
+                <item name="marketplacePackageRemoveCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageRemoveCommand</item>
                 <item name="marketplacePackageUpdateCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageUpdateCommand</item>
             </argument>
         </arguments>
