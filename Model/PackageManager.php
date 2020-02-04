@@ -21,6 +21,16 @@ class PackageManager
     protected $packageNames = [];
 
     /**
+     * @var \Magento\Framework\App\CacheInterface
+     */
+    protected $cache;
+
+    /**
+     * @var \Magento\Framework\App\Config\ValueFactory
+     */
+    protected $configValueFactory;
+
+    /**
      * @var \Magento\Framework\Module\PackageInfo
      */
     protected $packageInfo;
@@ -29,6 +39,16 @@ class PackageManager
      * @var \Magento\Framework\Module\Status
      */
     protected $moduleStatus;
+
+    /**
+     * @var \Magento\Framework\Module\ConflictChecker
+     */
+    protected $conflictChecker;
+
+    /**
+     * @var \Magento\Framework\Module\DependencyChecker
+     */
+    protected $dependencyChecker;
 
     /**
      * @var \Magento\Framework\App\DeploymentConfig\Reader
@@ -41,33 +61,65 @@ class PackageManager
     protected $configWriter;
 
     /**
+     * @var \Magento\Theme\Model\Theme\ThemePackageInfo
+     */
+    protected $themePackageInfo;
+
+    /**
+     *@var \Magento\Theme\Model\Theme\ThemeProvider
+     */
+    protected $themeProvider;
+
+    /**
      * @var \Swissup\Marketplace\Model\ComposerApplication
      */
     protected $composer;
 
     /**
+     * @var \Swissup\Marketplace\Model\PackagesList\Local
+     */
+    protected $packagesList;
+
+    /**
+     * @param \Magento\Framework\App\CacheInterface $cache
+     * @param \Magento\Framework\App\Config\ValueFactory $configValueFactory
      * @param \Magento\Framework\Module\PackageInfo $packageInfo
      * @param \Magento\Framework\Module\Status $moduleStatus
+     * @param \Magento\Framework\Module\ConflictChecker $conflictChecker
+     * @param \Magento\Framework\Module\DependencyChecker $dependencyChecker
      * @param \Magento\Framework\App\DeploymentConfig\Reader $configReader
      * @param \Magento\Framework\App\DeploymentConfig\Writer $configWriter
+     * @param \Magento\Theme\Model\Theme\ThemePackageInfo $themePackageInfo
+     * @param \Magento\Theme\Model\Theme\ThemeProvider $themeProvider
      * @param \Swissup\Marketplace\Model\ComposerApplication $composer
+     * @param \Swissup\Marketplace\Model\PackagesList\Local $packagesList
      */
     public function __construct(
+        \Magento\Framework\App\CacheInterface $cache,
+        \Magento\Framework\App\Config\ValueFactory $configValueFactory,
         \Magento\Framework\Module\PackageInfo $packageInfo,
         \Magento\Framework\Module\Status $moduleStatus,
         \Magento\Framework\Module\ConflictChecker $conflictChecker,
         \Magento\Framework\Module\DependencyChecker $dependencyChecker,
         \Magento\Framework\App\DeploymentConfig\Reader $configReader,
         \Magento\Framework\App\DeploymentConfig\Writer $configWriter,
-        \Swissup\Marketplace\Model\ComposerApplication $composer
+        \Magento\Theme\Model\Theme\ThemePackageInfo $themePackageInfo,
+        \Magento\Theme\Model\Theme\ThemeProvider $themeProvider,
+        \Swissup\Marketplace\Model\ComposerApplication $composer,
+        \Swissup\Marketplace\Model\PackagesList\Local $packagesList
     ) {
+        $this->cache = $cache;
+        $this->configValueFactory = $configValueFactory;
         $this->packageInfo = $packageInfo;
         $this->moduleStatus = $moduleStatus;
         $this->conflictChecker = $conflictChecker;
         $this->dependencyChecker = $dependencyChecker;
         $this->configReader = $configReader;
         $this->configWriter = $configWriter;
+        $this->themePackageInfo = $themePackageInfo;
+        $this->themeProvider = $themeProvider;
         $this->composer = $composer;
+        $this->packagesList = $packagesList;
     }
 
     /**
@@ -94,13 +146,71 @@ class PackageManager
      */
     public function uninstall($packages)
     {
-        return $this->composer->run([
+        // collect themes to unset them from config and remove from 'theme' table.
+        $themes = [];
+        $themeIds = [];
+        foreach ($this->getThemePaths($packages) as $themePath) {
+            $theme = $this->themeProvider->getThemeByFullPath($themePath);
+            $themes[] = $theme;
+            $themeIds[] = $theme->getId();
+        }
+
+        $result = $this->composer->run([
             'command' => 'remove',
             'packages' => $packages,
             '--no-progress' => true,
             '--no-interaction' => true,
             '--update-no-dev' => true,
         ]);
+
+        if ($themeIds) {
+            // Unset config values
+            $collection = $this->configValueFactory->create()->getCollection()
+                ->addFieldToFilter('path', 'design/theme/theme_id')
+                ->addFieldToFilter('value', $themeIds);
+
+            foreach ($collection as $config) {
+                $config->delete();
+            }
+
+            // Remove themes from DB table
+            $this->cache->clean(['config', 'full_page']);
+            foreach ($themes as $theme) {
+                $theme->delete();
+            }
+        }
+
+        return $result;
+    }
+
+    private function getThemePaths($packages)
+    {
+        $themes = [];
+        $list = $this->packagesList->getList();
+
+        foreach ($packages as $package) {
+            if (!isset($list[$package]['type'])) {
+                continue;
+            }
+
+            if ($list[$package]['type'] === 'metapackage' &&
+                !empty($list[$package]['require'])
+            ) {
+                $themes += $this->getThemePaths(array_keys($list[$package]['require']));
+            }
+
+            if ($list[$package]['type'] !== 'magento2-theme') {
+                continue;
+            }
+
+            $themePath = $this->themePackageInfo->getFullThemePath($package);
+
+            if ($themePath) {
+                $themes[$package] = $themePath;
+            }
+        }
+
+        return $themes;
     }
 
     /**
