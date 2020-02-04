@@ -1,10 +1,12 @@
 {
     "name": "swissup/module-marketplace",
-    "description": "One-Click modules and themes downloader",
+    "description": "One-Click modules and themes downloader/installer",
     "keywords": [
-        "packagist",
         "marketplace",
-        "magento-marketplace"
+        "magento marketplace",
+        "module manager",
+        "theme manager",
+        "installer"
     ],
     "type": "magento2-module",
     "version": "1.0.0",
