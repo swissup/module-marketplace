@@ -129,7 +129,7 @@ class PackageManager
      */
     public function install($packages)
     {
-        return $this->composer->run([
+        $result = $this->composer->run([
             'command' => 'require',
             'packages' => $packages,
             '--no-progress' => true,
@@ -137,6 +137,32 @@ class PackageManager
             '--update-with-all-dependencies' => true,
             '--update-no-dev' => true,
         ]);
+
+        // fix possible issue with virtual theme in DB
+        $this->packagesList->isLoaded(false);
+        foreach ($this->getThemePaths($packages) as $package => $themePath) {
+            if (empty($themePath)) {
+                preg_match(
+                    '/^(.*)\/theme-(frontend|adminhtml)-(.*)$/',
+                    $package,
+                    $matches
+                );
+
+                if (count($matches) !== 4) {
+                    continue;
+                }
+
+                list($all, $vendor, $area, $theme) = $matches;
+                $themePath = implode('/', [$area, ucfirst($vendor), $theme]);
+            }
+
+            $theme = $this->themeProvider->getThemeByFullPath($themePath);
+            if ($theme->isVirtual()) {
+                $theme->setType(\Magento\Theme\Model\Theme::TYPE_PHYSICAL)->save();
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -150,6 +176,10 @@ class PackageManager
         $themes = [];
         $themeIds = [];
         foreach ($this->getThemePaths($packages) as $themePath) {
+            if (empty($themePath)) {
+                continue;
+            }
+
             $theme = $this->themeProvider->getThemeByFullPath($themePath);
             $themes[] = $theme;
             $themeIds[] = $theme->getId();
@@ -205,11 +235,7 @@ class PackageManager
                 continue;
             }
 
-            $themePath = $this->themePackageInfo->getFullThemePath($package);
-
-            if ($themePath) {
-                $themes[$package] = $themePath;
-            }
+            $themes[$package] = $this->themePackageInfo->getFullThemePath($package);
         }
 
         return $themes;

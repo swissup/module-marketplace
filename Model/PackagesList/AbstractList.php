@@ -33,7 +33,7 @@ class AbstractList
         return $result;
     }
 
-    protected function isLoaded($flag = null)
+    public function isLoaded($flag = null)
     {
         if (null !== $flag) {
             $this->isLoaded = $flag;
