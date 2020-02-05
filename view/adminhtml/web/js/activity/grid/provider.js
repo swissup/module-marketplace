@@ -118,7 +118,7 @@ define([
                 }
 
                 if (watcher.deferred) {
-                    if (status.is('errored', item)) {
+                    if (status.is('errored', item) || status.is('canceled', item)) {
                         watcher.deferred.reject(item);
                     } else {
                         watcher.deferred.resolve(item);

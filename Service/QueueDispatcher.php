@@ -2,7 +2,9 @@
 
 namespace Swissup\Marketplace\Service;
 
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Stdlib\DateTime;
+use Magento\Framework\Exception\ValidatorException;
 use Swissup\Marketplace\Model\Handler\Additional\Wrapper;
 use Swissup\Marketplace\Model\Job;
 use Swissup\Marketplace\Model\ResourceModel\Job\Collection;
@@ -10,9 +12,14 @@ use Swissup\Marketplace\Model\ResourceModel\Job\Collection;
 class QueueDispatcher
 {
     /**
-     * @var \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory
+     * @var \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory
      */
     private $cronCollectionFactory;
+
+    /**
+     * @var \Magento\Framework\Filesystem\Driver\File
+     */
+    private $fileDriver;
 
     /**
      * @var \Magento\Framework\Serialize\Serializer\Json
@@ -36,6 +43,9 @@ class QueueDispatcher
 
     /**
      * @param \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory
+     * @param \Magento\Framework\Filesystem $filesystem
+     * @param DirectoryList $directoryList
+     * @param \Magento\Framework\Filesystem\Driver\File $fileDriver
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
@@ -43,12 +53,18 @@ class QueueDispatcher
      */
     public function __construct(
         \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory,
+        \Magento\Framework\Filesystem $filesystem,
+        DirectoryList $directoryList,
+        \Magento\Framework\Filesystem\Driver\File $fileDriver,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Psr\Log\LoggerInterface $logger,
         \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
         \Swissup\Marketplace\Model\JobFactory $jobFactory
     ) {
         $this->cronCollectionFactory = $cronCollectionFactory;
+        $this->filesystem = $filesystem;
+        $this->directoryList = $directoryList;
+        $this->fileDriver = $fileDriver;
         $this->jsonSerializer = $jsonSerializer;
         $this->logger = $logger;
         $this->handlerFactory = $handlerFactory;
@@ -66,9 +82,17 @@ class QueueDispatcher
         }
 
         try {
+            $this->validate();
             $queue = $this->prepareQueue($collection);
+        } catch (ValidatorException $e) {
+            foreach ($collection as $job) {
+                $job->setStatus(Job::STATUS_ERRORED)
+                    ->setOutput($e->getMessage())
+                    ->setFinishedAt($this->getCurrentDate())
+                    ->save();
+            }
+            return;
         } catch (\Exception $e) {
-            // cancel all jobs if some are not prepared
             foreach ($collection as $job) {
                 if ($job->getStatus() !== JOB::STATUS_QUEUED) {
                     continue;
@@ -76,6 +100,7 @@ class QueueDispatcher
 
                 $job->setStatus(Job::STATUS_CANCELED)
                     ->setFinishedAt($this->getCurrentDate())
+                    ->setOutput($e->getMessage())
                     ->save();
             }
 
@@ -112,6 +137,49 @@ class QueueDispatcher
         }
 
         $this->logger->info("Done\n");
+    }
+
+    /**
+     * Check everything needs to run jobs.
+     *
+     * @return boolean
+     * @throws \Exception
+     */
+    private function validate()
+    {
+        $directory = $this->filesystem->getDirectoryRead(DirectoryList::ROOT);
+        $writableIfExist = [
+            $this->directoryList->getPath(DirectoryList::COMPOSER_HOME),
+            $this->directoryList->getPath(DirectoryList::COMPOSER_HOME) . '/auth.json',
+        ];
+
+        foreach ($writableIfExist as $path) {
+            $path = $directory->getAbsolutePath($path);
+
+            if ($this->fileDriver->isExists($path) && !$this->fileDriver->isWritable($path)) {
+                throw new ValidatorException(__("The '%1' is not writable.", $path));
+            }
+        }
+
+        $writablePaths = [
+            $this->directoryList->getPath(DirectoryList::CONFIG) . '/config.php',
+            $this->directoryList->getPath(DirectoryList::VAR_DIR),
+            $this->directoryList->getPath(DirectoryList::LOG),
+            'composer.json',
+            'composer.lock',
+            'vendor',
+            'vendor/composer',
+        ];
+
+        foreach ($writablePaths as $path) {
+            $path = $directory->getAbsolutePath($path);
+
+            if (!$this->fileDriver->isWritable($path)) {
+                throw new ValidatorException(__("The '%1' is not writable.", $path));
+            }
+        }
+
+        return true;
     }
 
     /**
