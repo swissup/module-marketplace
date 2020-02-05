@@ -38,7 +38,7 @@ define([
                 title: row.accessible ? '' : $t('Latest version is not accessible')
             }, {
                 index: 'install',
-                class: row.installer ? 'action primary' : 'action',
+                class: row.installer && row.downloaded ? 'action primary' : 'action',
                 rowIndex: row._rowIndex,
                 label: $t('Install') + (row.accessible ? '' : '*'),
                 title: row.accessible ? '' : $t('Latest version is not accessible')
