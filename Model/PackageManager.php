@@ -157,7 +157,7 @@ class PackageManager
             }
 
             $theme = $this->themeProvider->getThemeByFullPath($themePath);
-            if ($theme->isVirtual()) {
+            if ($theme->getId() && $theme->isVirtual()) {
                 $theme->setType(\Magento\Theme\Model\Theme::TYPE_PHYSICAL)->save();
             }
         }
