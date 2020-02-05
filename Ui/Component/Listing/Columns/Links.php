@@ -102,7 +102,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
                     'name' => $item['name']
                 ]
             ),
-            'label' => __('(N/A) View Details')
+            'label' => __('View Details')
         ];
     }
 
@@ -139,7 +139,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         return [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_ENABLE),
-            'label' =>$this->getLinkTitle('Enable', $item),
+            'label' => $this->getLinkTitle('Enable', $item),
         ];
     }
 
@@ -148,9 +148,9 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
         return [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_UNINSTALL),
-            'label' => $this->getLinkTitle('Uninstall', $item),
+            'label' => $this->getLinkTitle('Remove', $item),
             'confirm' => [
-                'title' => $this->getLinkTitle('Uninstall', $item),
+                'title' => $this->getLinkTitle('Remove', $item),
                 'message' => __('Are you sure you want to do this?')
             ]
         ];
@@ -158,10 +158,14 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
 
     protected function getInstallLinkParams($item)
     {
+        $label = $item['downloaded'] ?
+            __('Run Installer') :
+            $this->getLinkTitle('Install', $item);
+
         $link = [
             'isAjax' => true,
             'href' => $this->getContext()->getUrl(static::URL_PATH_INSTALL),
-            'label' => $this->getLinkTitle('Install', $item),
+            'label' => $label,
         ];
 
         if (!$item['accessible']) {
