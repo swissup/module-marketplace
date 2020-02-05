@@ -173,8 +173,10 @@ class PackageManager
                 $config->delete();
             }
 
-            // Remove themes from DB table
+            // clean cache to pass magento validation when deleting a theme
             $this->cache->clean(['config', 'full_page']);
+
+            // Remove themes from DB table
             foreach ($themes as $theme) {
                 $theme->delete();
             }
