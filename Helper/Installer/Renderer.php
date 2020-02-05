@@ -6,6 +6,11 @@ use Magento\Framework\Exception\FileSystemException;
 
 class Renderer
 {
+    /**
+     * @param array $request
+     * @param string $path
+     * @return string
+     */
     public function render(array $request, $path)
     {
         if (!is_readable($path)) {
