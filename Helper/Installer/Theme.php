@@ -20,10 +20,11 @@ class Theme
     }
 
     /**
+     * @param array $request
      * @param string $path
      * @return int
      */
-    public function getId($path)
+    public function getId(array $request, $path)
     {
         if (!isset($this->memo[$path])) {
             $this->memo[$path] = $this->collectionFactory->create()

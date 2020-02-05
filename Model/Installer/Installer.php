@@ -45,7 +45,7 @@ class Installer
         foreach ($this->getCommands($packages, $request) as $config) {
             $params = [];
             foreach ($config['data'] as $key => $param) {
-                $params[$key] = $this->processArguments($param);
+                $params[$key] = $this->processArguments($param, $requestData);
             }
 
             $request->setParams($params);
@@ -165,9 +165,10 @@ class Installer
 
     /**
      * @param array $arguments
+     * @param array $requestData
      * @return array
      */
-    private function processArguments($arguments)
+    private function processArguments($arguments, $requestData)
     {
         if (!is_array($arguments)) {
             return $arguments;
@@ -176,7 +177,7 @@ class Installer
         // start from the deepest nested helper
         foreach ($arguments as $key => $value) {
             if (is_array($value)) {
-                $arguments[$key] = $this->processArguments($value);
+                $arguments[$key] = $this->processArguments($value, $requestData);
             }
         }
 
@@ -187,7 +188,7 @@ class Installer
 
             return call_user_func_array(
                 [$this->objectManager->get($class), $method],
-                $arguments['arguments']
+                ['request' => $requestData] + $arguments['arguments']
             );
         }
 
