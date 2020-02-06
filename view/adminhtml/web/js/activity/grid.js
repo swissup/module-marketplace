@@ -57,10 +57,6 @@ define([
         onDataReloaded: function () {
             this._super();
 
-            if (this.source.data.secondsToNextQueue > 50) {
-                return;
-            }
-
             this.secondsToNextQueue(this.source.data.secondsToNextQueue);
 
             if (this.timer) {
