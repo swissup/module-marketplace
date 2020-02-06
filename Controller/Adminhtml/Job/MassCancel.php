@@ -67,7 +67,13 @@ class MassCancel extends \Magento\Backend\App\Action
             $item->cancel();
 
             if ($id = $item->getCronScheduleId()) {
-                $cron->getItemById($id)
+                $cronItem = $cron->getItemById($id);
+
+                if (!$cronItem) {
+                    continue;
+                }
+
+                $cronItem
                     ->setStatus(Schedule::STATUS_SUCCESS)
                     ->save();
             }
