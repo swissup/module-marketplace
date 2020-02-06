@@ -8,6 +8,7 @@ define([
 
     return Listing.extend({
         timer: false,
+        fetchingLog: false,
 
         /**
          * Initializes observable properties.
@@ -30,6 +31,11 @@ define([
         fetchLog: function () {
             var pre = $('#marketplace-log').find('pre');
 
+            if (this.fetchingLog) {
+                return;
+            }
+            this.fetchingLog = true;
+
             this.source.fetchLog()
                 .done(function (response) {
                     this.log(response.console);
@@ -39,6 +45,9 @@ define([
                             scrollTop: pre.get(0).scrollHeight
                         }, 500);
                     }
+                }.bind(this))
+                .always(function () {
+                    this.fetchingLog = false;
                 }.bind(this));
         },
 
