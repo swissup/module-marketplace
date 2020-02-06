@@ -84,21 +84,18 @@ class QueueDispatcher
         try {
             $this->validate();
             $queue = $this->prepareQueue($collection);
-        } catch (ValidatorException $e) {
-            foreach ($collection as $job) {
-                $job->setStatus(Job::STATUS_ERRORED)
-                    ->setOutput($e->getMessage())
-                    ->setFinishedAt($this->getCurrentDate())
-                    ->save();
-            }
-            return;
         } catch (\Exception $e) {
             foreach ($collection as $job) {
-                if ($job->getStatus() !== JOB::STATUS_QUEUED) {
+                $statusesToChange = [
+                    JOB::STATUS_QUEUED,
+                    Job::STATUS_PENDING,
+                ];
+
+                if (!in_array($job->getStatus(), $statusesToChange)) {
                     continue;
                 }
 
-                $job->setStatus(Job::STATUS_CANCELED)
+                $job->setStatus(Job::STATUS_ERRORED)
                     ->setFinishedAt($this->getCurrentDate())
                     ->setOutput($e->getMessage())
                     ->save();
