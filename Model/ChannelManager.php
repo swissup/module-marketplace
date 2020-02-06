@@ -99,7 +99,9 @@ class ChannelManager
 
             return $data[$channel->getHostname()] ?? [];
         } catch (\Exception $e) {
-            return [];
+            throw new \RuntimeException(
+                "'composer config -a -g' command failed: " . $e->getMessage()
+            );
         }
     }
 
@@ -131,7 +133,9 @@ class ChannelManager
             ]);
             $channels = $this->jsonSerializer->unserialize($channels);
         } catch (\Exception $e) {
-            $channels = [];
+            throw new \RuntimeException(
+                "'composer config' command failed: " . $e->getMessage()
+            );
         }
 
         return $channels;
