@@ -18,11 +18,6 @@ class JobDispatcher
     private $jsonSerializer;
 
     /**
-     * @var \Swissup\Marketplace\Helper\Data
-     */
-    private $helper;
-
-    /**
      * @var \Swissup\Marketplace\Model\HandlerFactory
      */
     private $handlerFactory;
@@ -40,7 +35,6 @@ class JobDispatcher
     /**
      * @param \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
-     * @param \Swissup\Marketplace\Helper\Data $helper
      * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
      * @param \Swissup\Marketplace\Model\JobFactory $jobFactory
      * @param \Swissup\Marketplace\Model\Logger\Handler $logHandler
@@ -48,14 +42,12 @@ class JobDispatcher
     public function __construct(
         \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
-        \Swissup\Marketplace\Helper\Data $helper,
         \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
         \Swissup\Marketplace\Model\JobFactory $jobFactory,
         \Swissup\Marketplace\Model\Logger\Handler $logHandler
     ) {
         $this->remoteAddress = $remoteAddress;
         $this->jsonSerializer = $jsonSerializer;
-        $this->helper = $helper;
         $this->handlerFactory = $handlerFactory;
         $this->jobFactory = $jobFactory;
         $this->logHandler = $logHandler;
@@ -75,35 +67,8 @@ class JobDispatcher
 
         $this->logHandler->cleanup();
 
-        if ($this->helper->canUseAsyncMode()) {
-            $this->createHandler($class, $arguments)->validate();
-            return $this->dispatchToQueue($class, $arguments);
-        } else {
-            return $this->dispatchNow($class, $arguments);
-        }
-    }
+        $this->handlerFactory->create($class, $arguments)->validate();
 
-    /**
-     * @param string $class
-     * @param array $arguments
-     * @return mixed
-     */
-    public function dispatchNow($class, array $arguments = [])
-    {
-        $handler = $this->createHandler($class, $arguments);
-
-        $handler->validate();
-
-        return $handler->handle();
-    }
-
-    /**
-     * @param string $class
-     * @param array $arguments
-     * @return Job
-     */
-    public function dispatchToQueue($class, array $arguments = [])
-    {
         return $this->jobFactory->create()
             ->addData([
                 'class' => $class,
@@ -112,10 +77,5 @@ class JobDispatcher
                 'status' => Job::STATUS_PENDING,
             ])
             ->save();
-    }
-
-    protected function createHandler($class, array $arguments = [])
-    {
-        return $this->handlerFactory->create($class, $arguments);
     }
 }

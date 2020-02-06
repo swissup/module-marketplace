@@ -63,10 +63,6 @@ class QueueProcess
 
     public function execute()
     {
-        if (!$this->helper->canUseAsyncMode()) {
-            return;
-        }
-
         $jobs = $this->collectionFactory->create()
             ->addFieldToFilter('status', Job::STATUS_PENDING)
             ->addFieldToFilter('scheduled_at', [
