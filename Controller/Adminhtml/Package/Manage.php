@@ -61,15 +61,10 @@ class Manage extends \Magento\Backend\App\Action
                 'packages' => $packages
             ]);
 
-            if ($job instanceof Job) {
-                $response->addData([
-                    'id' => $job->getId(),
-                    'created_at' => $job->getCreatedAt(),
-                ]);
-            } else {
-                $this->messageManager->addSuccess(__('Task successfully completed.'));
-                $response->addData(['reload' => true]);
-            }
+            $response->addData([
+                'id' => $job->getId(),
+                'created_at' => $job->getCreatedAt(),
+            ]);
         } catch (HandlerValidationException $e) {
             $response->setError(1);
             $response->addData($e->getData());

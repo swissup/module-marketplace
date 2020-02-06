@@ -56,7 +56,7 @@ class JobDispatcher
     /**
      * @param string $class
      * @param array $arguments
-     * @return mixed
+     * @return Job
      * @throws \Magento\Framework\Exception\ValidatorException
      */
     public function dispatch($class, array $arguments = [])

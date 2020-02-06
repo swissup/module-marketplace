@@ -48,16 +48,11 @@ class Save extends \Magento\Backend\App\Action
                     'channels' => $channels
                 ]);
 
-                if ($job instanceof Job) {
-                    $response->addData([
-                        'message' => __('Please wait a minute until the changes will take place.'),
-                        'id' => $job->getId(),
-                        'created_at' => $job->getCreatedAt(),
-                    ]);
-                } else {
-                    $this->messageManager->addSuccess(__('Settings successfully updated.'));
-                    $response->addData(['reload' => true]);
-                }
+                $response->addData([
+                    'message' => __('Please wait a minute until the changes will take place.'),
+                    'id' => $job->getId(),
+                    'created_at' => $job->getCreatedAt(),
+                ]);
             } catch (\Exception $e) {
                 $response->setMessage($e->getMessage());
                 $response->setError(1);
