@@ -18,6 +18,7 @@
         "magento/module-catalog": "*",
         "magento/module-cms": "*",
         "magento/module-deploy": "^100.0",
+        "magento/module-theme": "*",
         "magento/module-ui": "^101.0",
         "monolog/monolog": "*",
         "psr/log": "*",
