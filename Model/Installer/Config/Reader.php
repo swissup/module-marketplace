@@ -169,9 +169,38 @@ class Reader
             return [];
         }
 
-        $i = 0;
+        $commands = [];
+        foreach ($node->children() as $child) {
+            $tagName = $child->getName();
+
+            if (!in_array($tagName, ['command', 'include'])) {
+                continue;
+            }
+
+            if ($tagName === 'command') {
+                $commands[] = $child;
+                continue;
+            }
+
+            // read commands from separate file
+            $path = $child->getAttribute('path');
+            $dir = $this->readDirFactory->create($this->currentPath . '/' . self::DIR);
+
+            if (!$dir->isReadable($path)) {
+                continue;
+            }
+
+            $xml = $this->configFactory->create([
+                'sourceData' => $dir->readFile($path)
+            ]);
+
+            foreach ($xml->getNode('command') as $command) {
+                $commands[] = $command;
+            }
+        }
+
         $result = [];
-        foreach ($node->descend('command') as $command) {
+        foreach ($commands as $i => $command) {
             $result[$i]['class'] = $command->getAttribute('class');
 
             if (!$command->hasChildren() || !$command->descend('data')) {
@@ -181,8 +210,6 @@ class Reader
             $result[$i]['data'] = $this->parseArguments(
                 $command->descend('data')->children()
             );
-
-            $i++;
         }
 
         return $result;
