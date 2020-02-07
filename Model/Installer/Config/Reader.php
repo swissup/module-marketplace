@@ -204,8 +204,13 @@ class Reader
             if (!$item->hasChildren() && !$helper) {
                 $value = (string) $item[0];
 
-                if ($item->getAttribute('type') === 'path') {
-                    $value = $this->currentPath . '/' . self::DIR . '/' . $value;
+                switch ($item->getAttribute('type')) {
+                    case 'path':
+                        $value = $this->currentPath . '/' . self::DIR . '/' . $value;
+                        break;
+                    case 'const':
+                        $value = constant($value);
+                        break;
                 }
 
                 $result[$key] = $value;
