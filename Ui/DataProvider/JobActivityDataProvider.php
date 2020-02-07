@@ -3,7 +3,6 @@
 namespace Swissup\Marketplace\Ui\DataProvider;
 
 use Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory as CronCollectionFactory;
-use Magento\Framework\App\MaintenanceMode;
 use Magento\Framework\Stdlib\DateTime;
 use Swissup\Marketplace\Model\HandlerFactory;
 use Swissup\Marketplace\Model\Job;
