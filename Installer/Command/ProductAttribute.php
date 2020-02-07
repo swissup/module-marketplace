@@ -1,8 +1,8 @@
 <?php
 
-namespace Swissup\Marketplace\Model\Installer\Commands;
+namespace Swissup\Marketplace\Installer\Command;
 
-use Swissup\Marketplace\Model\Installer\Request;
+use Swissup\Marketplace\Installer\Request;
 use Swissup\Marketplace\Model\Traits\LoggerAware;
 
 class ProductAttribute

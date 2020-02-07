@@ -1,6 +1,6 @@
 <?php
 
-namespace Swissup\Marketplace\Helper\Installer;
+namespace Swissup\Marketplace\Installer\Helper;
 
 use Magento\Theme\Model\ResourceModel\Theme\CollectionFactory;
 

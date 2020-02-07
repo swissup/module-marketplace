@@ -2,8 +2,6 @@
 
 namespace Swissup\Marketplace\Ui\DataProvider\Form;
 
-use Swissup\Marketplace\Model\Installer\Config\Source\FieldOptions;
-
 class PackageInstallDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
 {
     /**
@@ -23,7 +21,7 @@ class PackageInstallDataProvider extends \Magento\Ui\DataProvider\AbstractDataPr
         $primaryFieldName,
         $requestFieldName,
         \Magento\Framework\App\RequestInterface $request,
-        \Swissup\Marketplace\Model\Installer\Installer $installer,
+        \Swissup\Marketplace\Installer\Installer $installer,
         array $meta = [],
         array $data = []
     ) {

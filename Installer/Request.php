@@ -1,6 +1,6 @@
 <?php
 
-namespace Swissup\Marketplace\Model\Installer;
+namespace Swissup\Marketplace\Installer;
 
 use Magento\Store\Model\Store;
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace Swissup\Marketplace\Model\Installer\Config;
+namespace Swissup\Marketplace\Installer;
 
 use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Simplexml\Config;
 use Magento\Framework\Simplexml\ConfigFactory;
 
-class Reader
+class ConfigReader
 {
     const DIR = 'etc/marketplace';
 

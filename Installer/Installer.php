@@ -1,6 +1,6 @@
 <?php
 
-namespace Swissup\Marketplace\Model\Installer;
+namespace Swissup\Marketplace\Installer;
 
 use Swissup\Marketplace\Model\Traits\LoggerAware;
 
@@ -16,13 +16,13 @@ class Installer
     /**
      * @param \Magento\Framework\App\CacheInterface $cache
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param Config\Reader $configReader
+     * @param ConfigReader $configReader
      * @param RequestFactory $requestFactory
      */
     public function __construct(
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\ObjectManagerInterface $objectManager,
-        Config\Reader $configReader,
+        ConfigReader $configReader,
         RequestFactory $requestFactory
     ) {
         $this->cache = $cache;

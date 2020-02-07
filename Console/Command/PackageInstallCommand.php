@@ -32,7 +32,7 @@ class PackageInstallCommand extends PackageAbstractCommand
     protected $listFactory;
 
     /**
-     * @var \Swissup\Marketplace\Model\Installer\Installer
+     * @var \Swissup\Marketplace\Installer\Installer
      */
     protected $installer;
 
@@ -42,7 +42,7 @@ class PackageInstallCommand extends PackageAbstractCommand
      * @param \Symfony\Component\Console\Question\ChoiceQuestionFactory $choiceQuestionFactory
      * @param \Symfony\Component\Console\Helper\QuestionHelper $questionHelper
      * @param \Swissup\Marketplace\Model\PackagesList\LocalFactory $listFactory
-     * @param \Swissup\Marketplace\Model\Installer\Installer $installer
+     * @param \Swissup\Marketplace\Installer\Installer $installer
      */
     public function __construct(
         \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
@@ -50,7 +50,7 @@ class PackageInstallCommand extends PackageAbstractCommand
         \Symfony\Component\Console\Question\ChoiceQuestionFactory $choiceQuestionFactory,
         \Symfony\Component\Console\Helper\QuestionHelper $questionHelper,
         \Swissup\Marketplace\Model\PackagesList\LocalFactory $listFactory,
-        \Swissup\Marketplace\Model\Installer\Installer $installer
+        \Swissup\Marketplace\Installer\Installer $installer
     ) {
         $this->storeManager = $storeManager;
         $this->choiceQuestionFactory = $choiceQuestionFactory;

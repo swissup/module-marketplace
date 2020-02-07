@@ -10,11 +10,11 @@ class Install extends \Magento\Backend\App\Action
 
     /**
      * @param \Magento\Backend\App\Action\Context $context
-     * @param \Swissup\Marketplace\Model\Installer\Installer $installer
+     * @param \Swissup\Marketplace\Installer\Installer $installer
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Swissup\Marketplace\Model\Installer\Installer $installer,
+        \Swissup\Marketplace\Installer\Installer $installer,
         \Swissup\Marketplace\Model\Logger\BufferLogger $logger
     ) {
         $this->installer = $installer;

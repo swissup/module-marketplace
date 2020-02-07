@@ -1,10 +1,10 @@
 <?php
 
-namespace Swissup\Marketplace\Model\Installer\Commands;
+namespace Swissup\Marketplace\Installer\Command;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
-use Swissup\Marketplace\Model\Installer\Request;
+use Swissup\Marketplace\Installer\Request;
 use Swissup\Marketplace\Model\Traits\LoggerAware;
 
 class Config

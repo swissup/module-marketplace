@@ -17,13 +17,13 @@ class Collection extends \Magento\Framework\Data\Collection
     protected $data = [];
 
     /**
-     * @var \Swissup\Marketplace\Model\Installer\Installer
+     * @var \Swissup\Marketplace\Installer\Installer
      */
     protected $installer;
 
     public function __construct(
         EntityFactoryInterface $entityFactory,
-        \Swissup\Marketplace\Model\Installer\Installer $installer,
+        \Swissup\Marketplace\Installer\Installer $installer,
         \Swissup\Marketplace\Model\PackagesList\Local $localPackages,
         \Swissup\Marketplace\Model\PackagesList\Remote $remotePackages
     ) {
