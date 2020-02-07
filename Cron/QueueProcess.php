@@ -77,7 +77,7 @@ class QueueProcess
         $latest = $jobs->getLastItem();
         if ($latest->getId()) {
             $createdAt = new \DateTime($latest->getCreatedAt());
-            $compareWith = new \DateTime('-7 seconds');
+            $compareWith = new \DateTime();
 
             if ($createdAt > $compareWith) {
                 return;
