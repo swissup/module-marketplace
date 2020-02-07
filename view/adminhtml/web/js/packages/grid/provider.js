@@ -227,6 +227,14 @@ define([
                     }
                 }, this);
 
+                // remove cache, as it may have outdated information (dependent packages where updated)
+                if (this.storage() &&
+                    this.storage()._requests &&
+                    this.storage()._requests.length
+                ) {
+                    this.storage()._requests = [];
+                }
+
                 this.rows.splice(0, 0); // trigger grid re-render
             }.bind(this));
         }
