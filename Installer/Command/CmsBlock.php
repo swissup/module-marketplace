@@ -53,7 +53,7 @@ class CmsBlock
      */
     public function execute(Request $request)
     {
-        $this->logger->info('CMS BLOCKS: Backup existing and create new blocks');
+        $this->logger->info('Cms Blocks: Backup existing and create new blocks');
 
         $isSingleStoreMode = $this->storeManager->isSingleStoreMode();
 

@@ -39,7 +39,7 @@ class Config
      */
     public function execute(Request $request)
     {
-        $this->logger->info('CONFIG: Update store parameters');
+        $this->logger->info('Config: Update store parameters');
 
         foreach ($request->getStoreIds() as $storeId) {
             foreach ($request->getParams() as $path => $value) {

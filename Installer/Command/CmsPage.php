@@ -75,7 +75,7 @@ class CmsPage
             ->addFieldToFilter('is_active', 1)
             ->addFieldToFilter('identifier', ['in' => $identifiers]);
 
-        $this->logger->info('CMS PAGES: Backup existing pages');
+        $this->logger->info('Cms Pages: Backup existing pages');
         foreach ($collection as $page) {
             $page->load($page->getId()); // load stores
 

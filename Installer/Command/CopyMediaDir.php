@@ -21,7 +21,7 @@ class CopyMediaDir
      */
     public function execute(Request $request)
     {
-        $this->logger->info('RESOURCES: Copy media files');
+        $this->logger->info('Resources: Copy media files');
 
         $media = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
         $driver = $media->getDriver();

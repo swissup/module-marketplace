@@ -61,7 +61,7 @@ class Product
      */
     public function execute(Request $request)
     {
-        $this->logger->info('PRODUCT: Prepare product collections');
+        $this->logger->info('Product: Prepare product collections');
 
         $data = $request->getParams();
         $visibility = $this->catalogProductVisibility->getVisibleInCatalogIds();

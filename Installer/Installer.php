@@ -87,7 +87,7 @@ class Installer
             }
 
             $info = array_slice(explode('/', $installer), -2, 2);
-            $this->getLogger()->info('RUNNING ' . implode('/', $info));
+            $this->getLogger()->notice(sprintf('Processing %s', implode('/', $info)));
 
             $commands = $this->data['commands'][$installer] ?? [];
 

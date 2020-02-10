@@ -53,7 +53,7 @@ class ProductAttribute
      */
     public function execute(Request $request)
     {
-        $this->logger->info('PRODUCT ATTRIBUTES: Update attributes');
+        $this->logger->info('Product Attributes: Update attributes');
 
         $entityTypeId = $this->eavEntityFactory->create()
             ->setType(\Magento\Catalog\Model\Product::ENTITY)
