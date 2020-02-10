@@ -5,7 +5,7 @@ namespace Swissup\Marketplace\Installer\Command;
 use Swissup\Marketplace\Installer\Request;
 use Swissup\Marketplace\Model\Traits\LoggerAware;
 
-class Products
+class Product
 {
     use LoggerAware;
 
@@ -61,7 +61,7 @@ class Products
      */
     public function execute(Request $request)
     {
-        $this->logger->info('PRODUCTS: Prepare product collections');
+        $this->logger->info('PRODUCT: Prepare product collections');
 
         $data = $request->getParams();
         $visibility = $this->catalogProductVisibility->getVisibleInCatalogIds();
