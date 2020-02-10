@@ -14,18 +14,46 @@ class Installer
     private $data;
 
     /**
+     * @var \Magento\Framework\App\CacheInterface
+     */
+    private $cache;
+
+    /**
+     * @var \Magento\Framework\App\State
+     */
+    private $appState;
+
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
+     * @var ConfigReader
+     */
+    private $configReader;
+
+    /**
+     * @var RequestFactory
+     */
+    private $requestFactory;
+
+    /**
      * @param \Magento\Framework\App\CacheInterface $cache
+     * @param \Magento\Framework\App\State $appState
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param ConfigReader $configReader
      * @param RequestFactory $requestFactory
      */
     public function __construct(
         \Magento\Framework\App\CacheInterface $cache,
+        \Magento\Framework\App\State $appState,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         ConfigReader $configReader,
         RequestFactory $requestFactory
     ) {
         $this->cache = $cache;
+        $this->appState = $appState;
         $this->objectManager = $objectManager;
         $this->configReader = $configReader;
         $this->requestFactory = $requestFactory;
@@ -42,21 +70,43 @@ class Installer
     {
         $request = $this->requestFactory->create(['data' => $requestData]);
 
-        foreach ($this->getCommands($packages, $request) as $config) {
-            $params = [];
-            foreach ($config['data'] as $key => $param) {
-                $params[$key] = $this->processArguments($param, $requestData);
+        try {
+            $this->appState->getAreaCode();
+        } catch (\Exception $e) {
+            $this->appState->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
+        }
+
+        foreach ($this->getInstallers($packages) as $installer) {
+            $requirements = $this->data['conditions'][$installer] ?? [];
+            foreach ($requirements as $param => $value) {
+                if ($request->getData($param) != $value) {
+                    // customer didn't select this package in the form.
+                    // Another argento theme, for example.
+                    continue 2;
+                }
             }
 
-            $request->setParams($params);
+            $info = array_slice(explode('/', $installer), -2, 2);
+            $this->getLogger()->info('RUNNING ' . implode('/', $info));
 
-            $command = $this->objectManager->get($config['class']);
+            $commands = $this->data['commands'][$installer] ?? [];
 
-            if (method_exists($command, 'setLogger')) {
-                $command->setLogger($this->getLogger());
+            foreach ($commands as $config) {
+                $params = [];
+                foreach ($config['data'] as $key => $param) {
+                    $params[$key] = $this->processArguments($param, $requestData);
+                }
+
+                $request->setParams($params);
+
+                $command = $this->objectManager->get($config['class']);
+
+                if (method_exists($command, 'setLogger')) {
+                    $command->setLogger($this->getLogger());
+                }
+
+                $command->execute($request);
             }
-
-            $command->execute($request);
         }
 
         $this->cache->clean([
@@ -136,31 +186,6 @@ class Installer
         }
 
         return array_unique($result);
-    }
-
-    /**
-     * @param array $packages
-     * @param Request $request
-     * @return array
-     */
-    private function getCommands($packages, Request $request)
-    {
-        $result = [];
-
-        foreach ($this->getInstallers($packages) as $installer) {
-            $requirements = $this->data['conditions'][$installer] ?? [];
-            foreach ($requirements as $param => $value) {
-                if ($request->getData($param) != $value) {
-                    // customer didn't select this package in the form. Another argento theme, for example.
-                    continue 2;
-                }
-            }
-
-            $commands = $this->data['commands'][$installer] ?? [];
-            $result = array_replace_recursive($result, $commands);
-        }
-
-        return $result;
     }
 
     /**
