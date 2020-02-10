@@ -43,7 +43,7 @@ define([
          */
         report: function (response) {
             var template = [
-                '<details open>',
+                '<details>',
                     '<summary>%1</summary>',
                     '<pre><code>%2</code></pre>',
                 '</details>'
