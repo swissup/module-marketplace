@@ -3,6 +3,7 @@
 namespace Swissup\Marketplace\Installer;
 
 use Magento\Framework\Component\ComponentRegistrar;
+use Magento\Framework\Exception\SecurityViolationException;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Simplexml\Config;
 use Magento\Framework\Simplexml\ConfigFactory;
@@ -218,6 +219,7 @@ class ConfigReader
     /**
      * @param \Magento\Framework\Simplexml\Element $node
      * @return array
+     * @throws \Exception
      */
     protected function parseArguments(\Magento\Framework\Simplexml\Element $node)
     {
@@ -230,24 +232,13 @@ class ConfigReader
 
             if (!$item->hasChildren() && !$helper) {
                 $value = (string) $item[0];
+                $type = (string) $item->getAttribute('type');
 
-                switch ($item->getAttribute('type')) {
-                    case 'path':
-                        $value = $this->currentPath . '/' . self::DIR . '/' . $value;
-                        break;
-                    case 'const':
-                        $value = constant($value);
-                        break;
-                    case 'int':
-                        $value = (int) $value;
-                        break;
-                    case 'boolean':
-                        if ($value === 'false') {
-                            $value = false;
-                        } else {
-                            $value = (bool) $value;
-                        }
-                        break;
+                if ($type) {
+                    $method = 'prepare' . ucfirst($type);
+                    if (method_exists($this, $method)) {
+                        $value = $this->{$method}($value);
+                    }
                 }
 
                 $result[$key] = $value;
@@ -267,5 +258,61 @@ class ConfigReader
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     * @throws SecurityViolationException
+     */
+    private function preparePath($value)
+    {
+        $subdir = $this->currentPath . '/' . self::DIR . '/';
+        $result = $subdir . $value;
+        $result = realpath($result);
+
+        if (strpos($result, $subdir) !== 0) {
+            throw new SecurityViolationException(
+                __(
+                    'Error during "%1" processing. Relative paths are forbidden: "%2"',
+                    $this->currentPath,
+                    $value
+                )
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $value
+     * @return mixed
+     */
+    private function prepareConst($value)
+    {
+        return constant($value);
+    }
+
+    /**
+     * @param string $value
+     * @return int
+     */
+    private function prepareInt($value)
+    {
+        return (int) $value;
+    }
+
+    /**
+     * @param string $value
+     * @return boolean
+     */
+    private function prepareBoolean($value)
+    {
+        if ($value === 'false') {
+            $value = false;
+        } else {
+            $value = (bool) $value;
+        }
+        return $value;
     }
 }
