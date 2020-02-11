@@ -238,6 +238,16 @@ class ConfigReader
                     case 'const':
                         $value = constant($value);
                         break;
+                    case 'int':
+                        $value = (int) $value;
+                        break;
+                    case 'boolean':
+                        if ($value === 'false') {
+                            $value = false;
+                        } else {
+                            $value = (bool) $value;
+                        }
+                        break;
                 }
 
                 $result[$key] = $value;
