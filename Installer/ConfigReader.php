@@ -315,4 +315,13 @@ class ConfigReader
         }
         return $value;
     }
+
+    /**
+     * @param string $value
+     * @return boolean
+     */
+    private function prepareNull($value)
+    {
+        return null;
+    }
 }
