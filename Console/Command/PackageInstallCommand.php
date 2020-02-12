@@ -202,16 +202,24 @@ class PackageInstallCommand extends PackageAbstractCommand
         return $choices;
     }
 
+    /**
+     * Get the list of the stores WITHOUT WHITESPACES!
+     * Symfony multiselect losing whitespaces.
+     *
+     * symfony/console/Question/ChoiceQuestion.php:133 and 140:
+     * $selectedChoices = str_replace(' ', '', $selected);
+     * $selectedChoices = explode(',', $selectedChoices);
+     */
     private function getStoreList()
     {
         $result = [
-            0 => (string) __('All Store Views'),
+            '0' => (string) __('All'),
         ];
 
         foreach ($this->storeManager->getStores() as $id => $store) {
-            $result[$id] = sprintf(
-                '%s [%s]',
-                str_pad($store->getName(), 20),
+            $result[(string)$id] = sprintf(
+                '%s.[%s]',
+                str_replace(' ', ' ', str_pad($store->getName(), 20, '.')),
                 $store->getCode()
             );
         }
