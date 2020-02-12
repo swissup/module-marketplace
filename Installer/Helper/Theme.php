@@ -12,6 +12,11 @@ class Theme
     private $memo = [];
 
     /**
+     * @var CollectionFactory
+     */
+    private $collectionFactory;
+
+    /**
      * @param CollectionFactory $collectionFactory
      */
     public function __construct(CollectionFactory $collectionFactory)
