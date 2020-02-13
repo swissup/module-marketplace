@@ -41,7 +41,14 @@ define([
          * @return {$.Deferred}
          */
         softReload: _.debounce(function () {
-            var data = this.storage().getData(this.params, {
+            var data,
+                params = $.extend({}, this.params, {
+                    paging: {
+                        pageSize: 0 // load all packages because currently edited package may change its position
+                    }
+                });
+
+            data = this.storage().getData(params, {
                 refresh: true
             });
 
