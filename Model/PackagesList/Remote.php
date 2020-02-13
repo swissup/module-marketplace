@@ -168,6 +168,9 @@ class Remote extends AbstractList
         if (strpos($name, '-metapackage') !== false) {
             $name = str_replace('-metapackage', '', $name);
             $parentPackages[] = $vendor . '/' . $name;
+        } elseif (strpos($name, 'product-') !== false) {
+            $name = str_replace('product-', '', $name);
+            $parentPackages[] = $vendor . '/' . $name;
         }
 
         array_push(
