@@ -15,6 +15,7 @@
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="marketplaceChannelListCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelListCommand</item>
+                <item name="marketplaceChannelCleanCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelCleanCommand</item>
                 <item name="marketplaceChannelEnableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelEnableCommand</item>
                 <item name="marketplaceChannelDisableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelDisableCommand</item>
                 <item name="marketplaceChannelAuthKeyAddCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelAuthKeyAddCommand</item>
