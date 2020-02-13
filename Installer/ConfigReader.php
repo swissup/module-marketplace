@@ -5,6 +5,7 @@ namespace Swissup\Marketplace\Installer;
 use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Exception\SecurityViolationException;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Simplexml\Config;
 use Magento\Framework\Simplexml\ConfigFactory;
 
@@ -30,6 +31,11 @@ class ConfigReader
     protected $readDirFactory;
 
     /**
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
+
+    /**
      * @var ConfigFactory
      */
     protected $configFactory;
@@ -37,15 +43,18 @@ class ConfigReader
     /**
      * @param ComponentRegistrar $componentRegistrar
      * @param ReadFactory $readDirFactory
+     * @param ObjectManagerInterface $objectManager
      * @param ConfigFactory $configFactory
      */
     public function __construct(
         ComponentRegistrar $componentRegistrar,
         ReadFactory $readDirFactory,
+        ObjectManagerInterface $objectManager,
         ConfigFactory $configFactory
     ) {
         $this->componentRegistrar = $componentRegistrar;
         $this->readDirFactory = $readDirFactory;
+        $this->objectManager = $objectManager;
         $this->configFactory = $configFactory;
     }
 
@@ -128,13 +137,24 @@ class ConfigReader
                 continue;
             }
 
-            foreach ($field->children() as $option) {
-                $value = (string) $option[0];
-                $result[$name]['options'][$value] = [
-                    'value' => $value,
-                    'label' => $option->getAttribute('title'),
-                ];
+            $options = [];
+            $items = $field->descend('option');
+            $model = $field->descend('source_model');
+
+            if ($items) {
+                foreach ($items as $item) {
+                    $value = (string) $item[0];
+                    $options[$value] = [
+                        'value' => $value,
+                        'label' => $item->getAttribute('title'),
+                    ];
+                }
+            } elseif ($model) {
+                $model = (string) $model[0];
+                $options = $this->objectManager->get($model)->toOptionArray();
             }
+
+            $result[$name]['options'] = $options;
         }
 
         return $result;
