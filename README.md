@@ -28,6 +28,7 @@ Marketplace.
     - [Register your update channel](#register-your-update-channel)
     - [Create one-click installer](#create-one-click-installer)
 - [FAQ](#faq)
+    - [Can I install modules from the packagist?](#can-i-install-modules-from-the-packagist)
     - [Where do I get my identity keys?](#where-do-i-get-my-identity-keys)
         - [Magento Marketplace customers](#magento-marketplace-customers)
         - [Swissuplabs, Firecheckout, and Argentotheme customers](#swissuplabs-firecheckout-and-argentotheme-customers)
@@ -100,6 +101,10 @@ See following examples:
  - [Absolute Theme](https://github.com/swissup/theme-frontend-absolute/blob/master/etc/marketplace/installer.xml)
 
 ## FAQ
+
+### Can I install modules from the packagist?
+
+Yes. But via CLI only.
 
 ### Where do I get my identity keys?
 
