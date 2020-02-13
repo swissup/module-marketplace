@@ -89,9 +89,14 @@ define([
 
             switch (row.state) {
                 case 'outdated':
-                    title = $t('%1 is available since %2')
-                        .replace('%1', row.remote.version)
-                        .replace('%2', this._renderDate(row.remote.time));
+                    if (row.remote.time) {
+                        title = $t('%1 is available since %2')
+                            .replace('%1', row.remote.version)
+                            .replace('%2', this._renderDate(row.remote.time));
+                    } else {
+                        title = $t('%1 is available')
+                            .replace('%1', row.remote.version);
+                    }
                     break;
 
                 case 'updated':
