@@ -95,7 +95,7 @@ instructions. See following examples:
 
 ### Create one-click installer
 
-One-click installer is registered with `etc/marketplace/isntaller.xml` file.
+One-click installer is registered with `etc/marketplace/installer.xml` file.
 See following examples:
 
  - [Absolute Theme](https://github.com/swissup/theme-frontend-absolute/blob/master/etc/marketplace/installer.xml)
