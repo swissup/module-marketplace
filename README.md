@@ -1,9 +1,20 @@
 # Marketplace
 
-Marketplace — is an extensible one-click modules and themes installer.
+Marketplace — is an extensible one-click modules and themes installer with command
+line and Magento backend interfaces.
 It allows to add unlimited number of custom software update channels and install
 modules and themes from any third-party vendor including official Magento
 Marketplace.
+
+<p align="center">
+    <img alt="CLI Screenshot"
+        width="868px"
+        height="664px"
+        src="https://docs.swissuplabs.com/images/m2/marketplace/cli.png?v=1"
+        srcset="https://docs.swissuplabs.com/images/m2/marketplace/cli.png?v=1 1x,
+                https://docs.swissuplabs.com/images/m2/marketplace/cli@2x.png?v=1 2x"
+    />
+</p>
 
 ## Contents
 
