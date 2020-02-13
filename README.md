@@ -24,6 +24,9 @@ Marketplace.
 - [Usage](#usage)
     - [Command line interface](#command-line-interface)
     - [Magento backend interface](#magento-backend-interface)
+- [Extending Marketplace](#extending-marketplace)
+    - [Register your update channel](#register-your-update-channel)
+    - [Create one-click installer](#create-one-click-installer)
 - [FAQ](#faq)
     - [Where do I get my identity keys?](#where-do-i-get-my-identity-keys)
         - [Magento Marketplace customers](#magento-marketplace-customers)
@@ -77,6 +80,24 @@ section.
 
     > Some modules requires additional configuration after installation.
     > Please refer to the module documentation.
+
+## Extending Marketplace
+
+### Register your update channel
+
+Custom update channels are registered via separate module with `di.xml` file
+instructions. See following examples:
+
+ - [Magento Marketplace](https://github.com/swissup/module-marketplace/blob/master/etc/di.xml#L73-L109)
+ - [Swissup, Firecheckout, Argento](https://github.com/swissup/module-marketplace/blob/master/etc/di.xml#L111-L151)
+ - [Private channel as separate module](https://github.com/swissup/module-marketplace-channel-github)
+
+### Create one-click installer
+
+One-click installer is registered with `etc/marketplace/isntaller.xml` file.
+See following examples:
+
+ - [Absolute Theme](https://github.com/swissup/theme-frontend-absolute/blob/master/etc/marketplace/installer.xml)
 
 ## FAQ
 
