@@ -68,38 +68,7 @@ class Remote extends AbstractList
 
         foreach ($channels as $channel) {
             try {
-                $packages = $channel->getPackages();
-                foreach ($packages as $id => $packageData) {
-                    if (!isset($this->data[$id]['channels'])) {
-                        $this->data[$id]['channels'] = [];
-                    }
-                    $this->data[$id]['channels'][] = $channel->getIdentifier();
-
-                    $latestVersion = $this->getLatestVersion($packageData);
-
-                    if (isset($this->data[$id]['version']) &&
-                        version_compare($this->data[$id]['version'], $latestVersion, '>=')
-                    ) {
-                        // this channel has older version in the list - skip it
-                        continue;
-                    }
-
-                    $this->data[$id] = array_replace(
-                        $this->data[$id],
-                        $this->extractPackageData($packageData[$latestVersion])
-                    );
-
-                    $this->data[$id]['marketplace'] = $this->extractMarketplaceData(
-                        $id,
-                        $this->data[$id],
-                        $packages
-                    );
-
-                    $this->data[$id]['uniqid'] = $channel->getIdentifier() . ':' . $id;
-                    foreach ($packageData as $version => $data) {
-                        $this->data[$id]['versions'][$version] = $this->extractPackageData($data);
-                    }
-                }
+                $this->processChannel($channel);
             } catch (\Exception $e) {
                 //
             }
@@ -108,6 +77,48 @@ class Remote extends AbstractList
         $this->isLoaded(true);
 
         return $this->data;
+    }
+
+    private function processChannel($channel)
+    {
+        $packages = $channel->getPackages();
+
+        foreach ($packages as $id => $packageData) {
+            if (!isset($this->data[$id]['channels'])) {
+                $this->data[$id]['channels'] = [];
+            }
+            $this->data[$id]['channels'][] = $channel->getIdentifier();
+
+            $latestVersion = $this->getLatestVersion($packageData);
+
+            if (isset($this->data[$id]['version']) &&
+                version_compare($this->data[$id]['version'], $latestVersion, '>=')
+            ) {
+                // this channel has older version in the list - skip it
+                continue;
+            }
+
+            $this->data[$id] = array_replace(
+                $this->data[$id],
+                $this->extractPackageData($packageData[$latestVersion])
+            );
+
+            if (!empty($packageData['dev-master']['extra']['marketplace'])) {
+                $data = $this->extractPackageData($packageData['dev-master']);
+                $this->data[$id]['marketplace'] = $data['marketplace'];
+            }
+
+            $this->data[$id]['marketplace'] = $this->extractMarketplaceData(
+                $id,
+                $this->data[$id],
+                $packages
+            );
+
+            $this->data[$id]['uniqid'] = $channel->getIdentifier() . ':' . $id;
+            foreach ($packageData as $version => $data) {
+                $this->data[$id]['versions'][$version] = $this->extractPackageData($data);
+            }
+        }
     }
 
     /**
