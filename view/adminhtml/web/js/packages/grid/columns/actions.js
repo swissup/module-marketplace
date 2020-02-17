@@ -1,8 +1,9 @@
 define([
     'uiRegistry',
     'Magento_Ui/js/grid/columns/actions',
+    'Swissup_Marketplace/js/packages/helper',
     'Swissup_Marketplace/js/installer/helper'
-], function (registry, Column, installer) {
+], function (registry, Column, packageHelper, installer) {
     'use strict';
 
     return Column.extend({
@@ -29,29 +30,10 @@ define([
          * @returns {Boolean}
          */
         isActionVisible: function (action) {
-            if (action.hidden) {
-                return false;
-            }
-
-            switch (action.index) {
-                case 'update':
-                    return this.rows[action.rowIndex].state === 'outdated';
-
-                case 'disable':
-                    return this.rows[action.rowIndex].enabled && this.rows[action.rowIndex].downloaded;
-
-                case 'enable':
-                    return !this.rows[action.rowIndex].enabled && this.rows[action.rowIndex].downloaded;
-
-                case 'uninstall':
-                    return this.rows[action.rowIndex].composer && this.rows[action.rowIndex].downloaded;
-
-                case 'install':
-                    return !this.rows[action.rowIndex].downloaded ||
-                        this.rows[action.rowIndex].enabled && this.rows[action.rowIndex].installer;
-            }
-
-            return this._super(action);
+            return packageHelper.isActionVisible(
+                this.rows[action.rowIndex],
+                action
+            );
         },
 
         /**
