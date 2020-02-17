@@ -27,6 +27,8 @@ Marketplace.
 - [Extending Marketplace](#extending-marketplace)
     - [Register your update channel](#register-your-update-channel)
     - [Create one-click installer](#create-one-click-installer)
+- [Troubleshooting](#troubleshooting)
+    - [Web Setup Wizard is not accessible](#web-setup-wizard-is-not-accessible)
 - [FAQ](#faq)
     - [Can I install modules from the packagist?](#can-i-install-modules-from-the-packagist)
     - [Where do I get my identity keys?](#where-do-i-get-my-identity-keys)
@@ -99,6 +101,22 @@ One-click installer is registered with `etc/marketplace/installer.xml` file.
 See following examples:
 
  - [Absolute Theme](https://github.com/swissup/theme-frontend-absolute/blob/master/etc/marketplace/installer.xml)
+
+## Troubleshooting
+
+### Web Setup Wizard is not accessible
+
+If you see 'Marketplace: Web Setup Wizard is not accessible' error in browser
+console, this means that _System > Tools > Web Setup Wizard_ is not working correctly.
+(We use it to read logs while store is in maintenance mode.)
+
+To fix this issue change Magento configuration as shown below:
+
+ -  General > Web > Base URLs (Secure):
+    -   Use Secure URLs on Storefront: Yes
+    -   Use Secure URLs in Admin: Yes
+    -   Enable HTTP Strict Transport Security (HSTS): Yes
+    -   Upgrade Insecure Requests: Yes
 
 ## FAQ
 
