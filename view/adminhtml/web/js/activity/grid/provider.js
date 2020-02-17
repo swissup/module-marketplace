@@ -213,6 +213,7 @@ define([
             this.prolongUrl = url + '/' + this.prolongUrl;
 
             request.get(this.initWebSetupUrl, {}, {
+                    quiet: true,
                     dataType: 'html'
                 })
                 .done(function () {
@@ -222,6 +223,7 @@ define([
                     }.bind(this), this.interval.slow);
                 }.bind(this))
                 .fail(function () {
+                    console.error('Marketplace: Web Setup Wizard is not accessible: ' + this.initWebSetupUrl);
                     this.isWebSetupAccessible = false;
                 }.bind(this));
         },
@@ -231,6 +233,7 @@ define([
          */
         prolongWebSetupPanel: function () {
             return request.get(this.prolongUrl, {}, {
+                    quiet: true,
                     dataType: 'text'
                 })
                 .always(function () {
@@ -247,7 +250,9 @@ define([
             var deferred = $.Deferred();
 
             if (this.isWebSetupAccessible) {
-                request.get(this.fetchLogUrl)
+                request.get(this.fetchLogUrl, {}, {
+                        quiet: true
+                    })
                     .done(function (response) {
                         deferred.resolve(response);
                     })

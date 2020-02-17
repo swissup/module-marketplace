@@ -61,6 +61,13 @@ define([
                     var title = $t('Attention'),
                         content = $t('Sorry, there has been an error processing your request. Please try again later.');
 
+                    if (settings.quiet) {
+                        // cleanup messages added to the body by boostrap.js
+                        $('body').notification('clear');
+
+                        return;
+                    }
+
                     if (response.status === 200) {
                         return;
                     }
