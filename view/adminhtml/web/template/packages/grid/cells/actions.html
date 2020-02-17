@@ -1,4 +1,4 @@
-<div attr="'data-index': index">
+<div attr="'data-index': index" if="$col.getVisibleActions($row()._rowIndex).length">
     <a
         class="action-menu-item"
         if="$col.isSingle($row()._rowIndex)"
