@@ -50,13 +50,15 @@ class Index extends \Magento\Backend\App\Action
     protected function validateCron()
     {
         $jobs = $this->cronCollectionFactory->create()
-            ->addFieldToFilter('job_code', 'swissup_marketplace_job_run')
+            ->addFieldToFilter('job_code', 'indexer_reindex_all_invalid')
             ->addFieldToFilter(
                 'created_at',
                 [
                     'gt' => (new \DateTime('-1 hour'))->format(DateTime::DATETIME_PHP_FORMAT)
                 ]
-            );
+            )
+            ->addFieldToFilter('executed_at', ['notnull' => true])
+            ->setPageSize(1);
 
         if (!$jobs->count()) {
             $this->messageManager->addError(__(
