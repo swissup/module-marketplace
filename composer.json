@@ -9,7 +9,7 @@
         "installer"
     ],
     "type": "magento2-module",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "license": "MIT",
     "require": {
         "magento/framework": "^102.0",
