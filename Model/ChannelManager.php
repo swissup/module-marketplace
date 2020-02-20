@@ -99,6 +99,9 @@ class ChannelManager
 
             return $data[$channel->getHostname()] ?? [];
         } catch (\Exception $e) {
+            if (strpos($e->getMessage(), 'http-basic is not defined') !== false) {
+                return [];
+            }
             throw new \RuntimeException(
                 "'composer config -a -g' command failed: " . $e->getMessage()
             );
