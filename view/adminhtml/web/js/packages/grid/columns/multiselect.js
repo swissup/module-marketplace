@@ -5,9 +5,6 @@ define([
     'use strict';
 
     return Multiselect.extend({
-        defaults: {
-        },
-
         /**
          * Initializes column component.
          *
