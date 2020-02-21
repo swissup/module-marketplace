@@ -13,7 +13,7 @@ define([
          * @param {Object} data - Selections data.
          */
         defaultCallback: function (action, data) {
-            var isDownloaded, isActionVisible;
+            var isAllDownloaded, isAnyActionVisible;
 
             action.index = action.type;
             action.href = action.url;
@@ -22,7 +22,7 @@ define([
                 return;
             }
 
-            isActionVisible = _.every(data.selected, function (packageName) {
+            isAnyActionVisible = _.some(data.selected, function (packageName) {
                 var packageData = _.find(this.source.rows, function (row) {
                     return row.name === packageName;
                 });
@@ -30,11 +30,11 @@ define([
                 return packageData && packageHelper.isActionVisible(packageData, action);
             }, this);
 
-            if (!isActionVisible) {
+            if (!isAnyActionVisible) {
                 return;
             }
 
-            isDownloaded = _.every(data.selected, function (packageName) {
+            isAllDownloaded = _.every(data.selected, function (packageName) {
                 var packageData = _.find(this.source.rows, function (row) {
                     return row.name === packageName;
                 });
@@ -42,7 +42,7 @@ define([
                 return packageData && packageData.downloaded;
             }, this);
 
-            if (action.index === 'install' && isDownloaded) {
+            if (action.index === 'install' && isAllDownloaded) {
                 installer.render(data.selected);
             } else {
                 this.source
