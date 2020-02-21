@@ -1,3 +1,13 @@
+<table class="marketplace-grid-multiselect">
+    <tr>
+        <!--ko foreach: {data: getVisible(), as: '$col'}-->
+            <!-- ko if: index === 'ids' -->
+                <!-- ko template: getHeader() --><!-- /ko -->
+            <!-- /ko -->
+        <!-- /ko -->
+    </tr>
+</table>
+
 <ol class="marketplace-grid-items">
     <li class="grid-item" repeat="foreach: rows, item: '$row'" data-bind="
         css: {

@@ -171,6 +171,7 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="indexField" xsi:type="string">name</item>
+                    <item name="component" xsi:type="string">Swissup_Marketplace/js/packages/grid/columns/multiselect</item>
                 </item>
             </argument>
         </selectionsColumn>
