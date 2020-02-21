@@ -47,6 +47,10 @@ define([
         request: function (settings) {
             return $.ajax(settings)
                 .done(function (response) {
+                    if (!response) {
+                        return;
+                    }
+
                     if (response.reload === true) {
                         return window.location.reload();
                     }
@@ -65,6 +69,10 @@ define([
                         // cleanup messages added to the body by boostrap.js
                         $('body').notification('clear');
 
+                        return;
+                    }
+
+                    if (!response) {
                         return;
                     }
 
