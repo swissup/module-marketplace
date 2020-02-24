@@ -8,6 +8,10 @@ define([], function () {
          * @return {Boolean}
          */
         isActionVisible: function (packageData, action) {
+            if (action.hidden) {
+                return false;
+            }
+
             switch (action.index) {
                 case 'update':
                     return packageData.state === 'outdated';
@@ -26,7 +30,7 @@ define([], function () {
                         packageData.enabled && packageData.installer;
             }
 
-            return action.hidden !== true;
+            return true;
         }
     };
 });
