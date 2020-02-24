@@ -13,30 +13,31 @@ define([
          * @param {Object} data - Selections data.
          */
         defaultCallback: function (action, data) {
+            var packages = data.selected.slice();
+
             action.index = action.type;
             action.href = action.url;
 
-            if (!data.selected) {
+            if (!packages) {
                 return;
             }
 
-            if (!this.hasVisibleAction(data.selected, action)) {
+            if (!this.hasVisibleAction(packages, action)) {
                 return;
             }
 
-            if (action.index === 'install' && this.isAllDownloaded(data.selected)) {
-                installer.render(data.selected);
+            if (action.index === 'install' && this.isAllDownloaded(packages)) {
+                installer.render(packages);
             } else {
                 this.source
-                    .submit(action, data.selected)
+                    .submit(action, packages)
                     .done(function () {
                         if (action.index === 'install') {
-                            installer.render(data.selected);
+                            installer.render(packages);
                         }
-
-                        setTimeout(function () {
-                            this.selections().deselectAll();
-                        }.bind(this), 300);
+                    })
+                    .initialRequest.always(function () {
+                        this.selections().deselectAll();
                     }.bind(this));
             }
         },

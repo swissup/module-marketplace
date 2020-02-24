@@ -79,7 +79,7 @@ define([
 
             this.toggleLoader(packages, true);
 
-            request.post(action.href, {
+            result.initialRequest = request.post(action.href, {
                     packages: packages
                 })
                 .done(function (response) {

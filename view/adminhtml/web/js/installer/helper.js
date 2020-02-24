@@ -35,11 +35,23 @@ define([
                 return;
             }
 
-            form.params.packages = packages;
+            if (!form.params.packages) {
+                form.params.packages = [];
+            }
 
+            form.params.packages.push.apply(form.params.packages, packages);
+
+            this._renderForm(form, modal);
+        },
+
+        _renderForm: _.debounce(function (form, modal) {
             form.destroyInserted();
             registry.get(modal).openModal();
             form.render();
-        }
+
+            setTimeout(function () {
+                form.params.packages = [];
+            }, 50);
+        }, 300)
     };
 });
