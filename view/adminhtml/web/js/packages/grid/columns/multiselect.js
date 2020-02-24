@@ -5,6 +5,10 @@ define([
     'use strict';
 
     return Multiselect.extend({
+        defaults: {
+            preserveSelectionsOnFilter: true
+        },
+
         /**
          * Initializes column component.
          *
