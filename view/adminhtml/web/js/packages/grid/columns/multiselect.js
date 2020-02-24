@@ -21,11 +21,11 @@ define([
                 value: 'selectAll',
                 label: $t('Select All on This Page')
             }, {
-                value: 'deselectAll',
-                label: $t('Deselect All')
-            }, {
                 value: 'deselectPage',
                 label: $t('Deselect All on This Page')
+            }, {
+                value: 'deselectAll',
+                label: $t('Deselect All')
             }];
 
             return this;
