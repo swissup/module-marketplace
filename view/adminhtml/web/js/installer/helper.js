@@ -23,8 +23,8 @@ define([
 
             source = registry.get(source);
 
-            hasInstaller = _.every(packages, function (packageName) {
-                var packageData = _.find(source.rows, function (row) {
+            hasInstaller = _.some(packages, function (packageName) {
+                var packageData = _.find(source.storage().data, function (row) {
                     return row.name === packageName;
                 });
 
