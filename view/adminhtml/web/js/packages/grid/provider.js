@@ -43,6 +43,7 @@ define([
         softReload: _.debounce(function () {
             var data,
                 params = $.extend({}, this.params, {
+                    search: '',
                     paging: {
                         pageSize: 0 // load all packages because currently edited package may change its position
                     }
@@ -215,6 +216,8 @@ define([
             ];
 
             this.softReload().done(function (response) {
+                var cached = this.storage().data;
+
                 _.each(this.rows, function (row) {
                     var data = _.find(response.items, function (item) {
                         return item.name === row.name;
@@ -234,13 +237,19 @@ define([
                     }
                 }, this);
 
-                // remove cache, as it may have outdated information (dependent packages where updated)
-                if (this.storage() &&
-                    this.storage()._requests &&
-                    this.storage()._requests.length
-                ) {
-                    this.storage()._requests = [];
-                }
+                // update cached records
+                _.each(response.items, function (item) {
+                    var ids = _.filter(_.keys(cached), function (key) {
+                        var keyLength = key.length,
+                            nameLength = item.name.length;
+
+                        return keyLength >= nameLength && key.substr(keyLength - nameLength) === item.name;
+                    });
+
+                    _.each(ids, function (key) {
+                        cached[key] = $.extend(cached[key], item);
+                    });
+                });
 
                 this.rows.splice(0, 0); // trigger grid re-render
             }.bind(this));
