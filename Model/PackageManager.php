@@ -135,7 +135,7 @@ class PackageManager
             '--no-progress' => true,
             '--no-interaction' => true,
             '--update-with-all-dependencies' => true,
-            '--update-no-dev' => true,
+            '--update-no-dev' => $this->getNoDevFlag(),
         ]);
 
         // fix possible issue with virtual theme in DB
@@ -190,7 +190,7 @@ class PackageManager
             'packages' => $packages,
             '--no-progress' => true,
             '--no-interaction' => true,
-            '--update-no-dev' => true,
+            '--update-no-dev' => $this->getNoDevFlag(),
         ]);
 
         if ($themeIds) {
@@ -254,7 +254,7 @@ class PackageManager
             '--no-progress' => true,
             '--no-interaction' => true,
             '--with-all-dependencies' => true,
-            '--no-dev' => true,
+            '--no-dev' => $this->getNoDevFlag(),
         ]);
     }
 
@@ -420,5 +420,32 @@ class PackageManager
         }
 
         return array_values($result);
+    }
+
+    /**
+     * @return boolean
+     */
+    protected function getNoDevFlag()
+    {
+        return !$this->isInstalled('phpunit/phpunit');
+    }
+
+    /**
+     * @param string $packageName
+     * @return boolean
+     */
+    protected function isInstalled($packageName)
+    {
+        try {
+            $this->composer->run([
+                'command' => 'show',
+                'package' => $packageName,
+            ]);
+        } catch (\Exception $e) {
+            // "Command "show" failed: Package phpunit/phpunit not found in ...
+            return false;
+        }
+
+        return true;
     }
 }
