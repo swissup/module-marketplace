@@ -21,8 +21,8 @@ class ComposerAuthCommand extends Command
      */
     protected function configure()
     {
-        $this->setName('marketplace:composer:auth')
-            ->setDescription('Set auth credentials');
+        $this->setName('marketplace:auth')
+            ->setDescription("Proxy to 'composer config --auth' command");
 
         $this->addArgument(
             'setting-key',
@@ -32,7 +32,7 @@ class ComposerAuthCommand extends Command
 
         $this->addArgument(
             'setting-value',
-            InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+            InputArgument::IS_ARRAY,
             'Setting Value'
         );
 
@@ -45,12 +45,16 @@ class ComposerAuthCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $this->composer->runAuthCommand([
+            $result = $this->composer->runAuthCommand([
                 'setting-key' => $input->getArgument('setting-key'),
                 'setting-value' => $input->getArgument('setting-value'),
             ]);
 
-            $output->writeln('<info>Done!</info>');
+            if (!$result) {
+                $result = 'Done!';
+            }
+
+            $output->writeln('<info>' . $result . '</info>');
 
             return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
         } catch (\Exception $e) {
