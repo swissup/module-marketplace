@@ -51,16 +51,16 @@ class ComposerAuthCommand extends Command
             ]);
 
             if (!$result) {
-                $result = 'Done!';
+                $output->writeln('<info>Done!</info>');
+            } else {
+                $output->write('<info>' . $result . '</info>');
             }
-
-            $output->writeln('<info>' . $result . '</info>');
 
             return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
         } catch (\Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            $output->write('<error>' . $e->getMessage() . '</error>');
             if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                $output->writeln($e->getTraceAsString());
+                $output->write($e->getTraceAsString());
             }
 
             return \Magento\Framework\Console\Cli::RETURN_FAILURE;
