@@ -121,6 +121,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
             'type' => $this->type,
             'authType' => $this->authType,
             'authNotice' => '',
+            'cliAuthNotice' => '',
             'publicUrl' => '',
         ];
     }
@@ -233,6 +234,14 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     public function getAuthNotice()
     {
         return $this->data['authNotice'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getCliAuthNotice()
+    {
+        return str_replace('{{username}}', $this->getUsername(), $this->data['cliAuthNotice']);
     }
 
     /**

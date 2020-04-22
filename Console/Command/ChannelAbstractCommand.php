@@ -168,6 +168,11 @@ class ChannelAbstractCommand extends Command
             return;
         }
 
+        $notice = $channel->getCliAuthNotice();
+        foreach (explode('\n', $notice) as $line) {
+            $this->output->writeln($line);
+        }
+
         if ($force || !$username) {
             $channel->addData([
                 'username' => $this->ask('Please enter your username: '),
@@ -197,6 +202,11 @@ class ChannelAbstractCommand extends Command
 
         $password = $channel->getPassword();
         $keys = explode(' ', $password);
+
+        $notice = $channel->getCliAuthNotice();
+        foreach (explode('\n', $notice) as $line) {
+            $this->output->writeln($line);
+        }
 
         $key = $this->ask(sprintf('Please enter key for %s: ', $channel->getUsername()));
         $channel->addData(['password' => $key]);
