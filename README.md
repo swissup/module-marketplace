@@ -10,12 +10,12 @@ Marketplace.
     <img alt="CLI Screenshot"
         width="434px"
         height="332px"
-        src="https://docs.swissuplabs.com/images/m2/marketplace/cli.png?v=1"
+        src="https://docs.swissuplabs.com/images/m2/marketplace/cli.png?v=2"
     />
     <img alt="GUI Screenshot"
         width="434px"
         height="332px"
-        src="https://docs.swissuplabs.com/images/m2/marketplace/gui.png?v=1"
+        src="https://docs.swissuplabs.com/images/m2/marketplace/gui.png?v=2"
     />
 </p>
 
