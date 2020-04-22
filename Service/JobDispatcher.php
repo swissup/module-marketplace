@@ -67,7 +67,7 @@ class JobDispatcher
 
         $this->logHandler->cleanup();
 
-        $this->handlerFactory->create($class, $arguments)->validate();
+        $this->handlerFactory->create($class, $arguments)->validateBeforeDispatch();
 
         return $this->jobFactory->create()
             ->addData([

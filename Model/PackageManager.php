@@ -123,6 +123,21 @@ class PackageManager
     }
 
     /**
+     * @param string $package
+     * @param array $options
+     * @return string
+     * @throws \RuntimeException
+     */
+    public function show($package, array $options = [])
+    {
+        return $this->composer->run(array_merge([
+            'command' => 'show',
+            'package' => $package,
+            '--no-interaction' => true,
+        ], $options));
+    }
+
+    /**
      * @param array $packages
      * @return string
      * @throws \RuntimeException
@@ -437,10 +452,7 @@ class PackageManager
     protected function isInstalled($packageName)
     {
         try {
-            $this->composer->run([
-                'command' => 'show',
-                'package' => $packageName,
-            ]);
+            $this->show($packageName);
         } catch (\Exception $e) {
             // "Command "show" failed: Package phpunit/phpunit not found in ...
             return false;

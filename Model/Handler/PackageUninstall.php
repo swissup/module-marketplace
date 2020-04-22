@@ -11,7 +11,7 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
         return $this->packageManager->uninstall($this->packages);
     }
 
-    public function validate()
+    public function validateBeforeDispatch()
     {
         return $this->validateWhenDisable();
     }

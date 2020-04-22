@@ -11,7 +11,7 @@ class PackageDisable extends PackageAbstractHandler implements HandlerInterface
         return $this->packageManager->disable($this->packages);
     }
 
-    public function validate()
+    public function validateBeforeDispatch()
     {
         return $this->validateWhenDisable();
     }

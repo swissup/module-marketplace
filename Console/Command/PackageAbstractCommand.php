@@ -89,6 +89,17 @@ class PackageAbstractCommand extends Command
             'packages' => $this->getPackages(),
         ]);
 
+        try {
+            $this->output->writeln('<info>Validating</info>');
+            $handler->validateBeforeHandle();
+        } catch (\Exception $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG) {
+                $output->writeln($e->getTraceAsString());
+            }
+            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
+        }
+
         $before = array_keys(array_filter($handler->beforeQueue()));
         $after = array_keys(array_filter($handler->afterQueue()));
 
@@ -122,6 +133,7 @@ class PackageAbstractCommand extends Command
             try {
                 $handler = $this->createHandler($task);
                 $this->output->writeln('<info>' . $handler->getTitle() . '</info>');
+                $handler->validateBeforeHandle();
                 $handler->handle();
             } catch (\Exception $e) {
                 $this->writeln('<error>' . $e->getMessage() . '</error>');

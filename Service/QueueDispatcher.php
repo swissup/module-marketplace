@@ -110,6 +110,7 @@ class QueueDispatcher
 
                 $output = '';
                 if ($handler = $job->getHandler()) {
+                    $handler->validateBeforeHandle();
                     $output = $handler->handle();
                 }
 

@@ -11,7 +11,7 @@ class PackageEnable extends PackageAbstractHandler implements HandlerInterface
         return $this->packageManager->enable($this->packages);
     }
 
-    public function validate()
+    public function validateBeforeDispatch()
     {
         return $this->validateWhenEnable();
     }

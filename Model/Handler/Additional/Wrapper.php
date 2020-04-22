@@ -60,7 +60,7 @@ class Wrapper extends AbstractHandler implements HandlerInterface
         foreach ($this->tasks as $task) {
             try {
                 $handler = $this->createTask($task);
-                $handler->validate();
+                $handler->validateBeforeHandle();
                 $output[] = $handler->handle();
             } catch (\Exception $e) {
                 $output[] = $e->getMessage();

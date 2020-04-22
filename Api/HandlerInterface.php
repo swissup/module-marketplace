@@ -12,7 +12,9 @@ interface HandlerInterface
 
     public function getLogger();
 
-    public function validate();
+    public function validateBeforeHandle();
+
+    public function validateBeforeDispatch();
 
     public function beforeQueue();
 

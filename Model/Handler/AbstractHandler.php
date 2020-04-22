@@ -25,7 +25,12 @@ class AbstractHandler extends \Magento\Framework\DataObject
         return get_class($this);
     }
 
-    public function validate()
+    public function validateBeforeHandle()
+    {
+        return true;
+    }
+
+    public function validateBeforeDispatch()
     {
         return true;
     }
