@@ -137,7 +137,7 @@ Yes. But via CLI only. Here is an example:
 composer config repositories.<id> vcs https://github.com/repo/url.git
 
 # 2. Setup auth data. Get token at https://github.com/settings/tokens/new?scopes=repo
-bin/magento marketplace:composer:auth github-oauth.github.com <token>
+bin/magento marketplace:auth github-oauth.github.com <token>
 
 # 3. Use marketplace to download the module and run installer (if any)
 bin/magento marketplace:package:require <package/name>
