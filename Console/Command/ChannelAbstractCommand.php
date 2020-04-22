@@ -198,7 +198,7 @@ class ChannelAbstractCommand extends Command
         $password = $channel->getPassword();
         $keys = explode(' ', $password);
 
-        $key = $this->ask('Please enter your key: ');
+        $key = $this->ask(sprintf('Please enter key for %s: ', $channel->getUsername()));
         $channel->addData(['password' => $key]);
         $this->checkCredentials($channel);
 
