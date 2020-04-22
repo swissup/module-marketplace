@@ -26,13 +26,13 @@ class ChannelEnableCommand extends ChannelAbstractCommand
         try {
             $channel = $this->getChannel();
 
-            $this->enableChannel($channel);
-
             if ($channel->useKeysAsPassword()) {
                 $this->askAndAddAccessKey($channel);
             } else {
                 $this->askAndSaveCredentials($channel, false);
             }
+
+            $this->enableChannel($channel);
 
             $output->writeln('<info>The channel was enabled</info>');
 
