@@ -27,6 +27,7 @@
                 <item name="marketplacePackageInstallCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageInstallCommand</item>
                 <item name="marketplacePackageRequireCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageRequireCommand</item>
                 <item name="marketplacePackageRemoveCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageRemoveCommand</item>
+                <item name="marketplacePackageShowCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageShowCommand</item>
                 <item name="marketplacePackageUpdateCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageUpdateCommand</item>
             </argument>
         </arguments>
