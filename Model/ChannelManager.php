@@ -73,10 +73,7 @@ class ChannelManager
      */
     public function saveCredentials($channel)
     {
-        return $this->composer->run([
-            'command' => 'config',
-            '-a' => true,
-            '-g' => true,
+        return $this->composer->runAuthCommand([
             'setting-key' => $channel->getAuthType() . '.' . $channel->getHostname(),
             'setting-value' => $channel->getAuthSettingValue(),
         ]);
@@ -89,11 +86,8 @@ class ChannelManager
     public function getCredentials($channel)
     {
         try {
-            $string = $this->composer->run([
-                'command' => 'config',
-                '-a' => true,
-                '-g' => true,
-                'setting-key' => $channel->getAuthType(), // don't use concat to fix error when domain level > 3
+            $string = $this->composer->runAuthCommand([
+                'setting-key' => $channel->getAuthType(), // don't use concat with hostname to fix error when domain level > 3
             ]);
             $data = $this->jsonSerializer->unserialize($string);
 

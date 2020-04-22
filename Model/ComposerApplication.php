@@ -33,6 +33,19 @@ class ComposerApplication
     }
 
     /**
+     * @param array $command
+     * @return string
+     */
+    public function runAuthCommand(array $command)
+    {
+        return $this->run(array_merge([
+            'command' => 'config',
+            '-a' => true,
+            '-g' => true,
+        ], $command));
+    }
+
+    /**
      * @return \Magento\Framework\Composer\MagentoComposerApplication
      */
     protected function getApp()
