@@ -8,11 +8,14 @@ Marketplace.
 
 <p align="center">
     <img alt="CLI Screenshot"
-        width="868px"
-        height="664px"
+        width="434px"
+        height="332px"
         src="https://docs.swissuplabs.com/images/m2/marketplace/cli.png?v=1"
-        srcset="https://docs.swissuplabs.com/images/m2/marketplace/cli.png?v=1 1x,
-                https://docs.swissuplabs.com/images/m2/marketplace/cli@2x.png?v=1 2x"
+    />
+    <img alt="GUI Screenshot"
+        width="434px"
+        height="332px"
+        src="https://docs.swissuplabs.com/images/m2/marketplace/gui.png?v=1"
     />
 </p>
 
@@ -31,6 +34,7 @@ Marketplace.
     - [Web Setup Wizard is not accessible](#web-setup-wizard-is-not-accessible)
 - [FAQ](#faq)
     - [Can I install modules from the packagist?](#can-i-install-modules-from-the-packagist)
+    - [Can I install modules from private repository?](#can-i-install-modules-from-private-repository)
     - [Where do I get my identity keys?](#where-do-i-get-my-identity-keys)
         - [Magento Marketplace customers](#magento-marketplace-customers)
         - [Swissuplabs, Firecheckout, and Argentotheme customers](#swissuplabs-firecheckout-and-argentotheme-customers)
@@ -123,6 +127,22 @@ To fix this issue change Magento configuration as shown below:
 ### Can I install modules from the packagist?
 
 Yes. But via CLI only.
+
+### Can I install modules from private repository?
+
+Yes. But via CLI only. Here is an example:
+
+```bash
+# 1. Add your private repository to the composer.json
+composer config repositories.<id> vcs https://github.com/repo/url.git
+
+# 2. Setup auth data. Get token at https://github.com/settings/tokens/new?scopes=repo
+bin/magento marketplace:composer:auth github-oauth.github.com <token>
+
+# 3. Use marketplace to download the module and run installer (if any)
+bin/magento marketplace:package:require <package/name>
+bin/magento marketplace:package:install <package/name>
+```
 
 ### Where do I get my identity keys?
 
