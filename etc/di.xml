@@ -125,8 +125,19 @@
                 <item name="authType" xsi:type="string">http-basic</item>
                 <item name="authDomain" xsi:type="boolean">true</item>
                 <item name="authKeys" xsi:type="boolean">true</item>
-                <item name="authNotice" xsi:type="string"><![CDATA[1. Navigate to your account ("Activation Information" section) on the site where you've made a purchase.<br/>2. Activate domain from the field above.<br/>3. Copy your access key and paste it here.]]></item>
-                <item name="cliAuthNotice" xsi:type="string"><![CDATA[1. Navigate to your account ("Activation Information" section) on the site where you've made a purchase.\n2. Activate {{username}} domain.\n3. Copy your access key and paste it here.]]></item>
+                <item name="authNotice" xsi:type="string"><![CDATA[
+1. Navigate to your account ("Activation Information" section) on the site where you've made a purchase:<br/> - <a href="https://argentotheme.com/license/customer/activation/">https://argentotheme.com/</a><br/>
+- <a href="https://firecheckout.net/license/customer/activation/">https://firecheckout.net/</a></br>
+- <a href="https://swissuplabs.com/license/customer/activation/">https://swissuplabs.com/</a><br/>
+2. Activate domain from the field above.<br/>
+3. Copy your access key and paste it here.]]></item>
+                <item name="cliAuthNotice" xsi:type="string"><![CDATA[
+1. Navigate to your account on the site where you've made a purchase:
+   - https://argentotheme.com/license/customer/activation/
+   - https://firecheckout.net/license/customer/activation/
+   - https://swissuplabs.com/license/customer/activation/
+2. Activate {{username}} domain.
+3. Copy your access key and paste it here.]]></item>
             </argument>
         </arguments>
     </virtualType>
