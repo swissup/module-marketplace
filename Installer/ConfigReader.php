@@ -222,7 +222,13 @@ class ConfigReader
 
         $result = [];
         foreach ($commands as $i => $command) {
-            $result[$i]['class'] = $command->getAttribute('class');
+            $class = $command->getAttribute('class');
+
+            if (!class_exists($class)) {
+                continue;
+            }
+
+            $result[$i]['class'] = $class;
 
             if (!$command->hasChildren() || !$command->descend('data')) {
                 continue;
