@@ -3,6 +3,7 @@
 namespace Swissup\Marketplace\Installer;
 
 use Magento\Framework\Component\ComponentRegistrar;
+use Magento\Framework\Exception\RuntimeException;
 use Magento\Framework\Exception\SecurityViolationException;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\ObjectManagerInterface;
@@ -313,9 +314,15 @@ class ConfigReader
     /**
      * @param string $value
      * @return mixed
+     * @throws RuntimeException
      */
     private function prepareConst($value)
     {
+        if (!defined($value)) {
+            throw new RuntimeException(
+                __('Requested constant is not defined: %1', $value)
+            );
+        }
         return constant($value);
     }
 
