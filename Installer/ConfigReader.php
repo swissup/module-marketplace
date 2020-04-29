@@ -60,6 +60,24 @@ class ConfigReader
     }
 
     /**
+     * @param array $packages
+     * @return boolean
+     */
+    public function hasConfig($packages)
+    {
+        foreach ($this->readFiles() as $path => $content) {
+            $xml = $this->configFactory->create(['sourceData' => $content]);
+            $nodePackages = (array) $xml->getNode('packages/package');
+
+            if (array_intersect($packages, $nodePackages)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return array
      * @throws \Magento\Framework\Exception\LocalizedException
      */

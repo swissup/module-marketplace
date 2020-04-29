@@ -128,16 +128,7 @@ class Installer
             $packages = [$packages];
         }
 
-        $flag = false;
-
-        foreach ($packages as $package) {
-            $flag = (bool) $this->getInstaller($package);
-            if ($flag) {
-                break;
-            }
-        }
-
-        return $flag;
+        return $this->configReader->hasConfig($packages);
     }
 
     /**
