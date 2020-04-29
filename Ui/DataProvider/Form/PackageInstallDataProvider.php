@@ -66,7 +66,13 @@ class PackageInstallDataProvider extends \Magento\Ui\DataProvider\AbstractDataPr
             ];
         }
 
-        $fields = $this->installer->getFormConfig($packages);
+        try {
+            $fields = $this->installer->getFormConfig($packages);
+        } catch (\Exception $e) {
+            $meta['general']['children']['exception'] = $this->createNotice($e->getMessage());
+            $fields = [];
+        }
+
         foreach ($fields as $field => $config) {
             if (!isset($meta['general']['children'][$field])) {
                 $meta['general']['children'][$field] = $this->createField($config);
@@ -95,6 +101,27 @@ class PackageInstallDataProvider extends \Magento\Ui\DataProvider\AbstractDataPr
         }
 
         return $meta;
+    }
+
+    /**
+     * @param string $notice
+     * @return array
+     */
+    private function createNotice($notice)
+    {
+        return [
+            'arguments' => [
+                'data' => [
+                    'config' => [
+                        'value' => $notice,
+                        'formElement' => 'input',
+                        'componentType' => 'field',
+                        'dataType' => 'text',
+                        'template' => 'ui/form/element/text',
+                    ],
+                ],
+            ],
+        ];
     }
 
     private function createField(array $config)
