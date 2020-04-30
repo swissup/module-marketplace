@@ -14,7 +14,7 @@ class Installer
     private $data;
 
     /**
-     * @var \Magento\Framework\App\CacheInterface
+     * @var \Magento\Framework\App\Cache\Manager
      */
     private $cache;
 
@@ -39,14 +39,14 @@ class Installer
     private $requestFactory;
 
     /**
-     * @param \Magento\Framework\App\CacheInterface $cache
+     * @param \Magento\Framework\App\Cache\Manager $cache
      * @param \Magento\Framework\App\State $appState
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param ConfigReader $configReader
      * @param RequestFactory $requestFactory
      */
     public function __construct(
-        \Magento\Framework\App\CacheInterface $cache,
+        \Magento\Framework\App\Cache\Manager $cache,
         \Magento\Framework\App\State $appState,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         ConfigReader $configReader,
@@ -109,14 +109,14 @@ class Installer
             }
         }
 
-        $this->cache->clean([
+        $this->cache->clean(array_intersect([
             'block_html',
             'config',
             'full_page',
             'layout',
             'translate',
             'compiled_config',
-        ]);
+        ], $this->cache->getAvailableTypes()));
     }
 
     /**
