@@ -17,6 +17,11 @@ class PackageInstallCommand extends PackageAbstractCommand
     protected $storeManager;
 
     /**
+     * @var \Symfony\Component\Console\Question\QuestionFactory
+     */
+    protected $questionFactory;
+
+    /**
      * @var \Symfony\Component\Console\Question\ChoiceQuestionFactory
      */
     protected $choiceQuestionFactory;
@@ -39,6 +44,7 @@ class PackageInstallCommand extends PackageAbstractCommand
     /**
      * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Symfony\Component\Console\Question\QuestionFactory $questionFactory
      * @param \Symfony\Component\Console\Question\ChoiceQuestionFactory $choiceQuestionFactory
      * @param \Symfony\Component\Console\Helper\QuestionHelper $questionHelper
      * @param \Swissup\Marketplace\Model\PackagesList\LocalFactory $listFactory
@@ -47,12 +53,14 @@ class PackageInstallCommand extends PackageAbstractCommand
     public function __construct(
         \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Symfony\Component\Console\Question\QuestionFactory $questionFactory,
         \Symfony\Component\Console\Question\ChoiceQuestionFactory $choiceQuestionFactory,
         \Symfony\Component\Console\Helper\QuestionHelper $questionHelper,
         \Swissup\Marketplace\Model\PackagesList\LocalFactory $listFactory,
         \Swissup\Marketplace\Installer\Installer $installer
     ) {
         $this->storeManager = $storeManager;
+        $this->questionFactory = $questionFactory;
         $this->choiceQuestionFactory = $choiceQuestionFactory;
         $this->questionHelper = $questionHelper;
         $this->listFactory = $listFactory;
@@ -113,7 +121,7 @@ class PackageInstallCommand extends PackageAbstractCommand
 
         $fields = $this->installer->getFormConfig($packages);
         foreach ($fields as $name => $config) {
-            $formData[$name] = $this->ask($config['title'], $config['options']);
+            $formData[$name] = $this->ask($config['title'], $config['options'] ?? null);
         }
 
         $this->installer
@@ -166,8 +174,16 @@ class PackageInstallCommand extends PackageAbstractCommand
         return $ids;
     }
 
-    private function ask($title, $options, $multiple = false)
+    private function ask($title, $options = null, $multiple = false)
     {
+        if (!is_array($options)) {
+            $question = $this->questionFactory->create([
+                'question' => $title . ': ',
+            ]);
+
+            return $this->questionHelper->ask($this->input, $this->output, $question);
+        }
+
         $choices = is_array(current($options)) ?
             $this->optionsToChoices($options) : $options;
 
@@ -181,11 +197,7 @@ class PackageInstallCommand extends PackageAbstractCommand
                 $question->setMultiselect(true);
             }
 
-            $answer = $this->questionHelper->ask(
-                $this->input,
-                $this->output,
-                $question
-            );
+            $answer = $this->questionHelper->ask($this->input, $this->output, $question);
         } else {
             $answer = key($choices);
         }

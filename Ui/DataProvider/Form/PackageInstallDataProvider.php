@@ -126,14 +126,13 @@ class PackageInstallDataProvider extends \Magento\Ui\DataProvider\AbstractDataPr
 
     private function createField(array $config)
     {
-        return [
+        $result = [
             'arguments' => [
                 'data' => [
-                    'options' => $config['options'],
                     'config' => [
                         'label' => $config['title'],
-                        'visible' => count($config['options']) > 1,
-                        'formElement' => 'select',
+                        'visible' => !isset($config['options']) || count($config['options']) > 1,
+                        'formElement' => isset($config['options']) ? 'select' : 'input',
                         'componentType' => 'field',
                         'dataType' => 'text',
                         'required' => true,
@@ -144,6 +143,12 @@ class PackageInstallDataProvider extends \Magento\Ui\DataProvider\AbstractDataPr
                 ],
             ],
         ];
+
+        if (isset($config['options']) && is_array($config['options'])) {
+            $result['arguments']['data']['options'] = $config['options'];
+        }
+
+        return $result;
     }
 
     /**

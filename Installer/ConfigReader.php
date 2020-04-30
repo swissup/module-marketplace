@@ -162,11 +162,12 @@ class ConfigReader
                 continue;
             }
 
-            $options = [];
+            $options = false;
             $items = $field->descend('option');
             $model = $field->descend('source_model');
 
             if ($items) {
+                $options = [];
                 foreach ($items as $item) {
                     $value = (string) $item[0];
                     $options[$value] = [
@@ -179,7 +180,9 @@ class ConfigReader
                 $options = $this->objectManager->get($model)->toOptionArray();
             }
 
-            $result[$name]['options'] = $options;
+            if ($options !== false) {
+                $result[$name]['options'] = $options;
+            }
         }
 
         return $result;
