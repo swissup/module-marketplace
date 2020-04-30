@@ -98,6 +98,48 @@ class PackageInstallCommand extends PackageAbstractCommand
         parent::configure();
     }
 
+    protected function getPackages()
+    {
+        $packages = [];
+
+        foreach (parent::getPackages() as $argument) {
+            if (strpos($argument, '=') !== false) {
+                continue;
+            }
+            $packages[] = $argument;
+        }
+
+        if (!$packages) {
+            throw new \RuntimeException('Package name is missing');
+        }
+
+        return $packages;
+    }
+
+    protected function getRequestParams()
+    {
+        $params = [];
+
+        foreach (parent::getPackages() as $argument) {
+            if (strpos($argument, '=') === false) {
+                continue;
+            }
+
+            list($key, $value) = explode('=', $argument);
+
+            if (isset($params[$key])) {
+                if (!is_array($params[$key])) {
+                    $params[$key] = [$params[$key]];
+                }
+                $params[$key][] = $value;
+            } else {
+                $params[$key] = $value;
+            }
+        }
+
+        return $params;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $packages = $this->getPackages();
@@ -120,8 +162,13 @@ class PackageInstallCommand extends PackageAbstractCommand
         $formData = [];
 
         $fields = $this->installer->getFormConfig($packages);
+        $params = $this->getRequestParams();
         foreach ($fields as $name => $config) {
-            $formData[$name] = $this->ask($config['title'], $config['options'] ?? null);
+            if (isset($params[$name])) {
+                $formData[$name] = $params[$name];
+            } else {
+                $formData[$name] = $this->ask($config['title'], $config['options'] ?? null);
+            }
         }
 
         $this->installer
