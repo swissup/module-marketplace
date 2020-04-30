@@ -16,6 +16,8 @@ class ConfigReader
 
     const FILE = 'installer.xml';
 
+    protected $files;
+
     /**
      * @var string
      */
@@ -113,7 +115,11 @@ class ConfigReader
      */
     protected function readFiles()
     {
-        $files = [];
+        if ($this->files !== null) {
+            return $this->files;
+        }
+
+        $this->files = [];
         $paths = $this->componentRegistrar->getPaths(ComponentRegistrar::MODULE);
         $paths += $this->componentRegistrar->getPaths(ComponentRegistrar::THEME);
 
@@ -125,10 +131,10 @@ class ConfigReader
                 continue;
             }
 
-            $files[$path] = $dir->readFile($filepath);
+            $this->files[$path] = $dir->readFile($filepath);
         }
 
-        return $files;
+        return $this->files;
     }
 
     /**
