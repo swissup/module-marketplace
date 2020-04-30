@@ -115,6 +115,7 @@ class Installer
             'full_page',
             'layout',
             'translate',
+            'compiled_config',
         ]);
     }
 
