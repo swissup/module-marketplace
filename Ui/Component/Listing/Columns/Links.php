@@ -66,6 +66,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
                     'href'  => $item['remote']['marketplace']['links'][$link['key']],
                     'label' => __($link['label']),
                     'target' => '_blank',
+                    'rel' => 'noopener',
                 ];
             }
 

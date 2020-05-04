@@ -12,6 +12,20 @@ define([
         },
 
         /**
+         * Returns `rel` attribute for the action.
+         *
+         * @param {Object} action - Action object.
+         * @returns {String}
+         */
+        getRel: function (action) {
+            if (action.rel) {
+                return action.rel;
+            }
+
+            return null;
+        },
+
+        /**
          * @param {Object} action
          * @return {String}
          */
