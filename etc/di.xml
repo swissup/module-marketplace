@@ -112,6 +112,9 @@
     </virtualType>
 
     <!-- Swissup, Argento, and Firecheckout Channel -->
+    <type name="Magento\Csp\Model\Collector\DynamicCollector">
+        <plugin name="swissup_marketplace" type="Swissup\Marketplace\Plugin\CspPolicyCollector"/>
+    </type>
     <virtualType name="Swissup\Marketplace\Model\Channel\Swissup"
                  type="Swissup\Marketplace\Model\Channel\Composer">
         <arguments>
