@@ -35,9 +35,6 @@ Marketplace.
 - [FAQ](#faq)
     - [Can I install modules from the packagist?](#can-i-install-modules-from-the-packagist)
     - [Can I install modules from private repository?](#can-i-install-modules-from-private-repository)
-    - [Where do I get my identity keys?](#where-do-i-get-my-identity-keys)
-        - [Magento Marketplace customers](#magento-marketplace-customers)
-        - [Swissuplabs, Firecheckout, and Argentotheme customers](#swissuplabs-firecheckout-and-argentotheme-customers)
 
 <!-- /MarkdownTOC -->
 
@@ -143,20 +140,3 @@ bin/magento marketplace:auth github-oauth.github.com <token>
 bin/magento marketplace:package:require <package/name>
 bin/magento marketplace:package:install <package/name>
 ```
-
-### Where do I get my identity keys?
-
-#### Magento Marketplace customers
-
-Get your public and private keys from
-[marketplace.magento.com](https://marketplace.magento.com/customer/accessKeys/)
-page.
-
-#### Swissuplabs, Firecheckout, and Argentotheme customers
-
-Get identity key(s) and activate your store domain on the site(s) where you’ve
-purchased the product:
-
- -  [argentotheme.com](https://argentotheme.com/license/customer/activation/)
- -  [firecheckout.net](https://firecheckout.net/license/customer/activation/)
- -  [swissuplabs.com](https://swissuplabs.com/license/customer/activation/)
