@@ -47,11 +47,6 @@ bin/magento setup:upgrade
 
 ## Usage
 
-First, you need to [get your access keys](#where-do-i-get-my-identity-keys)
-from the channel you'd like to use. When you get the keys, proceed to
-[CLI-based](#command-line-interface) or [GUI-based](#magento-backend-interface)
-section.
-
 ### Command line interface
 
  1. Activate update channel and enter access keys:
