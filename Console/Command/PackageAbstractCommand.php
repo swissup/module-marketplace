@@ -136,7 +136,7 @@ class PackageAbstractCommand extends Command
                 $handler->validateBeforeHandle();
                 $handler->handle();
             } catch (\Exception $e) {
-                $this->writeln('<error>' . $e->getMessage() . '</error>');
+                $this->output->writeln('<error>' . $e->getMessage() . '</error>');
                 if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG) {
                     $this->output->writeln($e->getTraceAsString());
                 }
