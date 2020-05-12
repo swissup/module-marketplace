@@ -11,17 +11,33 @@ class Widget
     use LoggerAware;
 
     /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
      * @var \Magento\Widget\Model\Widget\InstanceFactory
      */
     private $widgetFactory;
 
     /**
+     * @var \Magento\Widget\Model\ResourceModel\Widget\Instance\CollectionFactory $collectionFactory
+     */
+    private $collectionFactory;
+
+    /**
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Widget\Model\Widget\InstanceFactory $widgetFactory
+     * @param \Magento\Widget\Model\ResourceModel\Widget\Instance\CollectionFactory $collectionFactory
      */
     public function __construct(
-        \Magento\Widget\Model\Widget\InstanceFactory $widgetFactory
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Widget\Model\Widget\InstanceFactory $widgetFactory,
+        \Magento\Widget\Model\ResourceModel\Widget\Instance\CollectionFactory $collectionFactory
     ) {
+        $this->storeManager = $storeManager;
         $this->widgetFactory = $widgetFactory;
+        $this->collectionFactory = $collectionFactory;
     }
 
     /**
@@ -30,9 +46,35 @@ class Widget
      */
     public function execute(Request $request)
     {
-        $this->logger->info('Widget: Create new widgets');
+        $this->logger->info('Widgets: Backup existing and create new widgets');
+
+        $isSingleStoreMode = $this->storeManager->isSingleStoreMode();
 
         foreach ($request->getParams() as $raw) {
+            $collection = $this->collectionFactory->create()
+                ->addStoreFilter($request->getStoreIds())
+                ->addFieldToFilter('title', $raw['title'])
+                ->addFieldToFilter('instance_type', $raw['type'])
+                ->addFieldToFilter('theme_id', $raw['theme_id']);
+
+            foreach ($collection as $widget) {
+                $storesToLeave = array_diff($widget->getStoreIds(), $request->getStoreIds());
+
+                if (count($storesToLeave) && !$isSingleStoreMode) {
+                    // unset stores. new widget will be added for them.
+                    $widget->setStoreIds($storesToLeave);
+                } else {
+                    // widget already exists
+                    continue 2;
+                }
+
+                try {
+                    $widget->save();
+                } catch (\Exception $e) {
+                    $this->logger->warning($e->getMessage());
+                }
+            }
+
             $data = [
                 'title' => $raw['title'],
                 'instance_type' => $raw['type'],
