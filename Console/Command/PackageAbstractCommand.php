@@ -90,7 +90,7 @@ class PackageAbstractCommand extends Command
         ]);
 
         try {
-            $this->output->writeln('<info>Validating</info>');
+            $output->writeln('<info>Validating</info>');
             $handler->validateBeforeHandle();
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
@@ -106,7 +106,7 @@ class PackageAbstractCommand extends Command
         $this->processTasks($before);
 
         try {
-            $this->output->writeln('<info>' . $handler->getTitle() . '</info>');
+            $output->writeln('<info>' . $handler->getTitle() . '</info>');
             $handler->handle();
             $success = true;
         } catch (\Exception $e) {
