@@ -6,6 +6,7 @@ use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Exception\RuntimeException;
 use Magento\Framework\Exception\SecurityViolationException;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
+use Magento\Framework\Module\Manager;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Simplexml\Config;
 use Magento\Framework\Simplexml\ConfigFactory;
@@ -34,6 +35,11 @@ class ConfigReader
     protected $readDirFactory;
 
     /**
+     * @var Manager
+     */
+    protected $moduleManager;
+
+    /**
      * @var ObjectManagerInterface
      */
     protected $objectManager;
@@ -46,17 +52,20 @@ class ConfigReader
     /**
      * @param ComponentRegistrar $componentRegistrar
      * @param ReadFactory $readDirFactory
+     * @param Manager $moduleManager
      * @param ObjectManagerInterface $objectManager
      * @param ConfigFactory $configFactory
      */
     public function __construct(
         ComponentRegistrar $componentRegistrar,
         ReadFactory $readDirFactory,
+        Manager $moduleManager,
         ObjectManagerInterface $objectManager,
         ConfigFactory $configFactory
     ) {
         $this->componentRegistrar = $componentRegistrar;
         $this->readDirFactory = $readDirFactory;
+        $this->moduleManager = $moduleManager;
         $this->objectManager = $objectManager;
         $this->configFactory = $configFactory;
     }
@@ -251,8 +260,9 @@ class ConfigReader
         $result = [];
         foreach ($commands as $i => $command) {
             $class = $command->getAttribute('class');
+            $module = $command->getAttribute('module');
 
-            if (!class_exists($class)) {
+            if (!$this->isModuleEnabled($module) || !class_exists($class)) {
                 continue;
             }
 
@@ -268,6 +278,18 @@ class ConfigReader
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $module
+     * @return boolean
+     */
+    protected function isModuleEnabled($module)
+    {
+        if (!$module) {
+            return true;
+        }
+        return $this->moduleManager->isEnabled($module);
     }
 
     /**
