@@ -38,6 +38,11 @@ class Collection
         return $collection;
     }
 
+    public function getCollection(array $request, $class, array $filters = [])
+    {
+        return $this->prepareCollection($class, $filters);
+    }
+
     /**
      * @param array $request
      * @param string $class
