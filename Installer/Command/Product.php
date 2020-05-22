@@ -12,7 +12,7 @@ class Product extends ProductCollection
      */
     public function execute(Request $request)
     {
-        $this->logger->warning('Product Command is deprecated. Please use ProductCollection instead');
+        // $this->logger->warning('Product Command is deprecated. Please use ProductCollection instead');
 
         return parent::execute($request);
     }
