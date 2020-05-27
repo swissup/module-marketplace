@@ -78,6 +78,12 @@ class ChannelAbstractCommand extends Command
         $this->input = $input;
         $this->output = $output;
 
+        if (!function_exists('exec')) {
+            if (method_exists(QuestionHelper::class, 'disableStty')) {
+                QuestionHelper::disableStty();
+            }
+        }
+
         return parent::initialize($input, $output);
     }
 
