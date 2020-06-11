@@ -12,7 +12,7 @@
     "version": "1.5.1",
     "license": "MIT",
     "require": {
-        "magento/framework": "^102.0",
+        "magento/framework": "^101.0",
         "magento/composer": "*",
         "magento/module-backend": "^101.0",
         "magento/module-catalog": "*",
