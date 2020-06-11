@@ -2,34 +2,74 @@
 
 namespace Swissup\Marketplace\Model;
 
+use Composer\Console\Application;
+use Composer\IO\BufferIO;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Composer\ComposerJsonFinder;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+
 class ComposerApplication
 {
     /**
-     * @var \Magento\Composer\MagentoComposerApplication
+     * @var \Composer\Console\Application
      */
     protected $app;
 
     /**
-     * @var \Magento\Framework\Composer\MagentoComposerApplicationFactory
+     * @var string
      */
-    protected $appFactory;
+    protected $workingDir;
 
     /**
-     * @param \Magento\Framework\Composer\MagentoComposerApplicationFactory $appFactory
+     * @var \Symfony\Component\Console\Output\OutputInterface
+     */
+    protected $consoleOutput;
+
+    /**
+     * @param DirectoryList $directoryList
+     * @param ComposerJsonFinder $composerJsonFinder
      */
     public function __construct(
-        \Magento\Framework\Composer\MagentoComposerApplicationFactory $appFactory
+        DirectoryList $directoryList,
+        ComposerJsonFinder $composerJsonFinder
     ) {
-        $this->appFactory = $appFactory;
+        $this->app = new Application();
+        $this->app->setAutoExit(false);
+
+        $this->workingDir = dirname($composerJsonFinder->findComposerJson());
+        $this->consoleOutput = new BufferedOutput();
+
+        putenv('COMPOSER_HOME=' . $directoryList->getPath(DirectoryList::COMPOSER_HOME));
     }
 
     /**
      * @param array $command
      * @return string
+     * @throws \RuntimeException
      */
     public function run(array $command)
     {
-        return $this->getApp()->runComposerCommand($command);
+        // https://github.com/composer/composer/commit/94df55425596c0137d0aa14485bba2fb05e15de6
+        if (version_compare($this->app->getVersion(), '1.8.4', '<')) {
+            unset($command['-q']);
+        }
+
+        $this->app->resetComposer();
+
+        $input = new ArrayInput(array_merge([
+            '--working-dir' => $this->workingDir,
+        ], $command));
+
+        $exitCode = $this->app->run($input, $this->consoleOutput);
+
+        if ($exitCode) {
+            throw new \RuntimeException(
+                sprintf('Command "%s" failed: %s', $command['command'], $this->consoleOutput->fetch())
+            );
+        }
+
+        return $this->consoleOutput->fetch();
     }
 
     /**
@@ -43,16 +83,5 @@ class ComposerApplication
             '-a' => true,
             '-g' => true,
         ], $command));
-    }
-
-    /**
-     * @return \Magento\Framework\Composer\MagentoComposerApplication
-     */
-    protected function getApp()
-    {
-        if (!$this->app) {
-            $this->app = $this->appFactory->create();
-        }
-        return $this->app;
     }
 }
