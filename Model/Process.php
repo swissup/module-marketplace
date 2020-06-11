@@ -12,12 +12,20 @@ class Process
     private $phpPath;
 
     /**
+     * \Swissup\Marketplace\Model\PackagesList\Local
+     */
+    private $packages;
+
+    /**
      * @param \Magento\Framework\Process\PhpExecutableFinderFactory $phpExecutableFinderFactory
+     * @param \Swissup\Marketplace\Model\PackagesList\Local $packages
      */
     public function __construct(
-        \Magento\Framework\Process\PhpExecutableFinderFactory $phpExecutableFinderFactory
+        \Magento\Framework\Process\PhpExecutableFinderFactory $phpExecutableFinderFactory,
+        \Swissup\Marketplace\Model\PackagesList\Local $packages
     ) {
         $this->phpPath = $phpExecutableFinderFactory->create()->find() ?: 'php';
+        $this->packages = $packages;
     }
 
     /**
@@ -50,6 +58,15 @@ class Process
                     $logger->info($buffer);
                 }
             };
+        }
+
+        $packages = $this->packages->getList();
+        if (!empty($packages['symfony/process']['version'])) {
+            $version = $packages['symfony/process']['version'];
+            $version = str_replace('v', '', $version);
+            if (version_compare($version, '4.2', '<')) {
+                $command = implode(' ', $command);
+            }
         }
 
         return (new SymfonyProcess($command))
