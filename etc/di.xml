@@ -56,7 +56,7 @@
 
     <type name="Swissup\Marketplace\Model\Logger\Handler">
         <arguments>
-            <argument name="fileName" xsi:type="string">/var/log/install.log</argument>
+            <argument name="fileName" xsi:type="string">/var/log/marketplace.log</argument>
         </arguments>
     </type>
     <virtualType name="Swissup\Marketplace\Model\Logger\QueueLogger" type="Magento\Framework\Logger\Monolog">

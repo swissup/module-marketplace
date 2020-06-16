@@ -16,8 +16,6 @@ define([
                 'swissup_marketplace_job_activity_columns'
             ].join('.'));
 
-            activity.log([]);
-
             return activity.source.watch(id, settings);
         }
     };

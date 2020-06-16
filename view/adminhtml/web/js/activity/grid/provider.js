@@ -18,7 +18,6 @@ define([
         },
         watchers: [],
         timer: null,
-        isWebSetupAccessible: null,
 
         /**
          * Initializes provider component.
@@ -27,8 +26,6 @@ define([
          */
         initialize: function () {
             this._super();
-
-            this.initWebSetup();
 
             return this;
         },
@@ -198,72 +195,6 @@ define([
                 .always(function () {
                     this.reload();
                 }.bind(this));
-        },
-
-        /**
-         * Init web setup panel access
-         */
-        initWebSetup: function () {
-            var url = window.BASE_URL;
-
-            url = url.substr(0, url.indexOf('/swissup_marketplace/'));
-            url = url.substr(0, url.lastIndexOf('/'));
-
-            this.fetchLogUrl = url + '/' + this.fetchLogUrl;
-            this.prolongUrl = url + '/' + this.prolongUrl;
-
-            request.get(this.initWebSetupUrl, {}, {
-                    quiet: true,
-                    dataType: 'html'
-                })
-                .done(function () {
-                    this.isWebSetupAccessible = true;
-                    setTimeout(function () {
-                        this.prolongWebSetupPanel();
-                    }.bind(this), this.interval.slow);
-                }.bind(this))
-                .fail(function () {
-                    console.error('Marketplace: Web Setup Wizard is not accessible: ' + this.initWebSetupUrl);
-                    this.isWebSetupAccessible = false;
-                }.bind(this));
-        },
-
-        /**
-         * @return {$.Deferred}
-         */
-        prolongWebSetupPanel: function () {
-            return request.get(this.prolongUrl, {}, {
-                    quiet: true,
-                    dataType: 'text'
-                })
-                .always(function () {
-                    setTimeout(function () {
-                        this.prolongWebSetupPanel();
-                    }.bind(this), this.interval.slow);
-                }.bind(this));
-        },
-
-        /**
-         * @return {$.Deferred}
-         */
-        fetchLog: function () {
-            var deferred = $.Deferred();
-
-            if (this.isWebSetupAccessible) {
-                request.get(this.fetchLogUrl, {}, {
-                        quiet: true
-                    })
-                    .done(function (response) {
-                        deferred.resolve(response);
-                    })
-                    .fail(function (response) {
-                        deferred.reject(response);
-                    });
-            } else {
-                deferred.reject();
-            }
-
-            return deferred;
         }
     });
 });

@@ -8,7 +8,6 @@ define([
 
     return Listing.extend({
         timer: false,
-        fetchingLog: false,
 
         /**
          * Initializes observable properties.
@@ -17,38 +16,9 @@ define([
          */
         initObservable: function () {
             this._super()
-                .observe(['secondsToNextQueue'])
-                .observe({
-                    log: []
-                });
+                .observe(['secondsToNextQueue']);
 
             return this;
-        },
-
-        /**
-         * Update log information
-         */
-        fetchLog: function () {
-            var pre = $('#marketplace-log').find('pre');
-
-            if (this.fetchingLog) {
-                return;
-            }
-            this.fetchingLog = true;
-
-            this.source.fetchLog()
-                .done(function (response) {
-                    this.log(response.console);
-
-                    if (pre.length) {
-                        pre.stop().animate({
-                            scrollTop: pre.get(0).scrollHeight
-                        }, 500);
-                    }
-                }.bind(this))
-                .always(function () {
-                    this.fetchingLog = false;
-                }.bind(this));
         },
 
         /**
@@ -65,10 +35,6 @@ define([
 
             this.timer = setInterval(function () {
                 this.secondsToNextQueue(this.secondsToNextQueue() - 1);
-
-                if (this.source.hasUnfinishedJobs() && this.secondsToNextQueue() <= 0) {
-                    this.fetchLog();
-                }
             }.bind(this), 1000);
         },
 
