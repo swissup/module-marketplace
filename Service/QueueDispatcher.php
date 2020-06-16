@@ -111,11 +111,15 @@ class QueueDispatcher
                 $output = '';
                 if ($handler = $job->getHandler()) {
                     $handler->validateBeforeHandle();
-                    $output = $handler->handle();
+                    $output = (string) $handler->handle();
+                }
+
+                if ($output) {
+                    $this->logger->info($output);
                 }
 
                 $job->setStatus(Job::STATUS_SUCCESS)
-                    ->setOutput((string) $output);
+                    ->setOutput($output);
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
                 $job->setStatus(Job::STATUS_ERRORED)
