@@ -16,7 +16,7 @@ class ComposerApplication
     use OutputAware;
 
     /**
-     * @var \Composer\Console\Application
+     * @var Application
      */
     protected $app;
 
@@ -26,7 +26,7 @@ class ComposerApplication
     protected $workdir;
 
     /**
-     * @var \Symfony\Component\Console\Output\OutputInterface
+     * @var OutputInterface
      */
     protected $output;
 
