@@ -125,35 +125,36 @@ class PackageManager
 
     /**
      * @param string $package
-     * @param array $options
+     * @param OutputInterface|array $options
      * @return string
      * @throws \RuntimeException
      */
-    public function show($package, array $options = [])
+    public function show($package, $options = [], OutputInterface $output = null)
     {
-        return $this->composer->run(array_merge([
+        return $this->runComposerCommand([
             'command' => 'show',
             'package' => $package,
             '--no-interaction' => true,
-        ], $options));
+        ], $options, $output);
     }
 
     /**
      * @param array $packages
+     * @param OutputInterface|array $options
      * @param OutputInterface $output
      * @return string
      * @throws \RuntimeException
      */
-    public function install($packages, OutputInterface $output = null)
+    public function install($packages, $options = [], OutputInterface $output = null)
     {
-        $result = $this->composer->run([
+        $result = $this->runComposerCommand([
             'command' => 'require',
             'packages' => $packages,
             '--no-progress' => true,
             '--no-interaction' => true,
             '--update-with-all-dependencies' => true,
             '--update-no-dev' => $this->getNoDevFlag(),
-        ], $output);
+        ], $options, $output);
 
         // fix possible issue with virtual theme in DB
         $this->packagesList->isLoaded(false);
@@ -184,11 +185,12 @@ class PackageManager
 
     /**
      * @param array $packages
+     * @param OutputInterface|array $options
      * @param OutputInterface $output
      * @return string
      * @throws \RuntimeException
      */
-    public function uninstall($packages, OutputInterface $output = null)
+    public function uninstall($packages, $options = [], OutputInterface $output = null)
     {
         // collect themes to unset them from config and remove from 'theme' table.
         $themes = [];
@@ -203,13 +205,13 @@ class PackageManager
             $themeIds[] = $theme->getId();
         }
 
-        $result = $this->composer->run([
+        $result = $this->runComposerCommand([
             'command' => 'remove',
             'packages' => $packages,
             '--no-progress' => true,
             '--no-interaction' => true,
             '--update-no-dev' => $this->getNoDevFlag(),
-        ], $output);
+        ], $options, $output);
 
         if ($themeIds) {
             // Unset config values
@@ -261,20 +263,21 @@ class PackageManager
 
     /**
      * @param array $packages
+     * @param OutputInterface|array $options
      * @param OutputInterface $output
      * @return string
      * @throws \RuntimeException
      */
-    public function update($packages, OutputInterface $output = null)
+    public function update($packages, $options = [], OutputInterface $output = null)
     {
-        return $this->composer->run([
+        return $this->runComposerCommand([
             'command' => 'update',
             'packages' => $packages,
             '--no-progress' => true,
             '--no-interaction' => true,
             '--with-all-dependencies' => true,
             '--no-dev' => $this->getNoDevFlag(),
-        ], $output);
+        ], $options, $output);
     }
 
     /**
@@ -425,6 +428,24 @@ class PackageManager
             'message' => $message,
             'dependencies' => $dependencies,
         ];
+    }
+
+    /**
+     * @param array $command
+     * @param OutputInterface|array $options
+     * @param OutputInterface|null $output
+     * @return string
+     */
+    protected function runComposerCommand(array $command, $options = [], OutputInterface $output = null)
+    {
+        if (!is_array($options)) {
+            if ($options instanceof OutputInterface) {
+                $output = $options;
+            }
+            $options = [];
+        }
+
+        return $this->composer->run(array_merge($command, $options), $output);
     }
 
     protected function prepareConstraints(array $constraints)
