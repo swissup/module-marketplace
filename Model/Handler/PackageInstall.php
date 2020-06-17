@@ -9,7 +9,7 @@ class PackageInstall extends PackageAbstractHandler implements HandlerInterface
 {
     public function execute()
     {
-        return $this->packageManager->install($this->packages);
+        return $this->packageManager->install($this->packages, $this->getOutput());
     }
 
     public function validateBeforeHandle()

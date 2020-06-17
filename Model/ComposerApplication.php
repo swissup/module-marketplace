@@ -6,11 +6,15 @@ use Composer\Console\Application;
 use Composer\IO\BufferIO;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Composer\ComposerJsonFinder;
+use Swissup\Marketplace\Model\Traits\OutputAware;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ComposerApplication
 {
+    use OutputAware;
+
     /**
      * @var \Composer\Console\Application
      */
@@ -19,12 +23,12 @@ class ComposerApplication
     /**
      * @var string
      */
-    protected $workingDir;
+    protected $workdir;
 
     /**
      * @var \Symfony\Component\Console\Output\OutputInterface
      */
-    protected $consoleOutput;
+    protected $output;
 
     /**
      * @param DirectoryList $directoryList
@@ -36,9 +40,7 @@ class ComposerApplication
     ) {
         $this->app = new Application();
         $this->app->setAutoExit(false);
-
-        $this->workingDir = dirname($composerJsonFinder->findComposerJson());
-        $this->consoleOutput = new BufferedOutput();
+        $this->workdir = dirname($composerJsonFinder->findComposerJson());
 
         putenv('COMPOSER_HOME=' . $directoryList->getPath(DirectoryList::COMPOSER_HOME));
     }
@@ -48,25 +50,30 @@ class ComposerApplication
      * @return string
      * @throws \RuntimeException
      */
-    public function run(array $command)
+    public function run(array $command, OutputInterface $output = null)
     {
-        $command = $this->normalizeCommand($command);
-
         $this->app->resetComposer();
 
-        $input = new ArrayInput(array_merge([
-            '--working-dir' => $this->workingDir,
-        ], $command));
+        $command = $this->normalizeCommand($command);
 
-        $exitCode = $this->app->run($input, $this->consoleOutput);
+        if (!$output) {
+            $output = $this->getOutput();
+        }
+
+        $exitCode = $this->app->run($this->getInput($command), $output);
+
+        $result = '';
+        if ($output instanceof BufferedOutput) {
+            $result = $output->fetch();
+        }
 
         if ($exitCode) {
             throw new \RuntimeException(
-                sprintf('Command "%s" failed: %s', $command['command'], $this->consoleOutput->fetch())
+                sprintf('Command "%s" failed: %s', $command['command'], $result)
             );
         }
 
-        return $this->consoleOutput->fetch();
+        return $result;
     }
 
     /**
@@ -79,6 +86,17 @@ class ComposerApplication
             'command' => 'config',
             '-a' => true,
             '-g' => true,
+        ], $command));
+    }
+
+    /**
+     * @param array $command
+     * @return ArrayInput
+     */
+    protected function getInput(array $command)
+    {
+        return new ArrayInput(array_merge([
+            '--working-dir' => $this->workdir,
         ], $command));
     }
 

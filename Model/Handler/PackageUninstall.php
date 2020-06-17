@@ -8,7 +8,7 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
 {
     public function execute()
     {
-        return $this->packageManager->uninstall($this->packages);
+        return $this->packageManager->uninstall($this->packages, $this->getOutput());
     }
 
     public function validateBeforeDispatch()

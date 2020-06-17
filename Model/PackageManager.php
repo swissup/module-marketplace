@@ -3,6 +3,7 @@
 namespace Swissup\Marketplace\Model;
 
 use Magento\Framework\Config\File\ConfigFilePool;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class PackageManager
 {
@@ -139,10 +140,11 @@ class PackageManager
 
     /**
      * @param array $packages
+     * @param OutputInterface $output
      * @return string
      * @throws \RuntimeException
      */
-    public function install($packages)
+    public function install($packages, OutputInterface $output = null)
     {
         $result = $this->composer->run([
             'command' => 'require',
@@ -151,7 +153,7 @@ class PackageManager
             '--no-interaction' => true,
             '--update-with-all-dependencies' => true,
             '--update-no-dev' => $this->getNoDevFlag(),
-        ]);
+        ], $output);
 
         // fix possible issue with virtual theme in DB
         $this->packagesList->isLoaded(false);
@@ -182,10 +184,11 @@ class PackageManager
 
     /**
      * @param array $packages
+     * @param OutputInterface $output
      * @return string
      * @throws \RuntimeException
      */
-    public function uninstall($packages)
+    public function uninstall($packages, OutputInterface $output = null)
     {
         // collect themes to unset them from config and remove from 'theme' table.
         $themes = [];
@@ -206,7 +209,7 @@ class PackageManager
             '--no-progress' => true,
             '--no-interaction' => true,
             '--update-no-dev' => $this->getNoDevFlag(),
-        ]);
+        ], $output);
 
         if ($themeIds) {
             // Unset config values
@@ -258,10 +261,11 @@ class PackageManager
 
     /**
      * @param array $packages
+     * @param OutputInterface $output
      * @return string
      * @throws \RuntimeException
      */
-    public function update($packages)
+    public function update($packages, OutputInterface $output = null)
     {
         return $this->composer->run([
             'command' => 'update',
@@ -270,7 +274,7 @@ class PackageManager
             '--no-interaction' => true,
             '--with-all-dependencies' => true,
             '--no-dev' => $this->getNoDevFlag(),
-        ]);
+        ], $output);
     }
 
     /**

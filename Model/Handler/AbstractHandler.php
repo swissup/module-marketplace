@@ -3,10 +3,11 @@
 namespace Swissup\Marketplace\Model\Handler;
 
 use Swissup\Marketplace\Model\Traits\LoggerAware;
+use Swissup\Marketplace\Model\Traits\OutputAware;
 
 class AbstractHandler extends \Magento\Framework\DataObject
 {
-    use LoggerAware;
+    use LoggerAware, OutputAware;
 
     public function handle()
     {

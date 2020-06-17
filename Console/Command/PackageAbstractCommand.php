@@ -164,6 +164,7 @@ class PackageAbstractCommand extends Command
     {
         return $this->handlerFactory
             ->create($class, $arguments)
+            ->setOutput($this->output)
             ->setLogger($this->logger);
     }
 }

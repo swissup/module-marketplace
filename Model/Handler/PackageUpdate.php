@@ -8,7 +8,7 @@ class PackageUpdate extends PackageAbstractHandler implements HandlerInterface
 {
     public function execute()
     {
-        return $this->packageManager->update($this->packages);
+        return $this->packageManager->update($this->packages, $this->getOutput());
     }
 
     public function getTitle()
