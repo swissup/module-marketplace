@@ -21,4 +21,9 @@ class PackageUpdateCommand extends PackageAbstractCommand
 
         parent::configure();
     }
+
+    protected function getHandlerCmdOptions()
+    {
+        return PackageUpdate::getAvailableCmdOptions();
+    }
 }

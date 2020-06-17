@@ -6,9 +6,18 @@ use Swissup\Marketplace\Api\HandlerInterface;
 
 class PackageUninstall extends PackageAbstractHandler implements HandlerInterface
 {
+    protected static $cmdOptions = [
+        'profile',
+        'ignore-platform-reqs',
+    ];
+
     public function execute()
     {
-        return $this->packageManager->uninstall($this->packages, $this->getOutput());
+        return $this->packageManager->uninstall(
+            $this->packages,
+            $this->getCmdOptions(),
+            $this->getOutput()
+        );
     }
 
     public function validateBeforeDispatch()

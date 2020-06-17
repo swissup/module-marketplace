@@ -21,4 +21,9 @@ class PackageRequireCommand extends PackageAbstractCommand
 
         parent::configure();
     }
+
+    protected function getHandlerCmdOptions()
+    {
+        return PackageInstall::getAvailableCmdOptions();
+    }
 }

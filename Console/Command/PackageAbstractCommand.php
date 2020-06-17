@@ -71,6 +71,10 @@ class PackageAbstractCommand extends Command
             'Package Name'
         );
 
+        foreach ($this->getHandlerCmdOptions() as $option) {
+            $this->addOption($option);
+        }
+
         parent::configure();
     }
 
@@ -88,6 +92,13 @@ class PackageAbstractCommand extends Command
         $handler = $this->createHandler($this->getHandlerClass(), [
             'packages' => $this->getPackages(),
         ]);
+
+        $options = [];
+        foreach ($this->getHandlerCmdOptions() as $option) {
+            if ($input->getOption($option)) {
+                $options[$option] = true;
+            }
+        }
 
         try {
             $output->writeln('<info>Validating</info>');
@@ -107,7 +118,7 @@ class PackageAbstractCommand extends Command
 
         try {
             $output->writeln('<info>' . $handler->getTitle() . '</info>');
-            $handler->handle();
+            $handler->setCmdOptions($options)->handle();
             $success = true;
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
@@ -142,6 +153,11 @@ class PackageAbstractCommand extends Command
                 }
             }
         }
+    }
+
+    protected function getHandlerCmdOptions()
+    {
+        return [];
     }
 
     /**

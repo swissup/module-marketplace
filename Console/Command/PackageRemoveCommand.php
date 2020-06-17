@@ -21,4 +21,9 @@ class PackageRemoveCommand extends PackageAbstractCommand
 
         parent::configure();
     }
+
+    protected function getHandlerCmdOptions()
+    {
+        return PackageUninstall::getAvailableCmdOptions();
+    }
 }

@@ -7,9 +7,18 @@ use Swissup\Marketplace\Model\HandlerValidationException;
 
 class PackageInstall extends PackageAbstractHandler implements HandlerInterface
 {
+    protected static $cmdOptions = [
+        'profile',
+        'ignore-platform-reqs',
+    ];
+
     public function execute()
     {
-        return $this->packageManager->install($this->packages, $this->getOutput());
+        return $this->packageManager->install(
+            $this->packages,
+            $this->getCmdOptions(),
+            $this->getOutput()
+        );
     }
 
     public function validateBeforeHandle()

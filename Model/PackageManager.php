@@ -445,7 +445,13 @@ class PackageManager
             $options = [];
         }
 
-        return $this->composer->run(array_merge($command, $options), $output);
+        $formattedOptions = [];
+        foreach ($options as $key => $value) {
+            $key = strpos($key, '-') === 0 ? $key : '--' . $key;
+            $formattedOptions[$key] = $value;
+        }
+
+        return $this->composer->run(array_merge($command, $formattedOptions), $output);
     }
 
     protected function prepareConstraints(array $constraints)

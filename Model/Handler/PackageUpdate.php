@@ -6,9 +6,18 @@ use Swissup\Marketplace\Api\HandlerInterface;
 
 class PackageUpdate extends PackageAbstractHandler implements HandlerInterface
 {
+    protected static $cmdOptions = [
+        'profile',
+        'ignore-platform-reqs',
+    ];
+
     public function execute()
     {
-        return $this->packageManager->update($this->packages, $this->getOutput());
+        return $this->packageManager->update(
+            $this->packages,
+            $this->getCmdOptions(),
+            $this->getOutput()
+        );
     }
 
     public function getTitle()
