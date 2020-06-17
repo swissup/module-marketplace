@@ -45,15 +45,13 @@ class PackageShowCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $result = $this->composer->run([
+            $this->composer->run([
                 'command' => 'show',
                 'package' => $input->getArgument('package'),
                 'version' => $input->getArgument('version'),
                 '--no-interaction' => true,
                 '--available' => true,
-            ]);
-
-            $output->write($result);
+            ], $output);
 
             return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
         } catch (\Exception $e) {
