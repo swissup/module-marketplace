@@ -241,7 +241,11 @@ class QueueDispatcher
     private function createHandler(Job $job)
     {
         try {
-            return $this->handlerFactory->create($job)->setLogger($this->logger);
+            return $this->handlerFactory->create($job)
+                ->setCmdOptions([
+                    'no-interaction' => true,
+                ])
+                ->setLogger($this->logger);
         } catch (\Exception $e) {
             $job->setStatus(JOB::STATUS_ERRORED)
                 ->setOutput($e->getMessage())

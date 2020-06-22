@@ -151,7 +151,6 @@ class PackageManager
             'command' => 'require',
             'packages' => $packages,
             '--no-progress' => true,
-            '--no-interaction' => true,
             '--update-with-all-dependencies' => true,
             '--update-no-dev' => $this->getNoDevFlag(),
         ], $options, $output);
@@ -209,7 +208,6 @@ class PackageManager
             'command' => 'remove',
             'packages' => $packages,
             '--no-progress' => true,
-            '--no-interaction' => true,
             '--update-no-dev' => $this->getNoDevFlag(),
         ], $options, $output);
 
@@ -274,7 +272,6 @@ class PackageManager
             'command' => 'update',
             'packages' => $packages,
             '--no-progress' => true,
-            '--no-interaction' => true,
             '--with-all-dependencies' => true,
             '--no-dev' => $this->getNoDevFlag(),
         ], $options, $output);

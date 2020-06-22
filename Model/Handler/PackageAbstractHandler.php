@@ -4,12 +4,9 @@ namespace Swissup\Marketplace\Model\Handler;
 
 use Magento\Framework\App\State;
 use Swissup\Marketplace\Model\HandlerValidationException;
-use Swissup\Marketplace\Model\Traits\CmdOptions;
 
 class PackageAbstractHandler extends AbstractHandler
 {
-    use CmdOptions;
-
     /**
      * @var array
      */
