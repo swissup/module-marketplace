@@ -31,14 +31,17 @@ class Process
     /**
      * @param string $command
      * @param mixed $callback
+     * @param boolean $php
      * @return string
      * @throws \Exception
      */
-    public function run($command, $callback = null)
+    public function run($command, $callback = null, $php = true)
     {
         $command = explode(' ', $command);
 
-        array_unshift($command, $this->phpPath);
+        if ($php) {
+            array_unshift($command, $this->phpPath);
+        }
 
         if ($callback &&
             !is_callable($callback) &&
