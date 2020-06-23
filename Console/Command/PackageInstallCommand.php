@@ -53,6 +53,7 @@ class PackageInstallCommand extends PackageAbstractCommand
      */
     public function __construct(
         \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
+        \Swissup\Marketplace\Helper\Composer $composerHelper,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Symfony\Component\Console\Question\QuestionFactory $questionFactory,
         \Symfony\Component\Console\Question\ChoiceQuestionFactory $choiceQuestionFactory,
@@ -67,7 +68,7 @@ class PackageInstallCommand extends PackageAbstractCommand
         $this->listFactory = $listFactory;
         $this->installer = $installer;
 
-        parent::__construct($handlerFactory);
+        parent::__construct($handlerFactory, $composerHelper);
     }
 
     /**

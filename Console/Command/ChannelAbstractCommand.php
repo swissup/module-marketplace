@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\QuestionFactory;
 use Symfony\Component\Console\Question\ChoiceQuestionFactory;
 use Swissup\Marketplace\Api\ChannelInterface;
+use Swissup\Marketplace\Helper\Composer;
 use Swissup\Marketplace\Model\ChannelManager;
 use Swissup\Marketplace\Model\ChannelRepository;
 
@@ -26,6 +27,11 @@ class ChannelAbstractCommand extends Command
      * @var ChannelManager
      */
     protected $channelManager;
+
+    /**
+     * @var Composer
+     */
+    protected $composerHelper;
 
     /**
      * @var QuestionFactory
@@ -57,12 +63,14 @@ class ChannelAbstractCommand extends Command
     public function __construct(
         ChannelRepository $channelRepository,
         ChannelManager $channelManager,
+        Composer $composerHelper,
         QuestionFactory $questionFactory,
         ChoiceQuestionFactory $choiceQuestionFactory,
         QuestionHelper $questionHelper
     ) {
         $this->channelRepository = $channelRepository;
         $this->channelManager = $channelManager;
+        $this->composerHelper = $composerHelper;
         $this->questionFactory = $questionFactory;
         $this->choiceQuestionFactory = $choiceQuestionFactory;
         $this->questionHelper = $questionHelper;
@@ -77,6 +85,12 @@ class ChannelAbstractCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
+
+        try {
+            $this->composerHelper->importAuthCredentials();
+        } catch (\Exception $e) {
+            //
+        }
 
         if (!function_exists('exec')) {
             if (method_exists(QuestionHelper::class, 'disableStty')) {

@@ -9,10 +9,26 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PackageShowCommand extends Command
 {
+    /**
+     * @var \Swissup\Marketplace\Model\ComposerApplication
+     */
+    protected $composer;
+
+    /**
+     * @var \Swissup\Marketplace\Helper\Composer
+     */
+    protected $composerHelper;
+
+    /**
+     * @param \Swissup\Marketplace\Model\ComposerApplication $composer
+     * @param \Swissup\Marketplace\Helper\Composer $composerHelper
+     */
     public function __construct(
-        \Swissup\Marketplace\Model\ComposerApplication $composer
+        \Swissup\Marketplace\Model\ComposerApplication $composer,
+        \Swissup\Marketplace\Helper\Composer $composerHelper
     ) {
         $this->composer = $composer;
+        $this->composerHelper = $composerHelper;
         parent::__construct();
     }
 
@@ -37,6 +53,21 @@ class PackageShowCommand extends Command
         );
 
         parent::configure();
+    }
+
+    /**
+     * Initializes the command after the input has been bound and before the input
+     * is validated.
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        try {
+            $this->composerHelper->importAuthCredentials();
+        } catch (\Exception $e) {
+            //
+        }
+
+        return parent::initialize($input, $output);
     }
 
     /**

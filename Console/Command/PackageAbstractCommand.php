@@ -18,6 +18,11 @@ class PackageAbstractCommand extends Command
     protected $handlerFactory;
 
     /**
+     * @var \Swissup\Marketplace\Helper\Composer
+     */
+    protected $composerHelper;
+
+    /**
      * @var string
      */
     protected $handlerClass;
@@ -39,11 +44,14 @@ class PackageAbstractCommand extends Command
 
     /**
      * @param \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
+     * @param \Swissup\Marketplace\Helper\Composer $composerHelper
      */
     public function __construct(
-        \Swissup\Marketplace\Model\HandlerFactory $handlerFactory
+        \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
+        \Swissup\Marketplace\Helper\Composer $composerHelper
     ) {
         $this->handlerFactory = $handlerFactory;
+        $this->composerHelper = $composerHelper;
         parent::__construct();
     }
 
@@ -56,6 +64,12 @@ class PackageAbstractCommand extends Command
         $this->input = $input;
         $this->output = $output;
         $this->logger = new ConsoleLogger($this->output);
+
+        try {
+            $this->composerHelper->importAuthCredentials();
+        } catch (\Exception $e) {
+            //
+        }
 
         return parent::initialize($input, $output);
     }
