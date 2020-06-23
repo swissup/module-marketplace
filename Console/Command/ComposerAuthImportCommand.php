@@ -3,6 +3,7 @@
 namespace Swissup\Marketplace\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -58,13 +59,13 @@ class ComposerAuthImportCommand extends Command
 
         $this->addArgument(
             'path',
-            InputArgument::OPTIONAL,
+            InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
             'Path to auth.json file'
         );
 
         $this->addOption(
             'force',
-            null,
+            'f',
             null,
             'Override existing auth parameters'
         );
@@ -74,8 +75,13 @@ class ComposerAuthImportCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->input = $input;
-        $this->output = $output;
+        try {
+            // touch auth.json
+            $this->composer->runAuthCommand(['setting-key' => 'http-basic']);
+        } catch (\Exception $e) {
+            //
+        }
+
         return parent::initialize($input, $output);
     }
 
@@ -84,32 +90,38 @@ class ComposerAuthImportCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // touch auth.json
-        try {
-            $this->composer->runAuthCommand(['setting-key' => 'http-basic']);
-        } catch (\Exception $e) {
-            //
+        $paths = $input->getArgument('path');
+        $force = $input->getOption('force');
+        $result = [];
+
+        if (!$paths) {
+            $paths = $this->findAuthJsonPaths();
         }
 
-        try {
-            $newData = $this->getAuthJsonData();
-            $force = $input->getOption('force');
-            $imported = 0;
-            $skipped = 0;
+        foreach ($paths as $path) {
+            $result[$path] = [
+                'imported' => 0,
+                'skipped' => 0,
+            ];
+
+            try {
+                $newData = $this->file->fileGetContents($path);
+                $newData = $this->jsonSerializer->unserialize($newData);
+            } catch (\Exception $e) {
+                continue;
+            }
 
             foreach ($newData as $authType => $values) {
-                if (!$values) {
-                    continue;
+                try {
+                    $existingData = $this->composer->runAuthCommand(['setting-key' => $authType]);
+                    $existingData = $this->jsonSerializer->unserialize($existingData);
+                } catch (\Exception $e) {
+                    $existingData = [];
                 }
-
-                $existingData = $this->composer->runAuthCommand([
-                    'setting-key' => $authType,
-                ]);
-                $existingData = $this->jsonSerializer->unserialize($existingData);
 
                 foreach ($values as $host => $value) {
                     if (isset($existingData[$host]) && !$force) {
-                        $skipped++;
+                        $result[$path]['skipped']++;
                         continue;
                     }
 
@@ -119,53 +131,49 @@ class ComposerAuthImportCommand extends Command
                         $value = array_values($value);
                     }
 
-                    $this->composer->runAuthCommand([
-                        'setting-key' => $authType . '.' . $host,
-                        'setting-value' => $value,
-                    ]);
-                    $imported++;
+                    $result[$path]['imported']++;
+
+                    try {
+                        $this->composer->runAuthCommand([
+                            'setting-key' => $authType . '.' . $host,
+                            'setting-value' => $value,
+                        ]);
+                    } catch (\Exception $e) {
+                        $output->writeln('<error>' . $e->getMessage() . '</error>');
+                        if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                            $output->write($e->getTraceAsString());
+                        }
+
+                        return \Magento\Framework\Console\Cli::RETURN_FAILURE;
+                    }
                 }
             }
-
-            $output->writeln(sprintf(
-                '<info>Done. %s credential(s) imported. %s skipped.</info>',
-                $imported,
-                $skipped
-            ));
-
-            return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
-        } catch (\Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
-            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                $output->write($e->getTraceAsString());
-            }
-
-            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
         }
+
+        $table = new Table($output);
+        $table->setHeaders(['Path', 'Imported', 'Skipped']);
+
+        foreach ($result as $path => $values) {
+            $table->addRow([
+                $path,
+                $values['imported'],
+                $values['skipped'],
+            ]);
+        }
+
+        $table->render();
+
+        $output->writeln('<info>Done.</info>');
+
+        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
     }
 
     /**
      * @return array
      */
-    protected function getAuthJsonData()
+    protected function findAuthJsonPaths()
     {
-        $path = $this->input->getArgument('path');
-
-        if (!$path) {
-            $path = $this->findAuthJsonPath();
-        }
-
-        $json = $this->file->fileGetContents($path);
-
-        return $this->jsonSerializer->unserialize($json);
-    }
-
-    /**
-     * @return string
-     */
-    protected function findAuthJsonPath()
-    {
-        $path = false;
+        $paths = [];
         $commands = [
             ['composer config home', null, false],
             ['composer.phar config home'],
@@ -173,22 +181,29 @@ class ComposerAuthImportCommand extends Command
 
         foreach ($commands as $command) {
             try {
-                $home = $this->process->run(...$command);
-                $home = trim($home);
-                $path = $home . '/auth.json';
+                $path = $this->process->run(...$command);
             } catch (\Exception $e) {
-                //
+                continue;
+            }
+
+            $path = trim($path);
+            $path = $path . '/auth.json';
+
+            if ($this->file->isReadable($path)) {
+                $paths[$path] = $path;
+                break;
             }
         }
 
-        if (!$path && $this->file->isReadable(BP . '/auth.json')) {
-            $path = BP . '/auth.json';
+        $root = BP . '/auth.json';
+        if ($this->file->isReadable($root)) {
+            $paths[$root] = $root;
         }
 
-        if (!$path) {
-            throw new \Exception('Unable to locate auth.json file');
+        if (!$paths) {
+            throw new \Exception('Unable to locate and read auth.json file');
         }
 
-        return $path;
+        return $paths;
     }
 }
