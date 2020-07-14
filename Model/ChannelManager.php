@@ -89,6 +89,11 @@ class ChannelManager
             $string = $this->composer->runAuthCommand([
                 'setting-key' => $channel->getAuthType(), // don't use concat with hostname to fix error when domain level > 3
             ]);
+            
+            if(!$this->isValidJson($string)) {
+                $string = $this->parseJson($string);
+            }
+            
             $data = $this->jsonSerializer->unserialize($string);
 
             return $data[$channel->getHostname()] ?? [];
@@ -100,6 +105,35 @@ class ChannelManager
                 "'composer config -a -g' command failed: " . $e->getMessage()
             );
         }
+    }
+    
+    /**
+     * Parse the string containing json
+     *
+     * @param $string
+     *
+     * @return mixed
+     */
+    public function parseJson($string) {
+        $pattern = '/\{(?:[^{}]|(?R))*\}/x';
+        preg_match($pattern, $string, $matches);
+        if(count($matches) > 0) {
+            return $matches[0];
+        }
+
+        throw new \InvalidArgumentException("Unable to parse Json value. Error: " . json_last_error_msg());
+    }
+
+    /**
+     * Check if the string is valid json return boolean if there's an error
+     *
+     * @param $string
+     *
+     * @return bool
+     */
+    public function isValidJson($string) {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 
     /**
