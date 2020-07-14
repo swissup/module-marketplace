@@ -86,6 +86,7 @@ class ComposerApplication
             'command' => 'config',
             '-a' => true,
             '-g' => true,
+            '-q' => true,
         ], $command));
     }
 
