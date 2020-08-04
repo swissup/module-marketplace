@@ -61,6 +61,11 @@ class Local extends AbstractList
             $packageName = $this->packageInfo->getPackageName($moduleName);
             if ($packageName) {
                 $enabledModules[$packageName] = $packageName;
+                $this->data[$packageName] = [
+                    'name' => $packageName,
+                    'enabled' => true,
+                    'version' => $this->packageInfo->getVersion($moduleName),
+                ];
             }
         }
 
