@@ -52,8 +52,6 @@ class ComposerApplication
      */
     public function run(array $command, OutputInterface $output = null)
     {
-        $this->app->resetComposer();
-
         $command = $this->normalizeCommand($command);
 
         if (!$output) {
