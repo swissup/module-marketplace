@@ -276,6 +276,11 @@ class Collection extends \Magento\Framework\Data\Collection
         if (!$value) {
             $value = 'metapackage';
         }
+
+        if (empty($item['type'])) {
+            return true;
+        }
+
         return $this->filterByField('type', $value, $item);
     }
 

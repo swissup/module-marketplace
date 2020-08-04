@@ -333,6 +333,20 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
 
         if (isset($response['includes'])) {
             $response = $this->fetch($this->getUrl(key($response['includes'])));
+        } elseif (isset($response['provider-includes'])) {
+            foreach ($response['provider-includes'] as $path => $params) {
+                $path = str_replace('%hash%', $params['sha256'], $path);
+                $include = $this->fetch($this->getUrl($path));
+                foreach ($include['providers'] as $packageName => $packageParams) {
+                    $response['packages'][$packageName] = [
+                        'n/a' => [
+                            'name' => $packageName,
+                            'version' => 'n/a',
+                            'sha256' => $packageParams['sha256'],
+                        ]
+                    ];
+                }
+            }
         }
 
         if ($this->hasPublicUrl()) {
