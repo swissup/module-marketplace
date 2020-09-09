@@ -53,11 +53,11 @@ class Validator
             return;
         }
 
-        $memoryRequired = 2000 * 1024 * 1024;
+        $memoryRequired = 2200 * 1024 * 1024;
 
         $memoryLimit = trim(ini_get('memory_limit'));
         if ($memoryLimit != -1 && $this->getMemoryInBytes($memoryLimit) < $memoryRequired) {
-            ini_set('memory_limit', '2G');
+            ini_set('memory_limit', -1);
         }
 
         $memoryLimit = trim(ini_get('memory_limit'));
