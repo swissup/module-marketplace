@@ -48,10 +48,6 @@ define([
             form.destroyInserted();
             registry.get(modal).openModal();
             form.render();
-
-            setTimeout(function () {
-                form.params.packages = [];
-            }, 50);
         }, 300)
     };
 });

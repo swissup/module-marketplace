@@ -17,6 +17,19 @@ define([
         },
 
         /**
+         * @param {Object} params
+         * @param {Object} ajaxSettings
+         * @return {Object}
+         */
+        requestData: function (params, ajaxSettings) {
+            var result = this._super(params, ajaxSettings);
+
+            this.params.packages = [];
+
+            return result;
+        },
+
+        /**
          * @param {Object} response
          */
         onResponse: function (response) {
