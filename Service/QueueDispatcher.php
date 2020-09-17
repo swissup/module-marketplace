@@ -79,7 +79,7 @@ class QueueDispatcher
         } catch (\Exception $e) {
             foreach ($collection as $job) {
                 $statusesToChange = [
-                    JOB::STATUS_QUEUED,
+                    Job::STATUS_QUEUED,
                     Job::STATUS_PENDING,
                 ];
 
@@ -97,7 +97,7 @@ class QueueDispatcher
         }
 
         foreach ($queue as $job) {
-            if ($job->getStatus() !== JOB::STATUS_QUEUED) {
+            if ($job->getStatus() !== Job::STATUS_QUEUED) {
                 // some tasks may be declined during preparation
                 continue;
             }
@@ -257,7 +257,7 @@ class QueueDispatcher
                 ])
                 ->setLogger($this->logger);
         } catch (\Exception $e) {
-            $job->setStatus(JOB::STATUS_ERRORED)
+            $job->setStatus(Job::STATUS_ERRORED)
                 ->setOutput($e->getMessage())
                 ->setFinishedAt($this->getCurrentDate())
                 ->save();
