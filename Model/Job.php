@@ -49,7 +49,7 @@ class Job extends \Magento\Framework\Model\AbstractModel
             return $this;
         }
 
-        return $this->setStatus(Job::STATUS_CANCELED)
+        return $this->setStatus(self::STATUS_CANCELED)
             ->setFinishedAt((new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT))
             ->save();
     }
