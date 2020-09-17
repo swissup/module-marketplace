@@ -42,12 +42,14 @@ class JobDispatcher
     public function __construct(
         \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
+        \Swissup\Marketplace\Helper\Data $helper,
         \Swissup\Marketplace\Model\HandlerFactory $handlerFactory,
         \Swissup\Marketplace\Model\JobFactory $jobFactory,
         \Swissup\Marketplace\Model\Logger\Handler $logHandler
     ) {
         $this->remoteAddress = $remoteAddress;
         $this->jsonSerializer = $jsonSerializer;
+        $this->helper = $helper;
         $this->handlerFactory = $handlerFactory;
         $this->jobFactory = $jobFactory;
         $this->logHandler = $logHandler;
@@ -69,13 +71,15 @@ class JobDispatcher
 
         $this->handlerFactory->create($class, $arguments)->validateBeforeDispatch();
 
-        return $this->jobFactory->create()
-            ->addData([
-                'class' => $class,
-                'arguments_serialized' => $this->jsonSerializer->serialize($arguments),
-                'created_at' => (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT),
-                'status' => Job::STATUS_PENDING,
-            ])
+        $job = $this->jobFactory->create(['data' => [
+            'class' => $class,
+            'arguments_serialized' => $this->jsonSerializer->serialize($arguments),
+            'created_at' => (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT),
+            'status' => Job::STATUS_PENDING,
+        ]]);
+
+        return $job
+            ->setSignature($this->helper->generateJobSignature($job))
             ->save();
     }
 }

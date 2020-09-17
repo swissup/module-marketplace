@@ -158,6 +158,16 @@ class QueueDispatcher
         $ip = [];
         foreach ($queue as $job) {
             try {
+                $this->validator->validateJob($job);
+            } catch (\Exception $e) {
+                $job->setStatus(Job::STATUS_SKIPPED)
+                    ->setOutput(__('Job Validation Failed.') . ' ' . $e->getMessage())
+                    ->setFinishedAt($this->getCurrentDate())
+                    ->save();
+                continue;
+            }
+
+            try {
                 $handler = $this->createHandler($job);
             } catch (\Exception $e) {
                 continue;

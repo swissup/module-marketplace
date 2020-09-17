@@ -4,6 +4,7 @@ namespace Swissup\Marketplace\Service;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\ValidatorException;
+use Swissup\Marketplace\Model\Job;
 
 class Validator
 {
@@ -23,18 +24,26 @@ class Validator
     private $fileDriver;
 
     /**
+     * @var \Swissup\Marketplace\Helper\Data
+     */
+    private $helper;
+
+    /**
      * @param \Magento\Framework\Filesystem $filesystem
      * @param DirectoryList $directoryList
      * @param \Magento\Framework\Filesystem\Driver\File $fileDriver
+     * @param \Swissup\Marketplace\Helper\Data $helper
      */
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
         DirectoryList $directoryList,
-        \Magento\Framework\Filesystem\Driver\File $fileDriver
+        \Magento\Framework\Filesystem\Driver\File $fileDriver,
+        \Swissup\Marketplace\Helper\Data $helper
     ) {
         $this->filesystem = $filesystem;
         $this->directoryList = $directoryList;
         $this->fileDriver = $fileDriver;
+        $this->helper = $helper;
     }
 
     /**
@@ -45,6 +54,20 @@ class Validator
     {
         $this->validateMemoryLimit();
         $this->validatePermissions();
+    }
+
+    /**
+     * @param Job $job
+     * @return void
+     * @throws ValidatorException
+     */
+    public function validateJob(Job $job)
+    {
+        $expectedSignature = $this->helper->generateJobSignature($job);
+
+        if (!hash_equals($expectedSignature, (string) $job->getSignature())) {
+            throw new ValidatorException(__('Invalid signature.'));
+        }
     }
 
     private function validateMemoryLimit()

@@ -25,6 +25,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->createJobTable($setup);
         }
 
+        if (version_compare($context->getVersion(), '1.2.0', '<')) {
+            $this->addSignatureToJobTable($setup);
+        }
+
         $setup->endSetup();
     }
 
@@ -129,5 +133,18 @@ class UpgradeSchema implements UpgradeSchemaInterface
             ->addColumn('output', Table::TYPE_TEXT);
 
         $setup->getConnection()->createTable($table);
+    }
+
+    protected function addSignatureToJobTable(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('swissup_marketplace_job'),
+            'signature',
+            [
+                'type' => Table::TYPE_TEXT,
+                'length' => 64,
+                'comment' => 'Signature',
+            ]
+        );
     }
 }
