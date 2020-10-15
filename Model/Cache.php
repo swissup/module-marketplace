@@ -117,6 +117,10 @@ class Cache
     {
         $dir = $this->getDirectory();
 
+        if (!$dir->isReadable($this->folder)) {
+            return;
+        }
+
         foreach ($dir->read($this->folder) as $path) {
             $file = $dir->openFile($path);
 
