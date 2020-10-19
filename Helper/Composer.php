@@ -73,12 +73,16 @@ class Composer
                         $value = array_values($value);
                     }
 
-                    $result[$path]['imported']++;
-
-                    $this->composer->runAuthCommand([
-                        'setting-key' => $authType . '.' . $host,
-                        'setting-value' => $value,
-                    ]);
+                    try {
+                        $this->composer->runAuthCommand([
+                            'setting-key' => $authType . '.' . $host,
+                            'setting-value' => $value,
+                        ]);
+                        $result[$path]['imported']++;
+                    } catch (\Exception $e) {
+                        $result[$path]['skipped']++;
+                        continue;
+                    }
                 }
             }
         }
