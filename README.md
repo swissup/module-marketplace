@@ -8,13 +8,13 @@ Marketplace.
 
 <p align="center">
     <img alt="CLI Screenshot"
-        width="434px"
-        height="332px"
+        width="415px"
+        height="317px"
         src="https://docs.swissuplabs.com/images/m2/marketplace/cli.png?v=2"
     />
     <img alt="GUI Screenshot"
-        width="434px"
-        height="332px"
+        width="415px"
+        height="317px"
         src="https://docs.swissuplabs.com/images/m2/marketplace/gui.png?v=2"
     />
 </p>
