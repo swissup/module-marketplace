@@ -6,6 +6,7 @@ use Composer\Console\Application;
 use Composer\IO\BufferIO;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Composer\ComposerJsonFinder;
+use Magento\Framework\Filesystem;
 use Swissup\Marketplace\Model\Traits\OutputAware;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -14,6 +15,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ComposerApplication
 {
     use OutputAware;
+
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
+     * @var DirectoryList
+     */
+    protected $directoryList;
 
     /**
      * @var Application
@@ -33,11 +44,15 @@ class ComposerApplication
     /**
      * @param DirectoryList $directoryList
      * @param ComposerJsonFinder $composerJsonFinder
+     * @param Filesystem $filesystem
      */
     public function __construct(
         DirectoryList $directoryList,
-        ComposerJsonFinder $composerJsonFinder
+        ComposerJsonFinder $composerJsonFinder,
+        Filesystem $filesystem
     ) {
+        $this->filesystem = $filesystem;
+        $this->directoryList = $directoryList;
         $this->app = new Application();
         $this->app->setAutoExit(false);
         $this->workdir = dirname($composerJsonFinder->findComposerJson());
@@ -82,17 +97,64 @@ class ComposerApplication
     }
 
     /**
-     * @param array $command
+     * @param array $params
      * @return string
      */
-    public function runAuthCommand(array $command)
+    public function runAuthCommand(array $params)
     {
         return $this->run(array_merge([
             'command' => 'config',
             '-a' => true,
-            '-g' => true,
+            '-g' => !$this->canUseRootAuthJson(),
             '-q' => true,
-        ], $command));
+        ], $params));
+    }
+
+    /**
+     * @return boolean
+     */
+    public function canUseRootAuthJson()
+    {
+        if ($this->prepareAuthJsonFile(DirectoryList::ROOT)) {
+            return true;
+        }
+
+        $this->prepareAuthJsonFile(DirectoryList::COMPOSER_HOME);
+
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthJsonPath()
+    {
+        if ($this->canUseRootAuthJson()) {
+            $dir = $this->directoryList->getPath(DirectoryList::ROOT);
+        } else {
+            $dir = $this->directoryList->getPath(DirectoryList::COMPOSER_HOME);
+        }
+
+        return $dir . '/auth.json';
+    }
+
+    /**
+     * @param string $directoryCode
+     * @return boolean
+     */
+    protected function prepareAuthJsonFile($directoryCode)
+    {
+        $directory = $this->filesystem->getDirectoryWrite($directoryCode);
+
+        if (!$directory->isExist('auth.json')) {
+            try {
+                $directory->writeFile('auth.json', '{}');
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+
+        return $directory->isWritable('auth.json');
     }
 
     /**

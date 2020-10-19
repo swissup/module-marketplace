@@ -2,17 +2,20 @@
 
 namespace Swissup\Marketplace\Helper;
 
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\Helper\AbstractHelper;
 
 class Composer
 {
     public function __construct(
+        \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Framework\Filesystem\Driver\File $file,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
         \Swissup\Marketplace\Model\ComposerApplication $composer,
         \Swissup\Marketplace\Model\Process $process
     ) {
+        $this->directoryList = $directoryList;
         $this->file = $file;
         $this->jsonSerializer = $jsonSerializer;
         $this->composer = $composer;
@@ -27,14 +30,9 @@ class Composer
      */
     public function importAuthCredentials($force = false, array $paths = [])
     {
-        try {
-            // touch auth.json
-            $this->composer->runAuthCommand(['setting-key' => 'http-basic']);
-        } catch (\Exception $e) {
-            //
-        }
-
         $result = [];
+
+        $authJsonData = $this->getAuthJsonData();
 
         if (!$paths) {
             $paths = $this->findAuthJsonPaths();
@@ -54,12 +52,7 @@ class Composer
             }
 
             foreach ($newData as $authType => $values) {
-                try {
-                    $existingData = $this->composer->runAuthCommand(['setting-key' => $authType]);
-                    $existingData = $this->jsonSerializer->unserialize($existingData);
-                } catch (\Exception $e) {
-                    $existingData = [];
-                }
+                $existingData = $authJsonData[$authType] ?? [];
 
                 foreach ($values as $host => $value) {
                     if (isset($existingData[$host]) && !$force) {
@@ -117,7 +110,14 @@ class Composer
             }
         }
 
-        $root = BP . '/auth.json';
+        if ($this->composer->canUseRootAuthJson()) {
+            // imposer from old composer_home/auth.json file
+            $root = $this->directoryList->getPath(DirectoryList::COMPOSER_HOME) . '/auth.json';
+        } else {
+            // import from root/auth.json file
+            $root = $this->directoryList->getPath(DirectoryList::ROOT) . '/auth.json';
+        }
+
         if ($this->file->isReadable($root)) {
             $paths[$root] = $root;
         }
@@ -127,5 +127,26 @@ class Composer
         }
 
         return $paths;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getAuthJsonData()
+    {
+        $path = $this->composer->getAuthJsonPath();
+
+        if (!$this->file->isReadable($path)) {
+            return [];
+        }
+
+        try {
+            $data = $this->file->fileGetContents($path);
+            $data = $this->jsonSerializer->unserialize($data);
+        } catch (\Exception $e) {
+            $data = [];
+        }
+
+        return $data;
     }
 }
