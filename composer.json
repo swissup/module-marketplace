@@ -9,7 +9,7 @@
         "installer"
     ],
     "type": "magento2-module",
-    "version": "1.7.4",
+    "version": "1.7.5",
     "license": "MIT",
     "require": {
         "composer/composer": "*",
