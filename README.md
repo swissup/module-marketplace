@@ -6,15 +6,15 @@ It allows to add unlimited number of custom software update channels and install
 modules and themes from any third-party vendor including official Magento
 Marketplace.
 
-<p align="center">
+<p>
     <img alt="CLI Screenshot"
-        width="415px"
-        height="317px"
+        width="310px"
+        height="237px"
         src="https://docs.swissuplabs.com/images/m2/marketplace/cli.png?v=2"
     />
     <img alt="GUI Screenshot"
-        width="415px"
-        height="317px"
+        width="310px"
+        height="237px"
         src="https://docs.swissuplabs.com/images/m2/marketplace/gui.png?v=2"
     />
 </p>
