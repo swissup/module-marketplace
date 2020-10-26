@@ -228,7 +228,7 @@ class ChannelAbstractCommand extends Command
             $this->output->writeln($line);
         }
 
-        $key = $this->ask(sprintf('Please enter key for %s: ', $channel->getUsername()));
+        $key = $this->ask(sprintf('Please enter key for <fg=green;options=bold>%s</>: ', $channel->getUsername()));
         $channel->addData(['password' => $key]);
         $this->checkCredentials($channel);
 

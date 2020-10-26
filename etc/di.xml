@@ -138,10 +138,10 @@
 3. Copy your access key and paste it here.]]></item>
                 <item name="cliAuthNotice" xsi:type="string"><![CDATA[
 1. Navigate to your account on the site where you've made a purchase:
-   - https://argentotheme.com/license/customer/activation/
-   - https://firecheckout.net/license/customer/activation/
-   - https://swissuplabs.com/license/customer/activation/
-2. Activate {{username}} domain.
+   - <fg=blue>https://argentotheme.com/license/customer/activation/</>
+   - <fg=blue>https://firecheckout.net/license/customer/activation/</>
+   - <fg=blue>https://swissuplabs.com/license/customer/activation/</>
+2. Activate <fg=green;options=bold>{{username}}</> domain.
 3. Copy your access key and paste it here.]]></item>
             </argument>
         </arguments>
