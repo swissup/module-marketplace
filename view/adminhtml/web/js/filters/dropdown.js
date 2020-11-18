@@ -30,7 +30,8 @@ define([
             );
         });
 
-        items.click(function () {
+        items.click(function (event) {
+            event.preventDefault();
             filter.value($(this).data('value'));
             filters.apply();
             $('[data-toggle=dropdown].active', wrapper).trigger('close.dropdown');
