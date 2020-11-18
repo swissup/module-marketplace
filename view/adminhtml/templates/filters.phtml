@@ -1,5 +1,19 @@
+<div class="channel-switcher store-switcher"
+     data-mage-init='{"Swissup_Marketplace/js/filters/dropdown":{"filter":"channel"}}'
+     style="display: none">
+    <span class="store-switcher-label"><?= $block->escapeHtml(__('Channel')) ?>:</span>
+    <div class="actions dropdown closable">
+        <button
+            type="button"
+            class="admin__action-dropdown"
+            data-mage-init='{"dropdown":{}}'
+            data-toggle="dropdown"
+            aria-haspopup="true"></button>
+        <ul class="dropdown-menu action-menu" data-role="channel-list"></ul>
+    </div>
+</div>
 <div class="package-type-switcher store-switcher"
-     data-mage-init='{"Swissup_Marketplace/js/filters/package-type":{}}'
+     data-mage-init='{"Swissup_Marketplace/js/filters/dropdown":{"filter":"type"}}'
      style="display: none">
     <span class="store-switcher-label"><?= $block->escapeHtml(__('Package Type')) ?>:</span>
     <div class="actions dropdown closable">
