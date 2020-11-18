@@ -39,24 +39,24 @@ define([
 
             return [{
                 index: 'update',
-                class: 'action',
+                class: 'action update',
                 rowIndex: row._rowIndex,
                 label: $t('Update') + suffix,
                 title: row.accessible ? '' : $t('Latest version is not accessible')
             }, {
                 index: 'install',
-                class: row.installer && row.downloaded ? 'action primary' : 'action',
+                class: row.installer && row.downloaded ? 'action primary install' : 'action install',
                 rowIndex: row._rowIndex,
                 label: installLabel + suffix,
                 title: row.accessible ? '' : $t('Latest version is not accessible')
             }, {
                 index: 'enable',
-                class: 'action primary',
+                class: 'action primary enable',
                 rowIndex: row._rowIndex,
                 label: $t('Enable')
             }, {
                 index: 'disable',
-                class: 'action',
+                class: 'action disable',
                 hidden: true,
                 rowIndex: row._rowIndex,
                 label: $t('Disable')

@@ -80,20 +80,44 @@
 
     margin: 20px -@grid-item__gap / 2;
 
-    .grid-item {
-        width: @grid-item__width - @grid-item__gap;
-        margin: 0 @grid-item__gap / 2 @grid-item__gap;
-
-        display: flex;
+    &.mode-list {
         flex-direction: column;
+        border: @list-item__border;
+        margin: 20px 0 0;
+    }
 
+    .grid-item {
+        display: flex;
         background: @grid-item__background;
         padding: @grid-item__padding @grid-item__padding @grid-item__padding - 3;
-        border-radius: @grid-item__border-radius;
+        margin: 0 @grid-item__gap / 2 @grid-item__gap;
         position: relative;
 
-        &:not(.noimage) {
-            min-height: 365px;
+        .mode-grid& {
+            border-radius: @grid-item__border-radius;
+            width: @grid-item__width - @grid-item__gap;
+            flex-direction: column;
+            &:not(.noimage) {
+                min-height: 365px;
+            }
+        }
+        .mode-list& {
+            align-items: center;
+            margin: 0;
+            padding: @list-item__padding @list-item__padding @list-item__padding - 1;
+            border-bottom: @list-item__border;
+
+            > * {
+                width: auto;
+            }
+
+            &:hover {
+                background: #fdfdfd;
+            }
+
+            &:last-child {
+                border-bottom: 0;
+            }
         }
 
         &.hidden {
@@ -109,36 +133,49 @@
             }
         }
 
-        &::before {
-            content: '';
-            position: absolute;
-            z-index: -1;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            border-radius: @grid-item__border-radius;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.05),
-                        0 20px 50px -12px rgba(0, 0, 0, 0.2);
-            // box-shadow: 0 0 1px rgba(0, 0, 0, 0.6);
+        .mode-grid& {
+            &::before {
+                content: '';
+                position: absolute;
+                z-index: -1;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                border-radius: @grid-item__border-radius;
+                box-shadow: 0 0 3px rgba(0, 0, 0, 0.05),
+                            0 20px 50px -12px rgba(0, 0, 0, 0.2);
+
+                .mode-list& {
+                    box-shadow: 0 0 3px rgba(0, 0, 0, 0.05),
+                                0 10px 20px -8px rgba(0, 0, 0, 0.2);
+                }
+            }
         }
 
         .data-grid-checkbox-cell-inner {
-            position: absolute;
-            left: 0;
-            top: 0;
-            z-index: 10;
-            padding: 1.5rem;
+            .mode-grid& {
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 10;
+                padding: 1.5rem;
 
-            &::before {
-                height: auto;
-            }
+                &::before {
+                    height: auto;
+                }
 
-            label {
-                opacity: 0;
+                label {
+                    opacity: 0;
+                }
+                input:checked ~ label {
+                    opacity: 1;
+                }
             }
-            input:checked ~ label {
-                opacity: 1;
+            .mode-list& {
+                display: flex;
+                align-items: center;
+                margin-right: 5px;
             }
         }
         &:hover {
@@ -151,7 +188,9 @@
 
         > div {
             display: block;
-            margin-bottom: 5px;
+            .mode-grid& {
+                margin-bottom: 5px;
+            }
             &:last-child {
                 margin-bottom: 0;
             }
@@ -163,8 +202,13 @@
     .marketplace-grid-items {
         margin: 30px -@grid-item__desktop__gap / 2;
         .grid-item {
-            width: @grid-item__desktop__width - @grid-item__desktop__gap;
             margin: 0 @grid-item__desktop__gap / 2 @grid-item__desktop__gap;
+            .mode-grid& {
+                width: @grid-item__desktop__width - @grid-item__desktop__gap;
+            }
+            .mode-list& {
+                margin-bottom: 0;
+            }
         }
     }
 }

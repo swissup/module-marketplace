@@ -1,9 +1,16 @@
 .marketplace-grid-items {
     .grid-item [data-index="links"] {
-        position: absolute;
-        z-index: 10;
         right: 0;
         top: 0;
+
+        .mode-grid& {
+            position: absolute;
+            z-index: 10;
+        }
+
+        .mode-list& {
+            order: 1000;
+        }
 
         .action-select-wrap {
             .action-select {
@@ -73,16 +80,18 @@
         }
     }
 
-    .grid-item:not(.noimage) [data-index="image"] ~ [data-index="links"] {
-        .action-select-wrap {
-            .action-select {
-                &::before {
-                    background: #fff;
-                    box-shadow: 0 0 1px rgba(0, 0, 0, 0.2),
-                                0 7px 0 #fff,
-                                0 7px 1px rgba(0, 0, 0, 0.2),
-                                0 14px 0 #fff,
-                                0 14px 1px rgba(0, 0, 0, 0.2);
+    .mode-grid& {
+        .grid-item:not(.noimage) [data-index="image"] ~ [data-index="links"] {
+            .action-select-wrap {
+                .action-select {
+                    &::before {
+                        background: #fff;
+                        box-shadow: 0 0 1px rgba(0, 0, 0, 0.2),
+                                    0 7px 0 #fff,
+                                    0 7px 1px rgba(0, 0, 0, 0.2),
+                                    0 14px 0 #fff,
+                                    0 14px 1px rgba(0, 0, 0, 0.2);
+                    }
                 }
             }
         }

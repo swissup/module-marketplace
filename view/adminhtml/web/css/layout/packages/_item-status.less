@@ -2,9 +2,23 @@
     .grid-item {
         [data-index="status"] {
             font-size: .9em;
-            padding-top: 10px;
-            margin: auto 0 12px;
             text-shadow: 1px 1px rgba(0,0,0,0.1);
+
+            .mode-grid& {
+                margin: auto 0 12px;
+                padding-top: 10px;
+            }
+
+            .mode-list& {
+                display: flex;
+                margin-left: auto;
+                > span {
+                    margin-right: 4px;
+                }
+                .action.install {
+                    order: -1;
+                }
+            }
 
             .version {
                 display: inline-flex;
@@ -18,7 +32,10 @@
             .action,
             .version {
                 color: rgba(255,255,255,0.9);
-                margin: 0 2px 4px 0;
+
+                .mode-grid& {
+                    margin: 0 2px 4px 0;
+                }
             }
 
             .action,

@@ -64,11 +64,13 @@
 
     #marketplace-activity-checkbox {
         display: none;
-        &:checked {
-            ~ .admin__data-grid-wrap {
-                pointer-events: all;
-                opacity: 1;
-                transform: translateY(0);
+        .active& {
+            &:checked {
+                ~ .admin__data-grid-wrap {
+                    pointer-events: all;
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
         }
     }
