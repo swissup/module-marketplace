@@ -38,6 +38,22 @@ define([
         },
 
         /**
+         * Returns visible actions for a specified row.
+         *
+         * @param {Number} rowIndex - Index of a row.
+         * @returns {Array} Visible actions.
+         */
+        getVisibleActions: function (rowIndex) {
+            var actions = this._super(rowIndex);
+
+            if (actions.length === 1 && actions[0].index === 'separator') {
+                return [];
+            }
+
+            return actions;
+        },
+
+        /**
          * Checks if action should be displayed.
          *
          * @param {Object} action - Action object.
