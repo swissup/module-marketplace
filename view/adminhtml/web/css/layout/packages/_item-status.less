@@ -15,7 +15,8 @@
                 > span {
                     margin-right: 4px;
                 }
-                .action.install {
+                .action.install,
+                .action.enable {
                     order: -1;
                 }
             }
@@ -25,6 +26,7 @@
             }
 
             span {
+                text-align: center;
                 display: inline-block;
                 border-radius: 4px;
             }
@@ -52,11 +54,23 @@
                     border-top-left-radius: 0;
                     border-bottom-left-radius: 0;
                 }
+
+                .mode-list& {
+                    .number {
+                        min-width: 45px;
+                    }
+                    .time {
+                        min-width: 90px;
+                    }
+                }
             }
 
             &.state-na {
                 .version {
                     background: #a7a7a7;
+                    .mode-list& {
+                        display: none;
+                    }
                 }
             }
             &.state-outdated {

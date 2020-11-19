@@ -82,7 +82,6 @@
 
     &.mode-list {
         flex-direction: column;
-        border: @list-item__border;
         margin: 20px 0 0;
     }
 
@@ -103,20 +102,20 @@
         }
         .mode-list& {
             align-items: center;
-            margin: 0;
+            margin: -1px 0 0;
             padding: @list-item__padding @list-item__padding @list-item__padding - 1;
-            border-bottom: @list-item__border;
+            border: @list-item__border;
 
             > * {
                 width: auto;
             }
 
-            &:hover {
+            &:nth-child(even) {
                 background: #fdfdfd;
             }
 
-            &:last-child {
-                border-bottom: 0;
+            &:hover {
+                background: #fafdff;
             }
         }
 
