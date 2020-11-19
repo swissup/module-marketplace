@@ -8,7 +8,11 @@
     </tr>
 </table>
 
-<ol class="marketplace-grid-items mode-grid">
+<div class="marketplace-mode-switcher">
+    <render args="viewSwitcherTmpl"/>
+</div>
+
+<ol class="marketplace-grid-items" css="'mode-' + displayMode">
     <li class="grid-item" repeat="foreach: rows, item: '$row'" data-bind="
         css: {
             busy: $row().busy,
