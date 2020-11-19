@@ -141,7 +141,9 @@ class PackageAbstractCommand extends Command
             }
         }
 
-        $this->processTasks($after);
+        if ($success) {
+            $this->processTasks($after);
+        }
 
         return $success ?
             \Magento\Framework\Console\Cli::RETURN_SUCCESS :
