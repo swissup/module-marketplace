@@ -78,7 +78,12 @@ class Local extends AbstractList
         $data = $this->jsonSerializer->unserialize($data);
 
         foreach ($data['packages'] as $config) {
-            $this->data[$config['name']] = $this->extractPackageData($config);
+            $data = $this->extractPackageData($config);
+            if (!empty($this->data[$config['name']]['version'])) {
+                $data['version'] = $this->data[$config['name']]['version'];
+            }
+
+            $this->data[$config['name']] = $data;
             $this->data[$config['name']]['enabled'] = true;
             $this->data[$config['name']]['composer'] = isset($json['require'][$config['name']]);
 
