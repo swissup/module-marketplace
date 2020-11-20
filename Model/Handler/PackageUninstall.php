@@ -36,7 +36,7 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
     public function beforeQueue()
     {
         return [
-            Additional\MaintenanceEnable::class => true,
+            Additional\MaintenanceEnable::class => !$this->isMaintenanceEnabled(),
             Additional\ProductionDisable::class => $this->isProduction(),
         ];
     }
@@ -50,7 +50,7 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
             Additional\CleanupFilesystem::class => true,
             Additional\SetupUpgrade::class => true,
             Additional\ProductionEnable::class => $this->isProduction(),
-            Additional\MaintenanceDisable::class => true,
+            Additional\MaintenanceDisable::class => !$this->isMaintenanceEnabled(),
         ];
     }
 }
