@@ -344,6 +344,7 @@ class ConfigReader
     private function preparePath($value)
     {
         $subdir = $this->currentPath . '/' . self::DIR . '/';
+        $subdir = str_replace('/', DIRECTORY_SEPARATOR, $subdir);
         $result = $subdir . $value;
         $result = realpath($result);
 
