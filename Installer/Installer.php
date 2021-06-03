@@ -93,7 +93,8 @@ class Installer
 
             foreach ($commands as $config) {
                 $params = [];
-                foreach ($config['data'] as $key => $param) {
+                $data = isset($config['data']) ? $config['data'] : [];
+                foreach ($data as $key => $param) {
                     $params[$key] = $this->processArguments($param, $requestData);
                 }
 
