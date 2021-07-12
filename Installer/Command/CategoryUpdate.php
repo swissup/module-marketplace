@@ -10,6 +10,11 @@ class CategoryUpdate
 {
     use LoggerAware;
 
+    /**
+     * @var \Swissup\Marketplace\Installer\Helper\Collection
+     */
+    private $collectionHelper;
+
     public function __construct(
         \Swissup\Marketplace\Installer\Helper\Collection $collectionHelper
     ) {

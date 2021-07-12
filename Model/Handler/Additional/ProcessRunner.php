@@ -12,6 +12,11 @@ class ProcessRunner extends AbstractHandler
     private $process;
 
     /**
+     * @var string|null
+     */
+    private $command;
+
+    /**
      * @param \Swissup\Marketplace\Model\Process $process
      * @param array $data
      */
@@ -31,6 +36,10 @@ class ProcessRunner extends AbstractHandler
         return $this->process->run($this->getCommand(), $this->getLogger());
     }
 
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
     public function getCommand()
     {
         if (!$this->command) {

@@ -44,6 +44,11 @@ class ChannelAbstractCommand extends Command
     protected $choiceQuestionFactory;
 
     /**
+     * @var QuestionHelper
+     */
+    protected $questionHelper;
+
+    /**
      * @var InputInterface
      */
     protected $input;

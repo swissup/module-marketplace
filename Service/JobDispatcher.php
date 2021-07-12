@@ -18,6 +18,11 @@ class JobDispatcher
     private $jsonSerializer;
 
     /**
+     * @var \Swissup\Marketplace\Helper\Data
+     */
+    private $helper;
+
+    /**
      * @var \Swissup\Marketplace\Model\HandlerFactory
      */
     private $handlerFactory;

@@ -16,6 +16,11 @@ class Index extends \Magento\Backend\App\Action
     protected $resultPageFactory;
 
     /**
+     * @var \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory
+     */
+    protected $cronCollectionFactory;
+
+    /**
      * @param Context $context
      * @param PageFactory $resultPageFactory
      * @param \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory

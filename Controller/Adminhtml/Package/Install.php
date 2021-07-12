@@ -9,6 +9,16 @@ class Install extends \Magento\Backend\App\Action
     const ADMIN_RESOURCE = 'Swissup_Marketplace::package_manage';
 
     /**
+     * @var \Swissup\Marketplace\Installer\Installer
+     */
+    private $installer;
+
+    /**
+     * @var \Swissup\Marketplace\Model\Logger\BufferLogger
+     */
+    private $logger;
+
+    /**
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Swissup\Marketplace\Installer\Installer $installer
      */

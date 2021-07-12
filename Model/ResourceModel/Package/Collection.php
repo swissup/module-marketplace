@@ -21,6 +21,16 @@ class Collection extends \Magento\Framework\Data\Collection
      */
     protected $installer;
 
+    /**
+     * @var \Swissup\Marketplace\Model\PackagesList\Local
+     */
+    protected $localPackages;
+
+    /**
+     * @var \Swissup\Marketplace\Model\PackagesList\Remote
+     */
+    protected $remotePackages;
+
     public function __construct(
         EntityFactoryInterface $entityFactory,
         \Swissup\Marketplace\Installer\Installer $installer,
@@ -31,7 +41,7 @@ class Collection extends \Magento\Framework\Data\Collection
         $this->localPackages = $localPackages;
         $this->remotePackages = $remotePackages;
 
-        return parent::__construct($entityFactory);
+        parent::__construct($entityFactory);
     }
 
     /**

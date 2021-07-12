@@ -8,6 +8,39 @@ use Magento\Framework\App\Helper\AbstractHelper;
 
 class Composer
 {
+    /**
+     * @var DirectoryList
+     */
+    private $directoryList;
+
+    /**
+     * @var \Magento\Framework\Filesystem\Driver\File
+     */
+    private $file;
+
+    /**
+     * @var \Magento\Framework\Serialize\Serializer\Json
+     */
+    private $jsonSerializer;
+
+    /**
+     * @var \Swissup\Marketplace\Model\ComposerApplication
+     */
+    private $composer;
+
+    /**
+     * @var \Swissup\Marketplace\Model\Process
+     */
+    private $process;
+
+    /**
+     * Composer constructor.
+     * @param DirectoryList $directoryList
+     * @param \Magento\Framework\Filesystem\Driver\File $file
+     * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
+     * @param \Swissup\Marketplace\Model\ComposerApplication $composer
+     * @param \Swissup\Marketplace\Model\Process $process
+     */
     public function __construct(
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Framework\Filesystem\Driver\File $file,

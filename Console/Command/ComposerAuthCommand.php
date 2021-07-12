@@ -9,6 +9,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ComposerAuthCommand extends Command
 {
+    /**
+     * @var \Swissup\Marketplace\Model\ComposerApplication
+     */
+    private $composer;
+
+    /**
+     *
+     * @param \Swissup\Marketplace\Model\ComposerApplication $composer
+     */
     public function __construct(
         \Swissup\Marketplace\Model\ComposerApplication $composer
     ) {

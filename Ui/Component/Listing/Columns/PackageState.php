@@ -8,6 +8,11 @@ use Magento\Framework\Data\OptionSourceInterface;
 class PackageState implements OptionSourceInterface
 {
     /**
+     * @var Escaper
+     */
+    private $escaper;
+
+    /**
      * @param Escaper $escaper
      */
     public function __construct(

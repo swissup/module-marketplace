@@ -10,6 +10,11 @@ class PackageInstallDataProvider extends \Magento\Ui\DataProvider\AbstractDataPr
     protected $request;
 
     /**
+     * @var \Swissup\Marketplace\Installer\Installer
+     */
+    protected $installer;
+
+    /**
      * @param string $name
      * @param string $primaryFieldName
      * @param string $requestFieldName

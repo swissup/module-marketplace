@@ -9,6 +9,16 @@ use Swissup\Marketplace\Model\ChannelRepository;
 class Channel implements OptionSourceInterface
 {
     /**
+     * @var ChannelRepository
+     */
+    private $channelRepository;
+
+    /**
+     * @var Escaper
+     */
+    private $escaper;
+
+    /**
      * @param ChannelRepository $channelRepository
      * @param Escaper $escaper
      */

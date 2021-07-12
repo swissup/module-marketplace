@@ -14,6 +14,6 @@ class Product extends ProductCollection
     {
         // $this->logger->warning('Product Command is deprecated. Please use ProductCollection instead');
 
-        return parent::execute($request);
+        parent::execute($request);
     }
 }

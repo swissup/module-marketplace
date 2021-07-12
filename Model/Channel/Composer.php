@@ -19,6 +19,11 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     protected $data = [];
 
     /**
+     * @var \Swissup\Marketplace\Model\ChannelManager
+     */
+    protected $channelManager;
+
+    /**
      * @var \Swissup\Marketplace\Model\Cache
      */
     protected $cache;

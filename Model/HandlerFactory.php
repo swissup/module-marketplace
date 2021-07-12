@@ -58,7 +58,7 @@ class HandlerFactory
             throw new \InvalidArgumentException(
                 sprintf(
                     'Handler "%s" must implement \Swissup\Marketplace\Api\HandlerInterface.',
-                    $id
+                    $class
                 )
             );
         }

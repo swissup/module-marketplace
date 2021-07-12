@@ -96,7 +96,7 @@ class CmsPage
                 $page->save();
             } catch (\Exception $e) {
                 $this->logger->warning(
-                    sprintf('%s "%s"', $e->getMessage(), $data['identifier'])
+                    sprintf('%s "%s"', $e->getMessage(), $page->getIdentifier())
                 );
             }
         }
