@@ -266,6 +266,14 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     }
 
     /**
+     * @return boolean
+     */
+    public function isRuntime()
+    {
+        return !empty($this->data['runtime']);
+    }
+
+    /**
      * @return string
      */
     public function getUsername()
@@ -535,5 +543,16 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     protected function unserialize($data)
     {
         return $this->jsonSerializer->unserialize($data);
+    }
+
+    /**
+     * @return array
+     */
+    public function getComposerRepositoryData()
+    {
+        return [
+            'type' => $this->getType(),
+            'url' => $this->getUrl(),
+        ];
     }
 }

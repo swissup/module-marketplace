@@ -63,4 +63,9 @@ interface ChannelInterface
      * @return $this
      */
     public function removeCache();
+
+    /**
+     * @return array
+     */
+    public function getComposerRepositoryData();
 }

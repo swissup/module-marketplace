@@ -9,16 +9,33 @@ use Swissup\Marketplace\Api\ChannelInterface;
 class ChannelRepository
 {
     /**
+     * @var \Swissup\Marketplace\Model\ChannelManager
+     */
+    private $channelManager;
+
+    /**
+     * @var \Swissup\Marketplace\Model\ChannelFactory
+     */
+    private $channelFactory;
+
+    /**
      * @var ChannelInterface[]
      */
     private $channels = [];
 
     /**
-     * @param ChannelInterface[] $channels
+     * @param array $channels
+     * @param \Swissup\Marketplace\Model\ChannelManager $channelManager
+     * @param \Swissup\Marketplace\Model\ChannelFactory $channelFactory
      */
     public function __construct(
-        array $channels
+        array $channels,
+        \Swissup\Marketplace\Model\ChannelManager $channelManager,
+        \Swissup\Marketplace\Model\ChannelFactory $channelFactory
     ) {
+        $this->channelManager = $channelManager;
+        $this->channelFactory = $channelFactory;
+
         $this->setChannels($channels);
     }
 
@@ -28,6 +45,8 @@ class ChannelRepository
      */
     private function setChannels($channels)
     {
+        $urls = [];
+
         foreach ($channels as $channel) {
             $identifier = $channel->getIdentifier();
 
@@ -36,6 +55,29 @@ class ChannelRepository
             }
 
             $this->channels[$identifier] = $channel;
+            $urls[$channel->getUrl()] = true;
+        }
+
+        // create runtime channels (for composer http-basic type only)
+        foreach ($this->channelManager->getAllChannels() as $identifier => $data) {
+            if (!isset($data['url']) || strpos($data['url'], 'packagist.org') !== false) {
+                continue;
+            }
+
+            if (isset($urls[$data['url']])) {
+                continue;
+            }
+
+            $data['runtime'] = true;
+            $data['authType'] = 'http-basic';
+
+            try {
+                $channel = $this->channelFactory->create($data);
+            } catch (\Exception $e) {
+                continue;
+            }
+
+            $this->channels[$channel->getIdentifier()] = $channel;
         }
 
         return $this;

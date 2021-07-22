@@ -3,6 +3,7 @@
 namespace Swissup\Marketplace\Model;
 
 use Swissup\Marketplace\Api\ChannelInterface;
+use Magento\Framework\App\Filesystem\DirectoryList;
 
 class ChannelManager
 {
@@ -17,15 +18,28 @@ class ChannelManager
     protected $jsonSerializer;
 
     /**
-     * @param \Swissup\Marketplace\Model\ComposerApplication $appFactory
+     * @var \Magento\Framework\Filesystem
+     */
+    protected $filesystem;
+
+    /**
+     * @var array
+     */
+    protected $channels;
+
+    /**
+     * @param \Swissup\Marketplace\Model\ComposerApplication $composer
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
+     * @param \Magento\Framework\Filesystem $filesystem
      */
     public function __construct(
         \Swissup\Marketplace\Model\ComposerApplication $composer,
-        \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
+        \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
+        \Magento\Framework\Filesystem $filesystem
     ) {
         $this->composer = $composer;
         $this->jsonSerializer = $jsonSerializer;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -34,6 +48,13 @@ class ChannelManager
      */
     public function enable($channel)
     {
+        // remove runtime channel from backup file
+        if ($channel->isRuntime()) {
+            $data = $this->readDisabledRuntimeChannels();
+            unset($data[$channel->getIdentifier()]);
+            $this->writeDisabledRuntimeChannels($data);
+        }
+
         return $this->composer->run([
             'command' => 'config',
             'setting-key' => 'repositories.' . $channel->getIdentifier(),
@@ -58,6 +79,15 @@ class ChannelManager
                 $id = $key;
                 break;
             }
+        }
+
+        // save runtime channel to backup file to allow to enable it later
+        if ($channel->isRuntime()) {
+            $data = $this->readDisabledRuntimeChannels();
+            $data = array_merge($data, [
+                $channel->getIdentifier() => $channel->getComposerRepositoryData(),
+            ]);
+            $this->writeDisabledRuntimeChannels($data);
         }
 
         return $this->composer->run([
@@ -122,6 +152,10 @@ class ChannelManager
      */
     public function getEnabledChannels()
     {
+        if ($this->channels !== null) {
+            return $this->channels;
+        }
+
         try {
             $channels = $this->composer->run([
                 'command' => 'config',
@@ -135,6 +169,51 @@ class ChannelManager
             );
         }
 
+        $this->channels = $channels;
+
         return $channels;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllChannels()
+    {
+        return array_merge($this->getEnabledChannels(), $this->readDisabledRuntimeChannels());
+    }
+
+    /**
+     * @return array
+     */
+    private function readDisabledRuntimeChannels()
+    {
+        $dir = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
+        $path = 'swissup/marketplace/repositories.json';
+
+        if (!$dir->isReadable($path)) {
+            return [];
+        }
+
+        try {
+            $file = $dir->openFile($path);
+            $data = $file->readAll();
+            $data = $this->jsonSerializer->unserialize($data);
+        } catch (\Exception $e) {
+            $data = [];
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     */
+    private function writeDisabledRuntimeChannels($data)
+    {
+        $dir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $file = $dir->openFile('swissup/marketplace/repositories.json');
+
+        $file->flush();
+        $file->write($this->jsonSerializer->serialize($data));
     }
 }
