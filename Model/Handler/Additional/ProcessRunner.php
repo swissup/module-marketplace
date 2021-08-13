@@ -14,7 +14,7 @@ class ProcessRunner extends AbstractHandler
     /**
      * @var string|null
      */
-    private $command;
+    protected $command;
 
     /**
      * @param \Swissup\Marketplace\Model\Process $process
