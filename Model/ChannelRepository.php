@@ -21,7 +21,12 @@ class ChannelRepository
     /**
      * @var ChannelInterface[]
      */
-    private $channels = [];
+    private $channels = null;
+
+    /**
+     * @var array
+     */
+    private $rawChannels = [];
 
     /**
      * @param array $channels
@@ -35,17 +40,21 @@ class ChannelRepository
     ) {
         $this->channelManager = $channelManager;
         $this->channelFactory = $channelFactory;
-
-        $this->setChannels($channels);
+        $this->rawChannels = $channels;
     }
 
     /**
-     * @param ChannelInterface[] $channels
      * @throws AlreadyExistsException
      */
-    private function setChannels($channels)
+    private function prepareChannels()
     {
+        if ($this->channels !== null) {
+            return $this;
+        }
+
         $urls = [];
+        $channels = $this->rawChannels;
+        $this->channels = [];
 
         foreach ($channels as $channel) {
             $identifier = $channel->getIdentifier();
@@ -131,6 +140,8 @@ class ChannelRepository
      */
     public function getList($enabledOnly = false)
     {
+        $this->prepareChannels();
+
         if (!$enabledOnly) {
             return $this->channels;
         }
