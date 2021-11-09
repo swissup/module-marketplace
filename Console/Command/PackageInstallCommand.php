@@ -79,7 +79,7 @@ class PackageInstallCommand extends PackageAbstractCommand
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
-        if (!function_exists('exec')) {
+        if (!function_exists('exec') || !function_exists('shell_exec')) {
             if (method_exists(QuestionHelper::class, 'disableStty')) {
                 QuestionHelper::disableStty();
             }
