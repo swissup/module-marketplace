@@ -9,7 +9,7 @@ use Symfony\Component\Console\Logger\ConsoleLogger;
 
 class SetupUpgrade extends ProcessRunner implements HandlerInterface
 {
-    protected $command = 'bin/magento setup:upgrade';
+    protected $command = 'bin/magento setup:upgrade --safe-mode=1';
 
     public function getTitle()
     {
