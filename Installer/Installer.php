@@ -206,7 +206,7 @@ class Installer
 
             return call_user_func_array(
                 [$this->objectManager->get($class), $method],
-                ['request' => $requestData] + array_values($arguments['arguments'])
+                array_merge([$requestData], array_values($arguments['arguments']))
             );
         }
 
