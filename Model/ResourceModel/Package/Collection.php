@@ -184,27 +184,31 @@ class Collection extends \Magento\Framework\Data\Collection
     protected function _renderOrders()
     {
         usort($this->data, function ($a, $b) {
-            if ($a['downloaded'] === $b['downloaded']) {
-                if ($a['enabled'] === $b['enabled']) {
-                    if ($a['state'] !== $b['state']) {
-                        return $a['state'] === 'outdated' ? -1 : 1;
-                    }
+            if ($a['downloaded'] !== $b['downloaded']) {
+                return $a['downloaded'] > $b['downloaded'] ? -1 : 1;
+            }
 
-                    if (isset($a['remote']['time'], $b['remote']['time'])) {
-                        return $a['remote']['time'] > $b['remote']['time'] ? -1 : 1;
-                    } elseif (isset($a['remote']['time'])) {
-                        return -1;
-                    } elseif (isset($b['remote']['time'])) {
-                        return 1;
-                    } else {
-                        return strcmp($a['remote']['name'], $b['remote']['name']);
-                    }
-                }
-
+            if ($a['enabled'] !== $b['enabled']) {
                 return $a['enabled'] > $b['enabled'] ? -1 : 1;
             }
 
-            return $a['downloaded'] > $b['downloaded'] ? -1 : 1;
+            if ($a['state'] !== $b['state']) {
+                return $a['state'] === 'outdated' ? -1 : 1;
+            }
+
+            if (isset($a['remote']['time'], $b['remote']['time'])) {
+                return $a['remote']['time'] > $b['remote']['time'] ? -1 : 1;
+            }
+
+            if (isset($a['remote']['time'])) {
+                return -1;
+            }
+
+            if (isset($b['remote']['time'])) {
+                return 1;
+            }
+
+            return strcmp($a['remote']['name'], $b['remote']['name']);
         });
 
         return $this;
