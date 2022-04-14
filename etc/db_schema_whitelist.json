@@ -1,0 +1,22 @@
+{
+    "swissup_marketplace_job": {
+        "column": {
+            "job_id": true,
+            "cron_schedule_id": true,
+            "class": true,
+            "arguments_serialized": true,
+            "status": true,
+            "visibility": true,
+            "created_at": true,
+            "scheduled_at": true,
+            "started_at": true,
+            "finished_at": true,
+            "attempts": true,
+            "output": true,
+            "signature": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}
