@@ -4,8 +4,8 @@
             <span class="domain" data-bind="text: letter, attr: {
                 title: title,
                 'data-domain': domain
-            }"/>
-            <span class="key" data-bind="text: key"/>
+            }"></span>
+            <span class="key" data-bind="text: key"></span>
         </div>
         <span class="actions">
             <span class="action-validate" data-bind="
@@ -13,19 +13,19 @@
                 text: $t('Validate'),
                 attr: {
                     title: $t('Validate this key')
-                }"/>
+                }"></span>
             <span class="action-delete" data-bind="
                 click: $parent.removeKey.bind($parent, key),
                 text: $t('Delete'),
                 attr: {
                     title: $t('Remove this key')
-                }"/>
+                }"></span>
         </span>
     </li>
 </ul>
 
 <!-- ko if: !hasKeys() -->
-    <span data-bind="text: $t('None')"/>
+    <span data-bind="text: $t('None')"></span>
 <!-- /ko -->
 
 <input class="admin__control-text" type="hidden"

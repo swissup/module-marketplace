@@ -3,14 +3,14 @@
     css="'state-' + $row().state"
 >
     <span class="version" attr="title: $col.getTitle($row())">
-        <span class="number" text="$col.getVersion($row())"/>
-        <span class="time" if="$row().time || $row().remote.time" text="$col.getDate($row())"/>
+        <span class="number" text="$col.getVersion($row())"></span>
+        <span class="time" if="$row().time || $row().remote.time" text="$col.getDate($row())"></span>
     </span>
 
     <!-- ko foreach: {data: $col.getActions($row()), as: '$action'} -->
         <span if="$col.isActionVisible($action)"
             click="$col.getActionHandler($action)"
             text="$action.label"
-            attr="class: $action.class, title: $action.title"/>
+            attr="class: $action.class, title: $action.title"></span>
     <!-- /ko -->
 </div>

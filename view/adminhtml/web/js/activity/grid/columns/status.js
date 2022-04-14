@@ -36,7 +36,7 @@ define([
          */
         preview: function (row) {
             var modalHtml = row.output,
-                previewPopup = $('<pre/>').html(modalHtml);
+                previewPopup = $('<pre>').html(modalHtml);
 
             previewPopup.modal({
                 title: $t('Result'),

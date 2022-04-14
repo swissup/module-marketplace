@@ -3,7 +3,7 @@
     <label for="marketplace-activity-checkbox" data-bind="attr: {
         title: secondsToNextQueuePhrase()
     }">
-        <div class="marketplace-activity-loader" css="active: isRunning()"/>
+        <div class="marketplace-activity-loader" css="active: isRunning()"></div>
         <svg viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g stroke="none" stroke-width="1" fill-rule="evenodd">
                 <g>
@@ -17,22 +17,22 @@
         <div class="data-grid-wrapper">
             <table class="data-grid" data-role="grid">
                 <thead>
-                    <tr each="data: getVisible(), as: '$col'" render="getHeader()"/>
+                    <tr each="data: getVisible(), as: '$col'" render="getHeader()"></tr>
                 </thead>
                 <tbody>
                     <tr class="data-row" repeat="foreach: rows, item: '$row'" css="'_odd-row': $index % 2">
                         <td outerfasteach="data: getVisible(), as: '$col'"
-                            css="getFieldClass($row())" click="getFieldHandler($row())" template="getBody()"/>
+                            css="getFieldClass($row())" click="getFieldHandler($row())" template="getBody()"></td>
                     </tr>
                     <tr ifnot="hasData()" class="data-grid-tr-no-data">
-                        <td attr="colspan: countVisible()" translate="'We couldn\'t find any recent tasks.'"/>
+                        <td attr="colspan: countVisible()" translate="'We couldn\'t find any recent tasks.'"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="toolbar" if="hasData()">
-            <div class="cleanup" if="canHideCompleted()" click="hideCompleted" translate="'Hide completed items'"/>
-            <div class="timer" text="secondsToNextQueuePhrase()"/>
+            <div class="cleanup" if="canHideCompleted()" click="hideCompleted" translate="'Hide completed items'"></div>
+            <div class="timer" text="secondsToNextQueuePhrase()"></div>
         </div>
     </div>
 </div>
