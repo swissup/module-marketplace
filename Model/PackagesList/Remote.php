@@ -206,6 +206,6 @@ class Remote extends AbstractList
                 $carry = $item;
             }
             return $carry;
-        });
+        }, '');
     }
 }
