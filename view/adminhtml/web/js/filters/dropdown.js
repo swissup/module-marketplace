@@ -30,7 +30,7 @@ define([
             );
         });
 
-        items.click(function (event) {
+        items.on('click', function (event) {
             event.preventDefault();
             filter.value($(this).data('value'));
             filters.apply();
