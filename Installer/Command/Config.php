@@ -88,6 +88,10 @@ class Config
         $replace = $data['replace'] ?? '';
         $value   = $this->scopeConfig->getValue($remote, $scope, $storeId);
 
+        if (!$value) {
+            return;
+        }
+
         if (!is_array($search)) {
             $search = [$search];
         }
