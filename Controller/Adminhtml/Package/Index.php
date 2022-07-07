@@ -52,7 +52,7 @@ class Index extends \Magento\Backend\App\Action
     {
         try {
             $this->validator->validate(); // check if has fs permissions
-        } catch (\Exception) {
+        } catch (\Exception $e) {
             $this->validateCron();
         }
 

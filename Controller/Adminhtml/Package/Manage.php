@@ -85,7 +85,7 @@ class Manage extends \Magento\Backend\App\Action
             try {
                 $this->validator->validate();
                 $response->setRunnable(true);
-            } catch (\Exception) {
+            } catch (\Exception $e) {
                 $response->setRunnable(false);
             }
         }
