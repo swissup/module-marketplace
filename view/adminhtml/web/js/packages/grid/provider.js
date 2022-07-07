@@ -95,6 +95,14 @@ define([
                                 this.updateRowsData();
                             }.bind(this));
 
+                        if (response.runnable) {
+                            setTimeout(function () {
+                                request.post(this.processQueueUrl, {}, {
+                                    quiet: true
+                                });
+                            }.bind(this), 5000);
+                        }
+
                         return;
                     }
 

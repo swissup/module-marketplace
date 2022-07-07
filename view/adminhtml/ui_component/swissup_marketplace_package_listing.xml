@@ -63,6 +63,7 @@
                     <item name="component" xsi:type="string">Swissup_Marketplace/js/packages/grid/provider</item>
                     <item name="rowsProvider" xsi:type="string">${ $.ns }.${ $.ns }.swissup_marketplace_package_columns</item>
                     <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                    <item name="processQueueUrl" xsi:type="url" path="swissup_marketplace/queue/process"/>
                     <item name="storageConfig" xsi:type="array">
                         <item name="indexField" xsi:type="string">uniqid</item>
                     </item>

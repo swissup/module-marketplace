@@ -33,14 +33,22 @@ class Manage extends \Magento\Backend\App\Action
     protected $dispatcher;
 
     /**
+     * @var \Swissup\Marketplace\Service\Validator
+     */
+    protected $validator;
+
+    /**
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Swissup\Marketplace\Service\JobDispatcher $dispatcher
+     * @param \Swissup\Marketplace\Service\Validator $validator
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Swissup\Marketplace\Service\JobDispatcher $dispatcher
+        \Swissup\Marketplace\Service\JobDispatcher $dispatcher,
+        \Swissup\Marketplace\Service\Validator $validator
     ) {
         $this->dispatcher = $dispatcher;
+        $this->validator = $validator;
         parent::__construct($context);
     }
 
@@ -71,6 +79,15 @@ class Manage extends \Magento\Backend\App\Action
         } catch (\Exception $e) {
             $response->setMessage($e->getMessage());
             $response->setError(1);
+        }
+
+        if ($response->getId()) {
+            try {
+                $this->validator->validate();
+                $response->setRunnable(true);
+            } catch (\Exception) {
+                $response->setRunnable(false);
+            }
         }
 
         return $resultJson->setData($response);

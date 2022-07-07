@@ -21,18 +21,26 @@ class Index extends \Magento\Backend\App\Action
     protected $cronCollectionFactory;
 
     /**
+     * @var \Swissup\Marketplace\Service\Validator
+     */
+    protected $validator;
+
+    /**
      * @param Context $context
      * @param PageFactory $resultPageFactory
      * @param \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory
+     * @param \Swissup\Marketplace\Service\Validator $validator
      */
     public function __construct(
         Context $context,
         PageFactory $resultPageFactory,
-        \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory
+        \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronCollectionFactory,
+        \Swissup\Marketplace\Service\Validator $validator
     ) {
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
         $this->cronCollectionFactory = $cronCollectionFactory;
+        $this->validator = $validator;
     }
 
     /**
@@ -42,7 +50,11 @@ class Index extends \Magento\Backend\App\Action
      */
     public function execute()
     {
-        $this->validateCron();
+        try {
+            $this->validator->validate(); // check if has fs permissions
+        } catch (\Exception) {
+            $this->validateCron();
+        }
 
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
