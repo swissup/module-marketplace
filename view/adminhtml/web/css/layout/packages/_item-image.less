@@ -1,11 +1,11 @@
 .marketplace-grid-items {
     .grid-item {
         [data-index="image"] {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
-            height: 0;
-            width: ~"calc(100% + @{grid-item__padding} + @{grid-item__padding})";
-            padding-bottom: ~"calc(100% + @{grid-item__padding} + @{grid-item__padding})";
-            max-width: ~"calc(100% + @{grid-item__padding} + @{grid-item__padding})";
+            aspect-ratio: 1;
             margin-top: -@grid-item__padding;
             margin-left: -@grid-item__padding;
             margin-right: -@grid-item__padding;
