@@ -64,8 +64,9 @@ class Widget
                     // unset stores. new widget will be added for them.
                     $widget->setStoreIds($storesToLeave);
                 } else {
-                    // widget already exists
-                    continue 2;
+                    // re-create widget with new params
+                    $widget->delete();
+                    continue;
                 }
 
                 try {
