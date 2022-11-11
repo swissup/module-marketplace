@@ -112,7 +112,7 @@ class Widget
     private function getPageGroupData($data, $defaultData)
     {
         if (isset($data['handle'])) {
-            $groupName = $data['handle'] === 'default' ? 'all_pages' : 'pages';
+            $groupName = $this->getGroupName($data['handle']);
             $groupData = [
                 'layout_handle' => $data['handle'],
             ];
@@ -143,5 +143,23 @@ class Widget
         }
 
         return false;
+    }
+
+    private function getGroupName($handle)
+    {
+        $mapping = [
+            'default' => 'all_pages',
+            'catalog_product_view' => 'all_products',
+            'catalog_product_view_type_simple' => 'simple_products',
+            'catalog_product_view_type_virtual' => 'virtual_products',
+            'catalog_product_view_type_bundle' => 'bundle_products',
+            'catalog_product_view_type_configurable' => 'configurable_products',
+            'catalog_product_view_type_downloadable' => 'downloadable_products',
+            'catalog_product_view_type_grouped' => 'grouped_products',
+            'catalog_category_view_type_layered' => 'anchor_categories',
+            'catalog_category_view_type_default' => 'notanchor_categories',
+        ];
+
+        return $mapping[$handle] ?? 'pages';
     }
 }
