@@ -49,7 +49,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     protected $jsonSerializer;
 
     /**
-     * @var \Magento\Framework\HTTP\ZendClientFactory
+     * @var \Magento\Framework\HTTP\ClientFactory
      */
     protected $httpClientFactory;
 
@@ -62,7 +62,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
      * @param \Swissup\Marketplace\Model\Cache $cache
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
-     * @param \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory
+     * @param \Magento\Framework\HTTP\ClientFactory $httpClientFactory
      * @param array $data[optional]
      */
     public function __construct(
@@ -74,7 +74,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
         \Swissup\Marketplace\Model\Cache $cache,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
-        \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory,
+        \Magento\Framework\HTTP\ClientFactory $httpClientFactory,
         array $data = []
     ) {
         $this->channelManager = $channelManager;
@@ -394,29 +394,30 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     /**
      * @param string $url
      * @return string
-     * @throws \Zend_Http_Client_Exception
+     * @throws \Exception
      */
     protected function fetch($url, $parseResponse = true)
     {
-        $response = $this->getHttpClient()->setUri($url)->request();
+        $client = $this->getHttpClient();
+        $client->get($url);
 
-        $this->validateResponse($response);
+        $this->validateResponseCode($client->getStatus());
 
-        $body = $response->getBody();
+        $body = $client->getBody();
 
         return $parseResponse ? $this->parseResponseText($body) : $body;
     }
 
     /**
-     * @param Zend_Http_Response $response
+     * @param int $code
      * @return boolean
      * @throws AuthenticationException
      * @throws NotFoundException
      * @throws RuntimeException
      */
-    protected function validateResponse($response)
+    protected function validateResponseCode($code)
     {
-        switch ($response->getStatus()) {
+        switch ($code) {
             case 200:
                 return true;
             case 401:
@@ -429,11 +430,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
                 );
         }
 
-        throw new RuntimeException(__(
-            'An error occured. Response code - %1. Response message - %2',
-            $response->getStatus(),
-            $response->getMessage()
-        ));
+        throw new RuntimeException(__('An error occured. Response code - %1.', $code));
     }
 
     /**
@@ -453,18 +450,16 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     }
 
     /**
-     * @return \Magento\Framework\HTTP\ZendClient
+     * @return \Magento\Framework\HTTP\Client\Curl
      */
     protected function getHttpClient()
     {
-        $client = $this->httpClientFactory->create()
-            ->setConfig([
-                'maxredirects' => 5,
-                'timeout' => 30,
-            ]);
+        $client = $this->httpClientFactory->create();
+        $client->setOption(CURLOPT_MAXREDIRS, 5);
+        $client->setTimeout(30);
 
         if ($this->getAuthType()) {
-            $client->setAuth($this->getUsername(), $this->getPassword());
+            $client->setCredentials($this->getUsername(), $this->getPassword());
         }
 
         return $client;
