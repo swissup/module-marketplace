@@ -455,6 +455,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
     protected function getHttpClient()
     {
         $client = $this->httpClientFactory->create();
+        $client->setOption(CURLOPT_FOLLOWLOCATION, true);
         $client->setOption(CURLOPT_MAXREDIRS, 5);
         $client->setTimeout(30);
 
