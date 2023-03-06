@@ -289,6 +289,8 @@ class Collection extends \Magento\Framework\Data\Collection
     {
         if (!$value) {
             $value = 'metapackage';
+        } elseif ($value === 'all') {
+            return true;
         }
 
         if (empty($item['type'])) {

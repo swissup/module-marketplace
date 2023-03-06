@@ -37,6 +37,10 @@ class PackageDisplayMode implements OptionSourceInterface
                 'label' => $this->escaper->escapeHtml(__('Components')),
                 'value' => '!metapackage',
             ],
+            [
+                'label' => $this->escaper->escapeHtml(__('All')),
+                'value' => 'all',
+            ],
         ];
     }
 }
