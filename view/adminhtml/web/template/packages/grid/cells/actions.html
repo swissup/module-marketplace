@@ -17,3 +17,9 @@
         </ul>
     </div>
 </div>
+
+<div style="visibility: hidden;" attr="'data-index': index" if="!$col.getVisibleActions($row()._rowIndex).length">
+    <div class="action-select-wrap" collapsible>
+        <button class="action-select" translate="'Select'" toggleCollapsible></button>
+    </div>
+</div>
