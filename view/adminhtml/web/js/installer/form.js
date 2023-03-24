@@ -67,7 +67,7 @@ define([
                 title: response.message,
                 content: template
                     .replace('%1', $t('View Log'))
-                    .replace('%2', response.log.join('<br/>'))
+                    .replace('%2', response.log.join('<br>'))
             });
         }
     });
