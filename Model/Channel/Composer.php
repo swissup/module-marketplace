@@ -333,7 +333,7 @@ class Composer implements \Swissup\Marketplace\Api\ChannelInterface
      * @return array
      * @throws AuthenticationException
      * @throws RuntimeException
-     * @throws \Zend_Http_Client_Exception
+     * @throws \Exception
      */
     public function getPackages()
     {

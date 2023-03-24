@@ -31,7 +31,7 @@ class QueueCleanup
             ->addFieldToFilter('scheduled_at', [
                 'or' => [
                     ['date' => true, 'to' => $date],
-                    ['is' => new \Zend_Db_Expr('null')],
+                    ['null' => true],
                 ]
             ])
             ->addFieldToFilter('created_at', [

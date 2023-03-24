@@ -68,7 +68,7 @@ class QueueProcess
             ->addFieldToFilter('scheduled_at', [
                 'or' => [
                     ['date' => true, 'to' => $this->getCurrentDate()],
-                    ['is' => new \Zend_Db_Expr('null')],
+                    ['null' => true],
                 ]
             ])
             ->setOrder('scheduled_at', 'ASC')

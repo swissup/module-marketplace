@@ -39,7 +39,7 @@ class Process extends \Magento\Backend\App\Action
                 ->addFieldToFilter('scheduled_at', [
                     'or' => [
                         ['date' => true, 'to' => (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT)],
-                        ['is' => new \Zend_Db_Expr('null')],
+                        ['null' => true],
                     ]
                 ])
                 ->setOrder('scheduled_at', 'ASC')
