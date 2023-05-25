@@ -72,9 +72,16 @@ class Collection extends \Magento\Framework\Data\Collection
 
             $localVersion = $localPackages[$id]['version'] ?? false;
 
+            $fallbackType = 'metapackage';
+            if (strpos($id, '/module-') !== false) {
+                $fallbackType = 'magento2-module';
+            } else if (strpos($id, '/theme-') !== false) {
+                $fallbackType = 'magento2-theme';
+            }
+
             $this->data[$id] = [
                 'name' => $id,
-                'type' => $remoteData['type'] ?? '',
+                'type' => $remoteData['type'] ?? $fallbackType,
                 'description' => $remoteData['description'] ?? '',
                 'image_src' => $remoteData['marketplace']['gallery'][0] ??
                     ($localPackages[$id]['marketplace']['gallery'][0] ?? false),
