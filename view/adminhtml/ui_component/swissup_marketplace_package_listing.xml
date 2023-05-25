@@ -165,6 +165,7 @@
                 <item name="component" xsi:type="string">Swissup_Marketplace/js/packages/grid/listing</item>
                 <item name="template" xsi:type="string">Swissup_Marketplace/packages/grid</item>
                 <item name="listTemplate" xsi:type="string">Swissup_Marketplace/packages/grid</item>
+                <item name="displayMode" xsi:type="string">list</item>
                 <item name="dndConfig" xsi:type="array">
                     <item name="enabled" xsi:type="boolean">false</item>
                 </item>
