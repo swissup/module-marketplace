@@ -14,6 +14,7 @@
     <type name="Magento\Framework\Console\CommandListInterface">
         <arguments>
             <argument name="commands" xsi:type="array">
+                <item name="marketplaceInfoCommand" xsi:type="object">Swissup\Marketplace\Console\Command\InfoCommand</item>
                 <item name="marketplaceChannelListCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelListCommand</item>
                 <item name="marketplaceChannelCleanCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelCleanCommand</item>
                 <item name="marketplaceChannelEnableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ChannelEnableCommand</item>
