@@ -15,7 +15,7 @@ class NoErrorsConsoleLogger extends ConsoleLogger
      *
      * @return void
      */
-    public function error($message, array $context = array())
+    public function error($message, array $context = array()): void
     {
         $this->info($message, $context);
     }
