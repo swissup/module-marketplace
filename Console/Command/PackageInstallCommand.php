@@ -85,7 +85,7 @@ class PackageInstallCommand extends PackageAbstractCommand
             }
         }
 
-        return parent::initialize($input, $output);
+        parent::initialize($input, $output);
     }
 
     /**

@@ -71,7 +71,7 @@ class PackageAbstractCommand extends Command
             //
         }
 
-        return parent::initialize($input, $output);
+        parent::initialize($input, $output);
     }
 
     /**
