@@ -52,7 +52,7 @@ class ComposerAuthImportCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $result = $this->composerHelper->importAuthCredentials(

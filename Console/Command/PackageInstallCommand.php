@@ -148,7 +148,7 @@ class PackageInstallCommand extends PackageAbstractCommand
         return $params;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $packages = $this->getPackages();
         $installed = array_keys($this->listFactory->create()->getList());

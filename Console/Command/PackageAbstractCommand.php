@@ -100,7 +100,7 @@ class PackageAbstractCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $success = false;
         $handler = $this->createHandler($this->getHandlerClass(), [

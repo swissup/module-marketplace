@@ -21,7 +21,7 @@ class ChannelCleanCommand extends ChannelAbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $this->getChannel()->removeCache();
