@@ -268,6 +268,17 @@ class ConfigReader
 
             $result[$i]['class'] = $class;
 
+            if (defined($class . '::ALIAS')) {
+                $alias = constant($class . '::ALIAS');
+            } else {
+                // convert to kebabcase https://stackoverflow.com/a/75687338/2754377
+                $classparts = explode('\\', $class);
+                $alias = end($classparts);
+                $alias = strtolower(preg_replace('/(?:\d++|[A-Za-z]?[a-z]++)\K(?!$)/', '-', $alias));
+            }
+
+            $result[$i]['alias'] = $alias;
+
             if (!$command->hasChildren() || !$command->descend('data')) {
                 continue;
             }

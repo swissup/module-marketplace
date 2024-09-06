@@ -38,6 +38,8 @@ class Installer
      */
     private $requestFactory;
 
+    private $runOnlyIfRequired;
+
     /**
      * @param \Magento\Framework\App\Cache\Manager $cache
      * @param \Magento\Framework\App\State $appState
@@ -57,6 +59,12 @@ class Installer
         $this->objectManager = $objectManager;
         $this->configReader = $configReader;
         $this->requestFactory = $requestFactory;
+    }
+
+    public function setRunOnlyIfRequired($flag)
+    {
+        $this->runOnlyIfRequired = $flag;
+        return $this;
     }
 
     /**
@@ -92,6 +100,17 @@ class Installer
             $commands = $this->data['commands'][$installer] ?? [];
 
             foreach ($commands as $config) {
+                if (isset($requestData['skip-' . $config['alias']]) ||
+                    $this->runOnlyIfRequired && !isset($requestData[$config['alias']])
+                ) {
+                    continue;
+                }
+
+                $request->setExtraOptions([]);
+                if (!empty($requestData[$config['alias']])) {
+                    $request->setExtraOptions(explode(',', $requestData[$config['alias']]));
+                }
+
                 $params = [];
                 $data = isset($config['data']) ? $config['data'] : [];
                 foreach ($data as $key => $param) {
@@ -144,6 +163,21 @@ class Installer
         foreach ($this->getInstallers($packages) as $installer) {
             $fields = $this->data['fields'][$installer] ?? [];
             $result = array_replace_recursive($result, $fields);
+        }
+
+        return $result;
+    }
+
+    public function getCommandAliases($packages)
+    {
+        $result = [];
+
+        foreach ($this->getInstallers($packages) as $installer) {
+            foreach ($this->data['commands'][$installer] as $command) {
+                if (isset($command['alias'])) {
+                    $result[] = $command['alias'];
+                }
+            }
         }
 
         return $result;

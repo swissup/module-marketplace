@@ -60,6 +60,7 @@ class CmsPage
      */
     public function execute(Request $request)
     {
+        $idsToInstall = array_flip($request->getExtraOptions());
         $identifiers = array_map(
             function ($item) {
                 return $item['identifier'];
@@ -77,6 +78,10 @@ class CmsPage
 
         $this->logger->info('Cms Pages: Backup existing pages');
         foreach ($collection as $page) {
+            if ($idsToInstall && !isset($idsToInstall[$page->getIdentifier()])) {
+                continue;
+            }
+
             $page->load($page->getId()); // load stores
 
             $storesToLeave = array_diff($page->getStoreId(), $request->getStoreIds());
@@ -103,6 +108,10 @@ class CmsPage
 
         $this->logger->info('CMS PAGES: Create new pages');
         foreach ($request->getParams() as $data) {
+            if ($idsToInstall && !isset($idsToInstall[$data['identifier']])) {
+                continue;
+            }
+
             $canUseExistingPage = false;
             $pages = $collection->getItemsByColumnValue(
                 'identifier',

@@ -111,7 +111,7 @@ class PackageInstallCommand extends PackageAbstractCommand
         $packages = [];
 
         foreach (parent::getPackages() as $argument) {
-            if (strpos($argument, '=') !== false) {
+            if (strpos($argument, '=') !== false || strpos($argument, '/') === false) {
                 continue;
             }
             $packages[] = $argument;
@@ -129,7 +129,7 @@ class PackageInstallCommand extends PackageAbstractCommand
         $params = [];
 
         foreach (parent::getPackages() as $argument) {
-            if (strpos($argument, '=') === false) {
+            if (strpos($argument, '=') === false || strpos($argument, '/') !== false) {
                 continue;
             }
 
@@ -168,9 +168,18 @@ class PackageInstallCommand extends PackageAbstractCommand
 
         $storeIds = $this->getStoreIds();
         $formData = [];
+        $params = $this->getRequestParams();
+
+        foreach ($this->installer->getCommandAliases($packages) as $alias) {
+            if (isset($params[$alias])) {
+                $formData[$alias] = $params[$alias];
+                $this->installer->setRunOnlyIfRequired(true);
+            } elseif (isset($params['skip-' . $alias])) {
+                $formData['skip-' . $alias] = $params['skip-' . $alias];
+            }
+        }
 
         $fields = $this->installer->getFormConfig($packages);
-        $params = $this->getRequestParams();
         foreach ($fields as $name => $config) {
             if (isset($params[$name])) {
                 $formData[$name] = $params[$name];

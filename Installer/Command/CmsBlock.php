@@ -55,9 +55,14 @@ class CmsBlock
     {
         $this->logger->info('Cms Blocks: Backup existing and create new blocks');
 
+        $idsToInstall = array_flip($request->getExtraOptions());
         $isSingleStoreMode = $this->storeManager->isSingleStoreMode();
 
         foreach ($request->getParams() as $data) {
+            if ($idsToInstall && !isset($idsToInstall[$data['identifier']])) {
+                continue;
+            }
+
             $collection = $this->collectionFactory->create()
                 ->addStoreFilter($request->getStoreIds())
                 ->addFieldToFilter('identifier', $data['identifier']);
