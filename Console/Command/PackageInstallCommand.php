@@ -102,6 +102,12 @@ class PackageInstallCommand extends PackageAbstractCommand
             InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
             'Store ID'
         );
+        $this->addOption(
+            'commands',
+            null,
+            InputOption::VALUE_NONE,
+            'Show available commands'
+        );
 
         parent::configure();
     }
@@ -164,6 +170,13 @@ class PackageInstallCommand extends PackageAbstractCommand
         if (!$this->installer->hasInstaller($packages)) {
             $output->writeln('<info>Nothing to do.</info>');
             return \Magento\Framework\Console\Cli::RETURN_FAILURE;
+        }
+
+        $commands = $this->installer->getCommandAliases($packages);
+        if ($input->getOption('commands')) {
+            $commandsStr = implode(', ', $commands);
+            $output->writeln("<info>Available commands: {$commandsStr}</info>");
+            return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
         }
 
         $storeIds = $this->getStoreIds();
