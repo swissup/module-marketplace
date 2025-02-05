@@ -130,24 +130,28 @@ class PackageInstallCommand extends PackageAbstractCommand
         return $packages;
     }
 
-    protected function getRequestParams()
+    protected function getRequestParams($commands)
     {
         $params = [];
 
         foreach (parent::getPackages() as $argument) {
-            if (strpos($argument, '=') === false || strpos($argument, '/') !== false) {
+            if (strpos($argument, '/') !== false) {
                 continue;
             }
 
-            list($key, $value) = explode('=', $argument);
+            if (strpos($argument, '=') === false && !in_array($argument, $commands)) {
+                continue;
+            }
 
-            if (isset($params[$key])) {
-                if (!is_array($params[$key])) {
-                    $params[$key] = [$params[$key]];
+            $parts = explode('=', $argument);
+
+            if (isset($params[$parts[0]])) {
+                if (!is_array($params[$parts[0]])) {
+                    $params[$parts[0]] = [$params[$parts[0]]];
                 }
-                $params[$key][] = $value;
+                $params[$parts[0]][] = $parts[1] ?? '';
             } else {
-                $params[$key] = $value;
+                $params[$parts[0]] = $parts[1] ?? '';
             }
         }
 
@@ -181,9 +185,9 @@ class PackageInstallCommand extends PackageAbstractCommand
 
         $storeIds = $this->getStoreIds();
         $formData = [];
-        $params = $this->getRequestParams();
+        $params = $this->getRequestParams($commands);
 
-        foreach ($this->installer->getCommandAliases($packages) as $alias) {
+        foreach ($commands as $alias) {
             if (isset($params[$alias])) {
                 $formData[$alias] = $params[$alias];
                 $this->installer->setRunOnlyIfRequired(true);
