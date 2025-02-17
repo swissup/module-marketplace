@@ -254,7 +254,7 @@ class ChannelAbstractCommand extends Command
 
         if ($validator === null) {
             $question->setValidator(function ($value) {
-                if (trim($value) == '') {
+                if (empty($value) || trim($value) === '') {
                     throw new \Exception('Value cannot be empty');
                 }
 
