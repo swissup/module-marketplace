@@ -73,14 +73,7 @@ class ComposerApplication
             $output = $this->getOutput();
         }
 
-        $oldVerbosity = (int) getenv('SHELL_VERBOSITY');
         $exitCode = $this->app->run($this->getInput($command), $output);
-        $newVerbosity = (int) getenv('SHELL_VERBOSITY');
-
-        // restore default verbosity after '-q' option usage
-        if ($oldVerbosity !== $newVerbosity) {
-            putenv('SHELL_VERBOSITY=' . $oldVerbosity);
-        }
 
         $result = '';
         if ($output instanceof BufferedOutput) {
