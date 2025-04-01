@@ -27,7 +27,7 @@ class SettingsDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         $requestFieldName,
         array $meta = [],
         array $data = [],
-        PoolInterface $pool = null
+        ?PoolInterface $pool = null
     ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
         $this->pool = $pool ?: ObjectManager::getInstance()->get(PoolInterface::class);

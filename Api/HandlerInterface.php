@@ -8,7 +8,7 @@ interface HandlerInterface
 
     public function handle();
 
-    public function setLogger(\Psr\Log\LoggerInterface $logger = null);
+    public function setLogger(?\Psr\Log\LoggerInterface $logger = null);
 
     public function getLogger();
 

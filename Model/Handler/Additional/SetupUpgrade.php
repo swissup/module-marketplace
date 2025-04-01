@@ -19,7 +19,7 @@ class SetupUpgrade extends ProcessRunner implements HandlerInterface
     /**
      * @param LoggerInterface $logger
      */
-    public function setLogger(LoggerInterface $logger = null)
+    public function setLogger(?LoggerInterface $logger = null)
     {
         // suppress errors created in
         // \Magento\ComposerRootUpdatePlugin\Utils\Console::log

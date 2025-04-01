@@ -248,7 +248,7 @@ class ChannelAbstractCommand extends Command
      * @param string $question
      * @return string
      */
-    protected function ask($question, callable $validator = null)
+    protected function ask($question, ?callable $validator = null)
     {
         $question = $this->questionFactory->create(['question' => $question]);
 

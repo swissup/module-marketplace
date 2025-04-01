@@ -15,7 +15,7 @@ trait LoggerAware
     /**
      * @param LoggerInterface $logger
      */
-    public function setLogger(LoggerInterface $logger = null)
+    public function setLogger(?LoggerInterface $logger = null)
     {
         $this->logger = $logger;
 

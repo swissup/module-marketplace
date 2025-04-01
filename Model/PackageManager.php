@@ -129,7 +129,7 @@ class PackageManager
      * @return string
      * @throws \RuntimeException
      */
-    public function show($package, $options = [], OutputInterface $output = null)
+    public function show($package, $options = [], ?OutputInterface $output = null)
     {
         return $this->runComposerCommand([
             'command' => 'show',
@@ -145,7 +145,7 @@ class PackageManager
      * @return string
      * @throws \RuntimeException
      */
-    public function install($packages, $options = [], OutputInterface $output = null)
+    public function install($packages, $options = [], ?OutputInterface $output = null)
     {
         $result = $this->runComposerCommand([
             'command' => 'require',
@@ -189,7 +189,7 @@ class PackageManager
      * @return string
      * @throws \RuntimeException
      */
-    public function uninstall($packages, $options = [], OutputInterface $output = null)
+    public function uninstall($packages, $options = [], ?OutputInterface $output = null)
     {
         // collect themes to unset them from config and remove from 'theme' table.
         $themes = [];
@@ -266,7 +266,7 @@ class PackageManager
      * @return string
      * @throws \RuntimeException
      */
-    public function update($packages, $options = [], OutputInterface $output = null)
+    public function update($packages, $options = [], ?OutputInterface $output = null)
     {
         return $this->runComposerCommand([
             'command' => 'update',
@@ -433,7 +433,7 @@ class PackageManager
      * @param OutputInterface|null $output
      * @return string
      */
-    protected function runComposerCommand(array $command, $options = [], OutputInterface $output = null)
+    protected function runComposerCommand(array $command, $options = [], ?OutputInterface $output = null)
     {
         if (!is_array($options)) {
             if ($options instanceof OutputInterface) {

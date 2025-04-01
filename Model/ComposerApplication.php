@@ -65,7 +65,7 @@ class ComposerApplication
      * @return string
      * @throws \RuntimeException
      */
-    public function run(array $command, OutputInterface $output = null)
+    public function run(array $command, ?OutputInterface $output = null)
     {
         $command = $this->normalizeCommand($command);
 

@@ -15,7 +15,7 @@ trait OutputAware
     /**
      * @param OutputInterface $output
      */
-    public function setOutput(OutputInterface $output = null)
+    public function setOutput(?OutputInterface $output = null)
     {
         $this->output = $output;
 
