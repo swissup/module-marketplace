@@ -164,6 +164,13 @@ class PackageInstallCommand extends PackageAbstractCommand
         $installed = array_keys($this->listFactory->create()->getList());
         $missing = array_diff($packages, $installed);
 
+        // Do not reject packages missing in composer.lock, but having the installer config available.
+        if ($missing) {
+            $missing = array_filter($missing, function ($package) {
+                return !$this->installer->hasInstaller($package);
+            });
+        }
+
         if ($missing) {
             $output->writeln('<error>Installation canceled. Some packages not found.</error>');
             $output->writeln('Try downloading them using the following command:');
