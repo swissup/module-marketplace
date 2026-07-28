@@ -75,7 +75,7 @@ class PackageInstallCommand extends PackageAbstractCommand
      * Initializes the command after the input has been bound and before the input
      * is validated.
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
@@ -91,7 +91,7 @@ class PackageInstallCommand extends PackageAbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:package:install')
             ->setDescription('Run installer for specified packages');

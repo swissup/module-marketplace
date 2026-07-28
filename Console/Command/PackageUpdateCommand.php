@@ -14,7 +14,7 @@ class PackageUpdateCommand extends PackageAbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:package:update')
             ->setDescription('Update specified packages');

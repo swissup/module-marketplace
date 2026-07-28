@@ -11,7 +11,7 @@ class ChannelAuthKeyRemoveCommand extends ChannelAbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:auth:key:remove')
             ->setDescription('Remove specified key from the specified channel');

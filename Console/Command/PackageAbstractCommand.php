@@ -59,7 +59,7 @@ class PackageAbstractCommand extends Command
      * Initializes the command after the input has been bound and before the input
      * is validated.
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->input = $input;
         $this->output = $output;
@@ -77,7 +77,7 @@ class PackageAbstractCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument(
             self::INPUT_KEY_PACKAGE,

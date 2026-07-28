@@ -28,7 +28,7 @@ class ComposerAuthImportCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:auth:import')
             ->setDescription("Import auth credentials from COMPOSER_HOME directory");

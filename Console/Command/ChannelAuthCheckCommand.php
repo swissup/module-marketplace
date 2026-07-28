@@ -10,7 +10,7 @@ class ChannelAuthCheckCommand extends ChannelAbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:auth:check')
             ->setDescription('Check auth credentials for the specified channel');

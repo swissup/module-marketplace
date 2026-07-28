@@ -14,7 +14,7 @@ class PackageRemoveCommand extends PackageAbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:package:remove')
             ->setDescription('Remove specified packages');

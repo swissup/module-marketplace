@@ -10,7 +10,7 @@ class ChannelEnableCommand extends ChannelAbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:channel:enable')
             ->setDescription('Enables specified channel');

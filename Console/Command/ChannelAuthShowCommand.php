@@ -10,7 +10,7 @@ class ChannelAuthShowCommand extends ChannelAbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:auth:show')
             ->setDescription('Show auth credentials for the specified channel');

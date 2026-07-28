@@ -10,7 +10,7 @@ class ChannelCleanCommand extends ChannelAbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:channel:clean')
             ->setDescription('Clean cache for specified channel');

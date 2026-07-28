@@ -11,7 +11,7 @@ class ChannelAuthKeyAddCommand extends ChannelAbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:auth:key:add')
             ->setDescription('Add access key to the specified channel');

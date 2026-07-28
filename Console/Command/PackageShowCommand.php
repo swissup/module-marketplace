@@ -35,7 +35,7 @@ class PackageShowCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:package:show')
             ->setDescription("Proxy to 'composer show --available' command");
@@ -59,7 +59,7 @@ class PackageShowCommand extends Command
      * Initializes the command after the input has been bound and before the input
      * is validated.
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         try {
             $this->composerHelper->importAuthCredentials();

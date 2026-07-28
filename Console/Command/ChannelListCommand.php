@@ -27,7 +27,7 @@ class ChannelListCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:channel:list')
             ->setDescription('Displays a list of registered software channels');

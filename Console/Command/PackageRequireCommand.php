@@ -14,7 +14,7 @@ class PackageRequireCommand extends PackageAbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('marketplace:package:require')
             ->setDescription('Download and enable specified packages');
