@@ -94,6 +94,7 @@ class PackageInstallCommand extends PackageAbstractCommand
     protected function configure(): void
     {
         $this->setName('marketplace:package:install')
+            ->setName('marketplace:install')
             ->setDescription('Run installer for specified packages');
 
         $this->addOption(
@@ -174,7 +175,7 @@ class PackageInstallCommand extends PackageAbstractCommand
         if ($missing) {
             $output->writeln('<error>Installation canceled. Some packages not found.</error>');
             $output->writeln('Try downloading them using the following command:');
-            $output->writeln(sprintf('bin/magento marketplace:package:require %s', implode(' ', $missing)));
+            $output->writeln(sprintf('bin/magento marketplace:require %s', implode(' ', $missing)));
             return \Magento\Framework\Console\Cli::RETURN_FAILURE;
         }
 

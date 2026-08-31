@@ -38,6 +38,7 @@ class PackageShowCommand extends Command
     protected function configure(): void
     {
         $this->setName('marketplace:package:show')
+            ->setAliases(['marketplace:show'])
             ->setDescription("Proxy to 'composer show --available' command");
 
         $this->addArgument(

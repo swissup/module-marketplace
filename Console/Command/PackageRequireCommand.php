@@ -17,6 +17,7 @@ class PackageRequireCommand extends PackageAbstractCommand
     protected function configure(): void
     {
         $this->setName('marketplace:package:require')
+            ->setAliases(['marketplace:require'])
             ->setDescription('Download and enable specified packages');
 
         parent::configure();

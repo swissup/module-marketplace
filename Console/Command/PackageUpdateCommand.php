@@ -17,6 +17,7 @@ class PackageUpdateCommand extends PackageAbstractCommand
     protected function configure(): void
     {
         $this->setName('marketplace:package:update')
+            ->setAliases(['marketplace:update'])
             ->setDescription('Update specified packages');
 
         parent::configure();

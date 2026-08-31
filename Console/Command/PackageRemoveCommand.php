@@ -17,6 +17,7 @@ class PackageRemoveCommand extends PackageAbstractCommand
     protected function configure(): void
     {
         $this->setName('marketplace:package:remove')
+            ->setAliases(['marketplace:remove'])
             ->setDescription('Remove specified packages');
 
         parent::configure();
