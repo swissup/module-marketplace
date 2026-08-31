@@ -10,11 +10,12 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 class Links extends \Magento\Ui\Component\Listing\Columns\Column
 {
     const URL_PATH_DETAILS = 'swissup_marketplace/package/details';
-    const URL_PATH_INSTALL = 'swissup_marketplace/package/manage/job/install';
-    const URL_PATH_UNINSTALL = 'swissup_marketplace/package/manage/job/uninstall';
-    const URL_PATH_UPDATE = 'swissup_marketplace/package/manage/job/update';
-    const URL_PATH_ENABLE = 'swissup_marketplace/package/manage/job/enable';
-    const URL_PATH_DISABLE = 'swissup_marketplace/package/manage/job/disable';
+
+    const COMMAND_REQUIRE = 'marketplace:require';
+    const COMMAND_UPDATE = 'marketplace:update';
+    const COMMAND_REMOVE = 'marketplace:remove';
+    const COMMAND_ENABLE = 'marketplace:enable';
+    const COMMAND_DISABLE = 'marketplace:disable';
 
     /**
      * @var AuthorizationInterface
@@ -110,8 +111,7 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
     protected function getUpdateLinkParams($item)
     {
         $link = [
-            'isAjax' => true,
-            'href' => $this->getContext()->getUrl(static::URL_PATH_UPDATE),
+            'command' => static::COMMAND_UPDATE,
             'label' => $this->getLinkTitle('Update', $item),
         ];
 
@@ -125,21 +125,15 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
     protected function getDisableLinkParams($item)
     {
         return [
-            'isAjax' => true,
-            'href' => $this->getContext()->getUrl(static::URL_PATH_DISABLE),
+            'command' => static::COMMAND_DISABLE,
             'label' => $this->getLinkTitle('Disable', $item),
-            'confirm' => [
-                'title' => $this->getLinkTitle('Disable', $item),
-                'message' => __('Are you sure you want to do this?')
-            ]
         ];
     }
 
     protected function getEnableLinkParams($item)
     {
         return [
-            'isAjax' => true,
-            'href' => $this->getContext()->getUrl(static::URL_PATH_ENABLE),
+            'command' => static::COMMAND_ENABLE,
             'label' => $this->getLinkTitle('Enable', $item),
         ];
     }
@@ -147,26 +141,23 @@ class Links extends \Magento\Ui\Component\Listing\Columns\Column
     protected function getUninstallLinkParams($item)
     {
         return [
-            'isAjax' => true,
-            'href' => $this->getContext()->getUrl(static::URL_PATH_UNINSTALL),
+            'command' => static::COMMAND_REMOVE,
             'label' => $this->getLinkTitle('Remove', $item),
-            'confirm' => [
-                'title' => $this->getLinkTitle('Remove', $item),
-                'message' => __('Are you sure you want to do this?')
-            ]
         ];
     }
 
     protected function getInstallLinkParams($item)
     {
-        $label = $item['downloaded'] ?
-            __('Run Installer') :
-            $this->getLinkTitle('Install', $item);
+        if ($item['downloaded']) {
+            return [
+                'installer' => true,
+                'label' => __('Run Installer'),
+            ];
+        }
 
         $link = [
-            'isAjax' => true,
-            'href' => $this->getContext()->getUrl(static::URL_PATH_INSTALL),
-            'label' => $label,
+            'command' => static::COMMAND_REQUIRE,
+            'label' => $this->getLinkTitle('Install', $item),
         ];
 
         if (!$item['accessible']) {

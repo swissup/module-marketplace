@@ -28,7 +28,6 @@ Marketplace.
     - [Command line interface](#command-line-interface)
     - [Magento backend interface](#magento-backend-interface)
 - [Extending Marketplace](#extending-marketplace)
-    - [Register your update channel](#register-your-update-channel)
     - [Create one-click installer](#create-one-click-installer)
 - [FAQ](#faq)
     - [Can I install modules from the packagist?](#can-i-install-modules-from-the-packagist)
@@ -51,15 +50,20 @@ bin/magento setup:upgrade
 
     ```bash
     bin/magento marketplace:channel:enable
+    bin/magento marketplace:auth:key:add <channel>
     ```
+
+    Use `marketplace:channel:list` to see the registered channels, and
+    `marketplace:auth:show` / `marketplace:auth:check` to inspect and verify
+    the stored credentials.
 
  2. Install the package(s) you need:
 
     ```bash
     # Download and enable module:
-    bin/magento marketplace:package:require <package/name>
+    bin/magento marketplace:require <package/name>
     # Run one-click installer (if module provides it):
-    bin/magento marketplace:package:install <package/name>
+    bin/magento marketplace:install <package/name>
     ```
 
  3. That's all. Check your store frontend now!
@@ -69,25 +73,30 @@ bin/magento setup:upgrade
 
 ### Magento backend interface
 
+Composer is never executed from the backend - running it through the Magento
+is not reliable. Instead, the backend shows the command to copy and run
+in your terminal. The one-click installer does not use composer and is still
+available right in the backend.
+
+Channels and access keys are managed from the command line only - see
+[Command line interface](#command-line-interface) above.
+
  1. Navigate to _System > Tools > Marketplace_ page.
- 2. Open **Configuration** panel, activate and add access keys to the
-    channel you'd like to use.
  2. Search for the module you'd like to install, and press **Install** button.
- 3. That's all. Check your store frontend now!
+    Copy the suggested command and run it:
+
+    ```bash
+    bin/magento marketplace:require <package/name>
+    ```
+
+ 3. Reload the page and press **Run Installer** button, if the module provides
+    a one-click installer.
+ 4. That's all. Check your store frontend now!
 
     > Some modules requires additional configuration after installation.
     > Please refer to the module documentation.
 
 ## Extending Marketplace
-
-### Register your update channel
-
-Custom update channels are registered via separate module with `di.xml` file
-instructions. See following examples:
-
- - [Magento Marketplace](https://github.com/swissup/module-marketplace/blob/master/etc/di.xml#L73-L109)
- - [Swissup, Firecheckout, Argento](https://github.com/swissup/module-marketplace/blob/master/etc/di.xml#L111-L151)
- - [Private channel as separate module](https://github.com/swissup/module-marketplace-channel-github)
 
 ### Create one-click installer
 
@@ -114,6 +123,6 @@ composer config repositories.<id> vcs https://github.com/repo/url.git
 bin/magento marketplace:auth github-oauth.github.com <token>
 
 # 3. Use marketplace to download the module and run installer (if any)
-bin/magento marketplace:package:require <package/name>
-bin/magento marketplace:package:install <package/name>
+bin/magento marketplace:require <package/name>
+bin/magento marketplace:install <package/name>
 ```

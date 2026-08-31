@@ -32,11 +32,6 @@ class AbstractHandler extends \Magento\Framework\DataObject
         return true;
     }
 
-    public function validateBeforeDispatch()
-    {
-        return true;
-    }
-
     public function beforeQueue()
     {
         return [];

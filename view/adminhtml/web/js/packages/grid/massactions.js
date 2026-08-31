@@ -1,10 +1,10 @@
 define([
     'underscore',
-    'uiRegistry',
     'Magento_Ui/js/grid/massactions',
     'Swissup_Marketplace/js/packages/helper',
+    'Swissup_Marketplace/js/packages/command',
     'Swissup_Marketplace/js/installer/helper'
-], function (_, registry, Massactions, packageHelper, installer) {
+], function (_, Massactions, packageHelper, command, installer) {
     'use strict';
 
     return Massactions.extend({
@@ -13,42 +13,40 @@ define([
          * @param {Object} data - Selections data.
          */
         defaultCallback: function (action, data) {
-            var packages = data.selected.slice();
+            var packages = data.selected || [];
 
             action.index = action.type;
-            action.href = action.url;
 
-            if (!packages) {
-                return;
-            }
+            packages = this.getActionPackages(packages, action);
 
-            if (!this.hasVisibleAction(packages, action)) {
+            if (!packages.length) {
                 return;
             }
 
             if (action.index === 'install' && this.isAllDownloaded(packages)) {
                 installer.render(packages);
-            } else {
-                this.source
-                    .submit(action, packages)
-                    .done(function () {
-                        if (action.index === 'install') {
-                            installer.render(packages);
-                        }
-                    })
-                    .initialRequest.always(function () {
-                        this.selections().deselectAll();
-                    }.bind(this));
+
+                return;
             }
+
+            if (action.index === 'install') {
+                packages = _.reject(packages, function (packageName) {
+                    var packageData = this.findPackageData(packageName);
+
+                    return packageData && packageData.downloaded;
+                }, this);
+            }
+
+            command.show(action, packages);
         },
 
         /**
          * @param {Array} packages
          * @param {Object} action
-         * @return {Boolean}
+         * @return {Array}
          */
-        hasVisibleAction: function (packages, action) {
-            return _.some(packages, function (packageName) {
+        getActionPackages: function (packages, action) {
+            return _.filter(packages, function (packageName) {
                 var packageData = this.findPackageData(packageName);
 
                 return packageData && packageHelper.isActionVisible(packageData, action);

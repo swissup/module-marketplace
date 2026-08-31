@@ -1,15 +1,11 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Kept for backward compatibility with the channel modules -->
     <virtualType
         name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Pool"
         type="Magento\Ui\DataProvider\Modifier\Pool"
     />
-    <type name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider">
-        <arguments>
-            <argument name="pool" xsi:type="object">Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Pool</argument>
-        </arguments>
-    </type>
 
     <type name="Magento\Framework\Console\CommandListInterface">
         <arguments>
@@ -27,6 +23,8 @@
                 <item name="marketplaceComposerAuthImportCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ComposerAuthImportCommand</item>
                 <item name="marketplaceComposerAuthPathCommand" xsi:type="object">Swissup\Marketplace\Console\Command\ComposerAuthPathCommand</item>
                 <item name="marketplacePackageInstallCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageInstallCommand</item>
+                <item name="marketplacePackageEnableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageEnableCommand</item>
+                <item name="marketplacePackageDisableCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageDisableCommand</item>
                 <item name="marketplacePackageRequireCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageRequireCommand</item>
                 <item name="marketplacePackageRemoveCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageRemoveCommand</item>
                 <item name="marketplacePackageShowCommand" xsi:type="object">Swissup\Marketplace\Console\Command\PackageShowCommand</item>
@@ -38,7 +36,6 @@
     <type name="Swissup\Marketplace\Model\HandlerFactory">
         <arguments>
             <argument name="handlers" xsi:type="array">
-                <item name="ChannelsSave" xsi:type="string">Swissup\Marketplace\Model\Handler\ChannelsSave</item>
                 <item name="PackageDisable" xsi:type="string">Swissup\Marketplace\Model\Handler\PackageDisable</item>
                 <item name="PackageEnable" xsi:type="string">Swissup\Marketplace\Model\Handler\PackageEnable</item>
                 <item name="PackageInstall" xsi:type="string">Swissup\Marketplace\Model\Handler\PackageInstall</item>
@@ -51,28 +48,10 @@
                 <item name="ProductionDisable" xsi:type="string">Swissup\Marketplace\Model\Handler\Additional\ProductionDisable</item>
                 <item name="ProductionEnable" xsi:type="string">Swissup\Marketplace\Model\Handler\Additional\ProductionEnable</item>
                 <item name="SetupUpgrade" xsi:type="string">Swissup\Marketplace\Model\Handler\Additional\SetupUpgrade</item>
-                <item name="Wrapper" xsi:type="string">Swissup\Marketplace\Model\Handler\Additional\Wrapper</item>
             </argument>
         </arguments>
     </type>
 
-    <type name="Swissup\Marketplace\Model\Logger\Handler">
-        <arguments>
-            <argument name="fileName" xsi:type="string">/var/log/marketplace.log</argument>
-        </arguments>
-    </type>
-    <virtualType name="Swissup\Marketplace\Model\Logger\QueueLogger" type="Magento\Framework\Logger\Monolog">
-        <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="system" xsi:type="object">Swissup\Marketplace\Model\Logger\Handler</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <type name="Swissup\Marketplace\Service\QueueDispatcher">
-        <arguments>
-            <argument name="logger" xsi:type="object">Swissup\Marketplace\Model\Logger\QueueLogger</argument>
-        </arguments>
-    </type>
 
     <!-- Magento Marketplace Channel -->
     <virtualType name="Swissup\Marketplace\Model\Channel\Magento"
@@ -96,22 +75,6 @@
             </argument>
         </arguments>
     </type>
-    <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Magento"
-                 type="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\HttpBasicAuth">
-        <arguments>
-            <argument name="channel" xsi:type="object">Swissup\Marketplace\Model\Channel\Magento</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Pool">
-        <arguments>
-            <argument name="modifiers" xsi:type="array">
-                <item name="magento" xsi:type="array">
-                    <item name="class" xsi:type="string">Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Magento</item>
-                    <item name="sortOrder" xsi:type="number">10</item>
-                </item>
-            </argument>
-        </arguments>
-    </virtualType>
 
     <!-- Swissup, Argento, and Firecheckout Channel -->
     <type name="Magento\Csp\Model\Collector\DynamicCollector">
@@ -153,20 +116,4 @@
             </argument>
         </arguments>
     </type>
-    <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Swissup"
-                 type="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\KeysAsPassword">
-        <arguments>
-            <argument name="channel" xsi:type="object">Swissup\Marketplace\Model\Channel\Swissup</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Pool">
-        <arguments>
-            <argument name="modifiers" xsi:type="array">
-                <item name="swissup" xsi:type="array">
-                    <item name="class" xsi:type="string">Swissup\Marketplace\Ui\DataProvider\Form\SettingsDataProvider\Modifier\Swissup</item>
-                    <item name="sortOrder" xsi:type="number">20</item>
-                </item>
-            </argument>
-        </arguments>
-    </virtualType>
 </config>
