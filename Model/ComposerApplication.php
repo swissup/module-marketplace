@@ -58,6 +58,87 @@ class ComposerApplication
         $this->workdir = dirname($composerJsonFinder->findComposerJson());
 
         putenv('COMPOSER_HOME=' . $directoryList->getPath(DirectoryList::COMPOSER_HOME));
+
+        if ($cacheDir = $this->resolveCacheDir()) {
+            putenv('COMPOSER_CACHE_DIR=' . $cacheDir);
+        }
+    }
+
+    /**
+     * @return string|null
+     * @see \Composer\Factory::getCacheDir()
+     */
+    protected function resolveCacheDir()
+    {
+        if (getenv('COMPOSER_CACHE_DIR')) {
+            return null;
+        }
+
+        $candidates = $this->getCacheDirCandidates();
+
+        foreach ($candidates as $dir) {
+            if (is_dir($dir) && is_writable($dir)) {
+                return $dir;
+            }
+        }
+
+        foreach ($candidates as $dir) {
+            if (!is_dir($dir) && is_writable(dirname($dir))) {
+                return $dir;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array
+     * @see \Composer\Factory::getCacheDir()
+     */
+    protected function getCacheDirCandidates()
+    {
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $localAppData = getenv('LOCALAPPDATA');
+
+            return $localAppData ? [rtrim(strtr($localAppData, '\\', '/'), '/') . '/Composer'] : [];
+        }
+
+        $userDir = getenv('HOME');
+        if (!$userDir) {
+            return [];
+        }
+
+        $userDir = rtrim($userDir, '/');
+
+        if (PHP_OS === 'Darwin') {
+            return [$userDir . '/Library/Caches/composer'];
+        }
+
+        $dirs = [];
+
+        if ($this->useXdg()) {
+            $xdgCache = getenv('XDG_CACHE_HOME') ?: $userDir . '/.cache';
+            $dirs[] = rtrim($xdgCache, '/') . '/composer';
+        }
+
+        $dirs[] = $userDir . '/.composer/cache';
+
+        return $dirs;
+    }
+
+    /**
+     * @return boolean
+     * @see \Composer\Factory::useXdg()
+     */
+    protected function useXdg()
+    {
+        foreach (array_keys($_SERVER) as $key) {
+            if (strpos((string) $key, 'XDG_') === 0) {
+                return true;
+            }
+        }
+
+        return is_dir('/etc/xdg');
     }
 
     /**
