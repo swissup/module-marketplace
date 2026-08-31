@@ -18,6 +18,11 @@ trait CmdOptions
         return $this->activeCmdOptions;
     }
 
+    public function hasCmdOption($option)
+    {
+        return in_array($option, $this->activeCmdOptions);
+    }
+
     public function setCmdOptions($options)
     {
         $this->activeCmdOptions = $options;

@@ -9,6 +9,7 @@ class PackageInstall extends PackageAbstractHandler implements HandlerInterface
 {
     protected static $cmdOptions = [
         'profile',
+        'dry-run',
         'ignore-platform-reqs',
     ];
 
@@ -52,7 +53,7 @@ class PackageInstall extends PackageAbstractHandler implements HandlerInterface
      */
     public function beforeQueue()
     {
-        return [
+        return $this->hasCmdOption('dry-run') ? [] : [
             Additional\MaintenanceEnable::class => !$this->isMaintenanceEnabled(),
             Additional\ProductionDisable::class => $this->isProduction(),
         ];
@@ -63,7 +64,7 @@ class PackageInstall extends PackageAbstractHandler implements HandlerInterface
      */
     public function afterQueue()
     {
-        return [
+        return $this->hasCmdOption('dry-run') ? [] : [
             Additional\CleanupFilesystem::class => true,
             Additional\SetupUpgrade::class => true,
             Additional\ProductionEnable::class => $this->isProduction(),

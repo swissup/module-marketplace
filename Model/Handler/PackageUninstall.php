@@ -8,6 +8,7 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
 {
     protected static $cmdOptions = [
         'profile',
+        'dry-run',
         'ignore-platform-reqs',
     ];
 
@@ -35,7 +36,7 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
      */
     public function beforeQueue()
     {
-        return [
+        return $this->hasCmdOption('dry-run') ? [] : [
             Additional\MaintenanceEnable::class => !$this->isMaintenanceEnabled(),
             Additional\ProductionDisable::class => $this->isProduction(),
         ];
@@ -46,7 +47,7 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
      */
     public function afterQueue()
     {
-        return [
+        return $this->hasCmdOption('dry-run') ? [] : [
             Additional\CleanupFilesystem::class => true,
             Additional\SetupUpgrade::class => true,
             Additional\ProductionEnable::class => $this->isProduction(),

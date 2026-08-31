@@ -113,6 +113,7 @@ class PackageAbstractCommand extends Command
                 $options[$option] = true;
             }
         }
+        $handler->setCmdOptions($options);
 
         try {
             $output->writeln('<info>Validating</info>');
@@ -132,7 +133,7 @@ class PackageAbstractCommand extends Command
 
         try {
             $output->writeln('<info>' . $handler->getTitle() . '</info>');
-            $handler->setCmdOptions($options)->handle();
+            $handler->handle();
             $success = true;
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
