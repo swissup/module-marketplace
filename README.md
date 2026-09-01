@@ -73,7 +73,7 @@ bin/magento setup:upgrade
 
 ### Magento backend interface
 
-Composer is never executed from the backend - running it through the Magento
+Composer is never executed from the backend - running it through Magento
 is not reliable. Instead, the backend shows the command to copy and run
 in your terminal. The one-click installer does not use composer and is still
 available right in the backend.

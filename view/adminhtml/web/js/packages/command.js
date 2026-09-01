@@ -37,8 +37,11 @@ define([
                      * @param {Object} event
                      */
                     click: function (event) {
-                        self.copy(command);
-                        self.flash($(event.currentTarget));
+                        var button = $(event.currentTarget);
+
+                        self.copy(command).done(function () {
+                            self.flash(button);
+                        });
                     }
                 }, {
                     text: $t('OK'),
@@ -91,29 +94,70 @@ define([
 
         /**
          * @param {String} text
+         * @return {jQuery.Deferred}
          */
         copy: function (text) {
-            var textarea;
+            var self = this,
+                deferred = $.Deferred();
 
             if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(text);
+                navigator.clipboard.writeText(text).then(
+                    function () {
+                        deferred.resolve();
+                    },
+                    function () {
+                        self.resolveWithFallback(deferred, text);
+                    }
+                );
 
-                return;
+                return deferred;
             }
 
-            textarea = $('<textarea></textarea>')
-                .val(text)
-                .css({
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    opacity: 0
-                })
-                .appendTo('body');
+            return this.resolveWithFallback(deferred, text);
+        },
+
+        /**
+         * @param {jQuery.Deferred} deferred
+         * @param {String} text
+         * @return {jQuery.Deferred}
+         */
+        resolveWithFallback: function (deferred, text) {
+            if (this.copyFallback(text)) {
+                deferred.resolve();
+            } else {
+                deferred.reject();
+            }
+
+            return deferred;
+        },
+
+        /**
+         * @param {String} text
+         * @return {Boolean}
+         */
+        copyFallback: function (text) {
+            var textarea = $('<textarea></textarea>')
+                    .val(text)
+                    .css({
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        opacity: 0
+                    })
+                    .appendTo('body'),
+                copied;
 
             textarea[0].select();
-            document.execCommand('copy');
+
+            try {
+                copied = document.execCommand('copy');
+            } catch (e) {
+                copied = false;
+            }
+
             textarea.remove();
+
+            return copied;
         }
     };
 });

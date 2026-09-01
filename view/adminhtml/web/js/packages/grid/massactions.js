@@ -49,8 +49,22 @@ define([
             return _.filter(packages, function (packageName) {
                 var packageData = this.findPackageData(packageName);
 
-                return packageData && packageHelper.isActionVisible(packageData, action);
+                return packageData &&
+                    this.hasActionLink(packageData, action) &&
+                    packageHelper.isActionVisible(packageData, action);
             }, this);
+        },
+
+        /**
+         * Row actions are registered per package type - enable and disable are
+         * added to the modules only, for example.
+         *
+         * @param {Object} packageData
+         * @param {Object} action
+         * @return {Boolean}
+         */
+        hasActionLink: function (packageData, action) {
+            return Boolean(packageData.links && packageData.links[action.index]);
         },
 
         /**
