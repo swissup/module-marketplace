@@ -86,7 +86,7 @@
     flex-wrap: wrap;
     justify-content: flex-start;
 
-    margin: 20px -@grid-item__gap / 2;
+    margin: 20px -(@grid-item__gap / 2);
 
     &.mode-list {
         flex-direction: column;
@@ -96,8 +96,8 @@
     .grid-item {
         display: flex;
         background: @grid-item__background;
-        padding: @grid-item__padding @grid-item__padding @grid-item__padding - 3;
-        margin: 0 @grid-item__gap / 2 @grid-item__gap;
+        padding: @grid-item__padding @grid-item__padding (@grid-item__padding - 3);
+        margin: 0 (@grid-item__gap / 2) @grid-item__gap;
         position: relative;
 
         .mode-grid& {
@@ -119,11 +119,11 @@
             }
 
             &:nth-child(even) {
-                background: #fdfdfd;
+                background: #fcfcfc;
             }
 
             &:hover {
-                background: #fafdff;
+                background: #f8f8f8;
             }
         }
 
@@ -187,20 +187,25 @@
         > div {
             display: block;
             .mode-grid& {
-                margin-bottom: 5px;
+                margin-bottom: 10px;
             }
             &:last-child {
                 margin-bottom: 0;
             }
         }
     }
+
+    .data-grid-checkbox-cell-inner { order: -110; }
+    [data-index="image"] { order: -100; }
+    [data-index="name"] { order: -90; }
+    [data-index="description"] { order: -80; }
 }
 
 @media (min-width: 1440px) {
     .marketplace-grid-items {
-        margin: 30px -@grid-item__desktop__gap / 2;
+        margin: 30px -(@grid-item__desktop__gap / 2);
         .grid-item {
-            margin: 0 @grid-item__desktop__gap / 2 @grid-item__desktop__gap;
+            margin: 0 (@grid-item__desktop__gap / 2) @grid-item__desktop__gap;
             .mode-grid& {
                 width: @grid-item__desktop__width - @grid-item__desktop__gap;
             }

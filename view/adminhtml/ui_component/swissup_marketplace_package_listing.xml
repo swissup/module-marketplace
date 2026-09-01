@@ -181,17 +181,6 @@
                 </item>
             </argument>
         </column>
-        <!--
-        <column name="keywords">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Keywords</item>
-                    <item name="bodyTmpl" xsi:type="string">Swissup_Marketplace/packages/grid/cells/keywords</item>
-                </item>
-            </argument>
-        </column>
-        -->
     </columns>
 
     <modal name="marketplace_installer">
