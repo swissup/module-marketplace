@@ -5,6 +5,15 @@ namespace Swissup\Marketplace\Model\PackagesList;
 class Remote extends AbstractList
 {
     /**
+     * Composer package naming rules. The names that do not match cannot be
+     * installed by composer, and are not allowed into the list to keep them
+     * out of the commands we suggest to run.
+     *
+     * @see \Composer\Package\Loader\ValidatingArrayLoader::hasPackageNamingError
+     */
+    const NAME_PATTERN = '{^[a-z0-9](?:[_.-]?[a-z0-9]++)*+/[a-z0-9](?:(?:[_.]|-{1,2})?[a-z0-9]++)*+$}iD';
+
+    /**
      * @var \Swissup\Marketplace\Model\ChannelRepository
      */
     private $channelRepository;
@@ -84,6 +93,10 @@ class Remote extends AbstractList
         $packages = $channel->getPackages();
 
         foreach ($packages as $id => $packageData) {
+            if (!preg_match(self::NAME_PATTERN, (string) $id)) {
+                continue;
+            }
+
             if (!isset($this->data[$id]['channels'])) {
                 $this->data[$id]['channels'] = [];
             }
