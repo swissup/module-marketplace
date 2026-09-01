@@ -14,8 +14,6 @@ interface HandlerInterface
 
     public function validateBeforeHandle();
 
-    public function validateBeforeDispatch();
-
     public function beforeQueue();
 
     public function afterQueue();

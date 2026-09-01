@@ -131,21 +131,6 @@
             display: none;
         }
 
-        &.busy {
-            pointer-events: none;
-            opacity: 0.5;
-            &::after {
-                .marketplace-spinner();
-                position: absolute;
-                .mode-list& {
-                    border-width: 2px;
-                    width: 20px;
-                    height: 20px;
-                    margin-top: -10px;
-                }
-            }
-        }
-
         .mode-grid& {
             &::before {
                 content: '';

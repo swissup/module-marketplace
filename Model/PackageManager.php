@@ -82,6 +82,16 @@ class PackageManager
     protected $packagesList;
 
     /**
+     * @var \Magento\Framework\Module\FullModuleList
+     */
+    protected $fullModuleList;
+
+    /**
+     * @var array|null
+     */
+    private $registeredModules;
+
+    /**
      * @param \Magento\Framework\App\CacheInterface $cache
      * @param \Magento\Framework\App\Config\ValueFactory $configValueFactory
      * @param \Magento\Framework\Module\PackageInfo $packageInfo
@@ -94,6 +104,7 @@ class PackageManager
      * @param \Magento\Theme\Model\Theme\ThemeProvider $themeProvider
      * @param \Swissup\Marketplace\Model\ComposerApplication $composer
      * @param \Swissup\Marketplace\Model\PackagesList\Local $packagesList
+     * @param \Magento\Framework\Module\FullModuleList $fullModuleList
      */
     public function __construct(
         \Magento\Framework\App\CacheInterface $cache,
@@ -107,7 +118,8 @@ class PackageManager
         \Magento\Theme\Model\Theme\ThemePackageInfo $themePackageInfo,
         \Magento\Theme\Model\Theme\ThemeProvider $themeProvider,
         \Swissup\Marketplace\Model\ComposerApplication $composer,
-        \Swissup\Marketplace\Model\PackagesList\Local $packagesList
+        \Swissup\Marketplace\Model\PackagesList\Local $packagesList,
+        \Magento\Framework\Module\FullModuleList $fullModuleList
     ) {
         $this->cache = $cache;
         $this->configValueFactory = $configValueFactory;
@@ -121,6 +133,7 @@ class PackageManager
         $this->themeProvider = $themeProvider;
         $this->composer = $composer;
         $this->packagesList = $packagesList;
+        $this->fullModuleList = $fullModuleList;
     }
 
     /**
@@ -233,6 +246,29 @@ class PackageManager
         return $result;
     }
 
+    /**
+     * Packages that do not provide a module registered in this installation.
+     *
+     * The composer type is not used here - the core modules are not always
+     * listed in the composer.lock as a standalone package.
+     *
+     * @param array $packages
+     * @return array
+     */
+    public function getNonModulePackages($packages)
+    {
+        $modules = $this->getRegisteredModules();
+        $result = [];
+
+        foreach ($packages as $package) {
+            if (!isset($modules[strtolower($this->getModuleName($package))])) {
+                $result[] = $package;
+            }
+        }
+
+        return $result;
+    }
+
     private function getThemePaths($packages)
     {
         $themes = [];
@@ -329,9 +365,9 @@ class PackageManager
             return $this->moduleNames[$packageName];
         }
 
-        $moduleName = $this->packageInfo->getModuleName($packageName);
+        $moduleName = (string) $this->packageInfo->getModuleName($packageName);
 
-        if (!$moduleName) {
+        if (!$moduleName && strpos($packageName, '/') !== false) {
             // if module is disabled
             list($vendor, $moduleName) = explode('/', $packageName);
             $moduleName = str_replace('module-', '', $moduleName);
@@ -339,10 +375,33 @@ class PackageManager
             $moduleName = ucfirst($vendor) . '_' . $moduleName;
         }
 
+        // The name guessed from the package name may differ in case from the
+        // registered one - Amasty_Ga4Api instead of Amasty_GA4Api, for example.
+        $registered = $this->getRegisteredModules();
+        $moduleName = $registered[strtolower($moduleName)] ?? $moduleName;
+
         $this->moduleNames[$packageName] = $moduleName;
         $this->packageNames[$moduleName] = $packageName;
 
         return $moduleName;
+    }
+
+    /**
+     * Lowercased module name to the registered module name pairs.
+     *
+     * @return array
+     */
+    private function getRegisteredModules()
+    {
+        if ($this->registeredModules === null) {
+            $this->registeredModules = [];
+
+            foreach ($this->fullModuleList->getNames() as $name) {
+                $this->registeredModules[strtolower($name)] = $name;
+            }
+        }
+
+        return $this->registeredModules;
     }
 
     protected function getPackageName($moduleName)

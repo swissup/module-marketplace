@@ -21,7 +21,7 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
         );
     }
 
-    public function validateBeforeDispatch()
+    public function validateBeforeHandle()
     {
         return $this->validateWhenDisable();
     }
