@@ -21,6 +21,11 @@ class PackageUninstall extends PackageAbstractHandler implements HandlerInterfac
         );
     }
 
+    public function validateBeforeHandle()
+    {
+        return $this->validateWhenDisable();
+    }
+
     public function getTitle()
     {
         return __('Uninstall %1', implode(', ', $this->packages));
