@@ -94,7 +94,7 @@ class PackageInstallCommand extends PackageAbstractCommand
     protected function configure(): void
     {
         $this->setName('marketplace:package:install')
-            ->setName('marketplace:install')
+            ->setAliases(['marketplace:install'])
             ->setDescription('Run installer for specified packages');
 
         $this->addOption(
