@@ -91,13 +91,13 @@ class ComposerApplication
         $candidates = $this->getCacheDirCandidates();
 
         foreach ($candidates as $dir) {
-            if (is_dir($dir) && is_writable($dir)) {
+            if ($this->isAllowedPath($dir) && is_dir($dir) && is_writable($dir)) {
                 return $dir;
             }
         }
 
         foreach ($candidates as $dir) {
-            if (!is_dir($dir) && is_writable(dirname($dir))) {
+            if ($this->isAllowedPath(dirname($dir)) && !is_dir($dir) && is_writable(dirname($dir))) {
                 return $dir;
             }
         }
@@ -152,7 +152,27 @@ class ComposerApplication
             }
         }
 
-        return is_dir('/etc/xdg');
+        return $this->isAllowedPath('/etc/xdg') && is_dir('/etc/xdg');
+    }
+
+    /**
+     * @param string $path
+     * @return boolean
+     */
+    protected function isAllowedPath($path)
+    {
+        $basedir = (string) ini_get('open_basedir');
+        if ($basedir === '') {
+            return true;
+        }
+
+        foreach (explode(PATH_SEPARATOR, $basedir) as $allowed) {
+            if ($allowed !== '' && strpos($path, $allowed) === 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
