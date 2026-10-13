@@ -3,7 +3,9 @@
 namespace Swissup\Marketplace\Model;
 
 use Swissup\Marketplace\Api\ChannelInterface;
+use Composer\Json\JsonFile;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Composer\ComposerJsonFinder;
 
 class ChannelManager
 {
@@ -28,18 +30,26 @@ class ChannelManager
     protected $channels;
 
     /**
+     * @var ComposerJsonFinder
+     */
+    protected $composerJsonFinder;
+
+    /**
      * @param \Swissup\Marketplace\Model\ComposerApplication $composer
      * @param \Magento\Framework\Serialize\Serializer\Json $jsonSerializer
      * @param \Magento\Framework\Filesystem $filesystem
+     * @param ComposerJsonFinder $composerJsonFinder
      */
     public function __construct(
         \Swissup\Marketplace\Model\ComposerApplication $composer,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
-        \Magento\Framework\Filesystem $filesystem
+        \Magento\Framework\Filesystem $filesystem,
+        ComposerJsonFinder $composerJsonFinder
     ) {
         $this->composer = $composer;
         $this->jsonSerializer = $jsonSerializer;
         $this->filesystem = $filesystem;
+        $this->composerJsonFinder = $composerJsonFinder;
     }
 
     /**
@@ -115,21 +125,24 @@ class ChannelManager
      */
     public function getCredentials($channel)
     {
-        try {
-            $string = $this->composer->runAuthCommand([
-                'setting-key' => $channel->getAuthType(), // don't use concat with hostname to fix error when domain level > 3
-            ]);
-            $data = $this->jsonSerializer->unserialize($string);
+        $dir = $this->filesystem->getDirectoryRead(DirectoryList::ROOT);
+        if (!$dir->isReadable('auth.json')) {
+            $dir = $this->filesystem->getDirectoryRead(DirectoryList::COMPOSER_HOME);
+        }
 
-            return $data[$channel->getHostname()] ?? [];
+        if (!$dir->isReadable('auth.json')) {
+            return [];
+        }
+
+        try {
+            $data = $this->jsonSerializer->unserialize($dir->readFile('auth.json'));
         } catch (\Exception $e) {
-            if (strpos($e->getMessage(), 'http-basic is not defined') !== false) {
-                return [];
-            }
             throw new \RuntimeException(
-                "'composer config -a -g' command failed: " . $e->getMessage()
+                sprintf("Unable to read '%s': %s", $dir->getAbsolutePath('auth.json'), $e->getMessage())
             );
         }
+
+        return $data[$channel->getAuthType()][$channel->getHostname()] ?? [];
     }
 
     /**
@@ -156,18 +169,11 @@ class ChannelManager
             return $this->channels;
         }
 
-        try {
-            $channels = $this->composer->run([
-                'command' => 'config',
-                'setting-key' => 'repositories',
-                '-q' => true,
-            ]);
-            $channels = $this->jsonSerializer->unserialize($channels);
-        } catch (\Exception $e) {
-            throw new \RuntimeException(
-                "'composer config' command failed: " . $e->getMessage()
-            );
-        }
+        // Read composer.json directly to not run composer from the web server.
+        $json = (new JsonFile($this->composerJsonFinder->findComposerJson()))->read();
+        $channels = array_filter($json['repositories'] ?? [], function ($repo) {
+            return isset($repo['url']); // skip "packagist.org": false
+        });
 
         $this->channels = $channels;
 

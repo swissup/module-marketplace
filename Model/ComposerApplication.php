@@ -27,6 +27,11 @@ class ComposerApplication
     protected $directoryList;
 
     /**
+     * @var ComposerJsonFinder
+     */
+    protected $composerJsonFinder;
+
+    /**
      * @var Application
      */
     protected $app;
@@ -53,11 +58,20 @@ class ComposerApplication
     ) {
         $this->filesystem = $filesystem;
         $this->directoryList = $directoryList;
+        $this->composerJsonFinder = $composerJsonFinder;
+    }
+
+    protected function init()
+    {
+        if ($this->app) {
+            return;
+        }
+
         $this->app = new Application();
         $this->app->setAutoExit(false);
-        $this->workdir = dirname($composerJsonFinder->findComposerJson());
+        $this->workdir = dirname($this->composerJsonFinder->findComposerJson());
 
-        putenv('COMPOSER_HOME=' . $directoryList->getPath(DirectoryList::COMPOSER_HOME));
+        putenv('COMPOSER_HOME=' . $this->directoryList->getPath(DirectoryList::COMPOSER_HOME));
 
         if ($cacheDir = $this->resolveCacheDir()) {
             putenv('COMPOSER_CACHE_DIR=' . $cacheDir);
@@ -148,6 +162,7 @@ class ComposerApplication
      */
     public function run(array $command, ?OutputInterface $output = null)
     {
+        $this->init();
         $command = $this->normalizeCommand($command);
 
         if (!$output) {
