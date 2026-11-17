@@ -17,15 +17,23 @@ class Process
     private $packages;
 
     /**
+     * @var \Magento\Framework\App\Filesystem\DirectoryList
+     */
+    private $directoryList;
+
+    /**
      * @param \Magento\Framework\Process\PhpExecutableFinderFactory $phpExecutableFinderFactory
      * @param \Swissup\Marketplace\Model\PackagesList\Local $packages
+     * @param \Magento\Framework\App\Filesystem\DirectoryList $directoryList
      */
     public function __construct(
         \Magento\Framework\Process\PhpExecutableFinderFactory $phpExecutableFinderFactory,
-        \Swissup\Marketplace\Model\PackagesList\Local $packages
+        \Swissup\Marketplace\Model\PackagesList\Local $packages,
+        \Magento\Framework\App\Filesystem\DirectoryList $directoryList
     ) {
         $this->phpPath = $phpExecutableFinderFactory->create()->find() ?: 'php';
         $this->packages = $packages;
+        $this->directoryList = $directoryList;
     }
 
     /**
@@ -73,7 +81,7 @@ class Process
         }
 
         return (new SymfonyProcess($command))
-            ->setWorkingDirectory(BP)
+            ->setWorkingDirectory($this->directoryList->getRoot())
             ->setTimeout(null)
             ->mustRun($callback)
             ->getOutput();

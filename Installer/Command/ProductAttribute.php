@@ -30,17 +30,25 @@ class ProductAttribute
     private $attributeSetCollectionFactory;
 
     /**
+     * @var \Magento\Catalog\Model\ResourceModel\Attribute
+     */
+    private $attributeResource;
+
+    /**
      * @param \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory $attributeFactory
      * @param \Magento\Catalog\Helper\Product $productHelper
      * @param \Magento\Eav\Model\EntityFactory $eavEntityFactory
      * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory
+     * @param \Magento\Catalog\Model\ResourceModel\Attribute $attributeResource
      */
     public function __construct(
         \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory $attributeFactory,
         \Magento\Catalog\Helper\Product $productHelper,
         \Magento\Eav\Model\EntityFactory $eavEntityFactory,
-        \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory
+        \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory,
+        \Magento\Catalog\Model\ResourceModel\Attribute $attributeResource
     ) {
+        $this->attributeResource = $attributeResource;
         $this->attributeFactory = $attributeFactory;
         $this->productHelper = $productHelper;
         $this->eavEntityFactory = $eavEntityFactory;
@@ -63,8 +71,8 @@ class ProductAttribute
 
         foreach ($request->getParams() as $data) {
             /* @var $model \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
-            $model = $this->attributeFactory->create()
-                ->load($data['attribute_code'], 'attribute_code');
+            $model = $this->attributeFactory->create();
+            $this->attributeResource->load($model, $data['attribute_code'], 'attribute_code');
             if ($model->getId()) {
                 continue;
             }
@@ -94,7 +102,7 @@ class ProductAttribute
                 $model->setAttributeSetId($set->getId());
                 $model->setAttributeGroupId($set->getDefaultGroupId());
                 try {
-                    $model->save();
+                    $this->attributeResource->save($model);
                 } catch (\Exception $e) {
                     $this->logger->warning($e->getMessage());
                 }
@@ -102,7 +110,7 @@ class ProductAttribute
 
             if (!$attributeSets->count()) {
                 try {
-                    $model->save();
+                    $this->attributeResource->save($model);
                 } catch (\Exception $e) {
                     $this->logger->warning($e->getMessage());
                 }

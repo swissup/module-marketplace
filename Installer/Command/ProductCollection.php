@@ -90,6 +90,8 @@ class ProductCollection
                         ]
                     );
                     break;
+                default:
+                    continue 2;
             }
 
             if ($collection->getSize()) {

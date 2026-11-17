@@ -30,17 +30,25 @@ class CmsBlock
     private $storeManager;
 
     /**
+     * @var \Magento\Cms\Model\ResourceModel\Block
+     */
+    private $blockResource;
+
+    /**
      * @param \Magento\Cms\Model\BlockFactory $blockFactory
      * @param \Magento\Cms\Model\ResourceModel\Block\CollectionFactory $collectionFactory
      * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Cms\Model\ResourceModel\Block $blockResource
      */
     public function __construct(
         \Magento\Cms\Model\BlockFactory $blockFactory,
         \Magento\Cms\Model\ResourceModel\Block\CollectionFactory $collectionFactory,
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Cms\Model\ResourceModel\Block $blockResource
     ) {
+        $this->blockResource = $blockResource;
         $this->blockFactory = $blockFactory;
         $this->collectionFactory = $collectionFactory;
         $this->localeDate = $localeDate;
@@ -68,7 +76,7 @@ class CmsBlock
                 ->addFieldToFilter('identifier', $data['identifier']);
 
             foreach ($collection as $block) {
-                $block->load($block->getId()); // load stores
+                $this->blockResource->load($block, $block->getId()); // load stores
 
                 $storesToLeave = array_diff($block->getStoreId(), $request->getStoreIds());
 
@@ -80,7 +88,7 @@ class CmsBlock
                 }
 
                 try {
-                    $block->save();
+                    $this->blockResource->save($block);
                 } catch (\Exception $e) {
                     $this->logger->warning($e->getMessage());
                 }
@@ -91,10 +99,10 @@ class CmsBlock
             ], $data);
 
             try {
-                $this->blockFactory->create()
+                $block = $this->blockFactory->create()
                     ->setData($data)
-                    ->setStores($request->getStoreIds()) // see Magento\Cms\Model\ResourceModel\Block::_afterSave
-                    ->save();
+                    ->setStores($request->getStoreIds()); // see Magento\Cms\Model\ResourceModel\Block::_afterSave
+                $this->blockResource->save($block);
             } catch (\Exception $e) {
                 $this->logger->warning($e->getMessage());
             }
