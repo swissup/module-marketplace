@@ -146,13 +146,14 @@ class Remote extends AbstractList
         if (isset($packageData['marketplace']['@extends'])) {
             $parentPackage = $packageData['marketplace']['@extends'];
 
+            $data = [];
             if (isset($allPackages[$parentPackage]['dev-master']['extra'])) {
                 $data = $this->extractPackageData($allPackages[$parentPackage]['dev-master']);
                 $data = $data['marketplace'];
             }
 
             $packageData['marketplace'] = array_merge(
-                $data['marketplace'],
+                $data,
                 $packageData['marketplace']
             );
             unset($packageData['marketplace']['@extends']);

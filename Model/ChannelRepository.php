@@ -117,13 +117,14 @@ class ChannelRepository
     public function getFirstEnabled($identifier = null)
     {
         if ($identifier) {
+            $channel = null;
             try {
                 $channel = $this->getById($identifier);
             } catch (NoSuchEntityException $e) {
                 // not found
             }
 
-            if ($channel->isEnabled()) {
+            if ($channel && $channel->isEnabled()) {
                 return $channel;
             }
         }

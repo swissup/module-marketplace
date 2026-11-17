@@ -26,15 +26,23 @@ class Widget
     private $collectionFactory;
 
     /**
+     * @var \Magento\Widget\Model\ResourceModel\Widget\Instance
+     */
+    private $widgetResource;
+
+    /**
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Widget\Model\Widget\InstanceFactory $widgetFactory
      * @param \Magento\Widget\Model\ResourceModel\Widget\Instance\CollectionFactory $collectionFactory
+     * @param \Magento\Widget\Model\ResourceModel\Widget\Instance $widgetResource
      */
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Widget\Model\Widget\InstanceFactory $widgetFactory,
-        \Magento\Widget\Model\ResourceModel\Widget\Instance\CollectionFactory $collectionFactory
+        \Magento\Widget\Model\ResourceModel\Widget\Instance\CollectionFactory $collectionFactory,
+        \Magento\Widget\Model\ResourceModel\Widget\Instance $widgetResource
     ) {
+        $this->widgetResource = $widgetResource;
         $this->storeManager = $storeManager;
         $this->widgetFactory = $widgetFactory;
         $this->collectionFactory = $collectionFactory;
@@ -65,12 +73,12 @@ class Widget
                     $widget->setStoreIds($storesToLeave);
                 } else {
                     // re-create widget with new params
-                    $widget->delete();
+                    $this->widgetResource->delete($widget);
                     continue;
                 }
 
                 try {
-                    $widget->save();
+                    $this->widgetResource->save($widget);
                 } catch (\Exception $e) {
                     $this->logger->warning($e->getMessage());
                 }
@@ -102,7 +110,8 @@ class Widget
             $data['page_groups'] = $pageGroups;
 
             try {
-                $this->widgetFactory->create()->addData($data)->save();
+                $widget = $this->widgetFactory->create()->addData($data);
+                $this->widgetResource->save($widget);
             } catch (\Exception $e) {
                 $this->logger->warning($e->getMessage());
             }
@@ -111,6 +120,9 @@ class Widget
 
     private function getPageGroupData($data, $defaultData)
     {
+        $groupName = null;
+        $groupData = [];
+
         if (isset($data['handle'])) {
             $groupName = $this->getGroupName($data['handle']);
             $groupData = [
